@@ -44,6 +44,31 @@ app.use("/api/auth/", AuthRoutes);
 // WebSocket
 new SocketController(io);
 
+//  Catch-all route for undefined endpoints
+app.all("*", (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Route not found: ${req.originalUrl}`,
+  });
+});
+
+//  Global Error Handler
+app.use(
+  (
+    err: any,
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    console.error("Error:", err.message);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: err.message,
+    });
+  }
+);
+
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Astra Backend running on http://localhost:${PORT}`);
