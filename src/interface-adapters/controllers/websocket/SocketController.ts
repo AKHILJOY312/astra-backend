@@ -1,6 +1,6 @@
 import { Server as SocketIOServer, Socket } from "socket.io";
 import { SendMessageUseCase } from "../../../application/use-cases/message/SendMessageUseCase";
-import { MessageRepositoryImpl } from "../../../frameworks/db/repositories/MessageRepositoryImpl";
+import { MessageRepositoryImpl } from "../../../infra/db/repositories/MessageRepositoryImpl";
 
 export class SocketController {
   private io: SocketIOServer;

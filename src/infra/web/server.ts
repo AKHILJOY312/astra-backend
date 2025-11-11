@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 dotenv.config();
 import { Server as SocketIOServer } from "socket.io";
-import AuthRoutes from "../../interface-adapters/routes/auth";
+import AuthRoutes from "../../interface-adapters/http/routes/authRoutes";
 import { SocketController } from "../../interface-adapters/controllers/websocket/SocketController";
 import { connectDB } from "../../config/database";
 

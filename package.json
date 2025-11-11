@@ -2,8 +2,8 @@
   "name": "astra-backend",
   "version": "1.0.0",
   "scripts": {
-    "start": "ts-node src/frameworks/web/server.ts",
-    "dev": "nodemon --watch src --exec ts-node src/frameworks/web/server.ts"
+    "start": "ts-node src/infra/web/server.ts",
+    "dev": "nodemon --watch src --exec ts-node src/infra/web/server.ts"
   },
   "dependencies": {
     "aws-sdk": "^2.1400.0",
