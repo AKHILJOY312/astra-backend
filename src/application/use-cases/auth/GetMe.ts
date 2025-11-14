@@ -8,6 +8,7 @@ export class GetMe {
     user: { id: string; name: string; email: string };
   }> {
     const user = await this.userRepo.findById(userId);
+
     if (!user) throw new Error("User not found");
 
     return {

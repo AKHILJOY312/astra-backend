@@ -51,7 +51,9 @@ export class User {
   setId(id: string): void {
     this._props.id = id;
   }
-
+  // set password(newPassword: string) {
+  //   this.password = newPassword;
+  // }
   // ---- BUSINESS METHODS ----
   verify(): void {
     this._props.isVerified = true;

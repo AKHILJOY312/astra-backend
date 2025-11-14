@@ -23,7 +23,7 @@ export class ForgotPassword {
     user.setResetToken(token, expires);
     await this.userRepo.save(user);
 
-    const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${token}`;
+    const resetUrl = `${process.env.CLIENT_URL}/verify-email?token=${token}&type=reset`;
     await this.email.sendPasswordReset(email, token, resetUrl);
 
     return { message: "Password reset link sent to your email" };

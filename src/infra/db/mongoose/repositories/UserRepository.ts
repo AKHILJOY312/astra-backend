@@ -81,4 +81,33 @@ export class UserRepository implements IUserRepository {
       }
     );
   }
+  //good to remove the filed in the db for verificationand etc
+  //   async save(user: User): Promise<void> {
+  //   if (!user.id) throw new Error("Cannot save user without id");
+
+  //   // Convert domain entity to plain object
+  //   const props = {
+  //     isVerified: user.isVerified,
+  //     password: user.password,
+  //     verificationToken: user.verificationToken,
+  //     verificationTokenExpires: user.verificationTokenExpires,
+  //     resetPasswordToken: user.resetPasswordToken,
+  //     resetPasswordExpires: user.resetPasswordExpires,
+  //   };
+
+  //   // Separate fields into $set and $unset automatically
+  //   const $set: Record<string, any> = {};
+  //   const $unset: Record<string, string> = {};
+
+  //   Object.entries(props).forEach(([key, value]) => {
+  //     if (value === null || value === undefined) {
+  //       $unset[key] = ""; // remove field entirely
+  //     } else {
+  //       $set[key] = value;
+  //     }
+  //   });
+
+  //   // Perform a single clean update
+  //   await UserModel.updateOne({ _id: user.id }, { $set, $unset });
+  // }
 }

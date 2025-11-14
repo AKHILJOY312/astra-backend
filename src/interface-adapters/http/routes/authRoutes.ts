@@ -10,7 +10,7 @@ router.post("/refresh-token", authController.refreshToken);
 router.post("/logout", authController.logout);
 router.get("/me", protect, authController.me);
 router.post("/forgot-password", authController.forgotPassword);
-router.post("/reset-password", authController.resetPassword);
 router.get("/verify-reset-token", authController.verifyResetToken);
+router.post("/reset-password", authController.resetPassword);
 
 export default router;

@@ -45,6 +45,7 @@ export const createProtectMiddleware = (userRepo: IUserRepository) => {
 
       // 3. Use repository (Clean Architecture!)
       const user = await userRepo.findById(decoded.id);
+
       if (!user) {
         return res.status(401).json({ message: "User no longer exists" });
       }
