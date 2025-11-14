@@ -8,4 +8,6 @@ export interface IAuthService {
 
   /** Returns decoded payload or null if invalid */
   verifyRefreshToken(token: string): { id: string } | null;
+
+  generateRandomPassword(): string;
 }

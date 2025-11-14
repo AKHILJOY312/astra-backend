@@ -9,6 +9,7 @@ import { GetMe } from "../../../application/use-cases/auth/GetMe";
 import { ForgotPassword } from "../../../application/use-cases/auth/ForgotPassword";
 import { ResetPassword } from "../../../application/use-cases/auth/ResetPassword";
 import { VerifyResetToken } from "../../../application/use-cases/auth/VerifyResetToken";
+import { GoogleLogin } from "../../../application/use-cases/auth/GoogleLogin";
 
 // Dependency container (simple DI – you can replace with Inversify, tsyringe, etc.)
 export class AuthController {
@@ -21,8 +22,40 @@ export class AuthController {
     private meUC: GetMe,
     private forgotUC: ForgotPassword,
     private resetUC: ResetPassword,
-    private verifyResetUC: VerifyResetToken
+    private verifyResetUC: VerifyResetToken,
+    private googleLoginUC: GoogleLogin
   ) {}
+
+  googleLogin = (_req: Request, res: Response) => {
+    res.redirect("/api/auth/google/passport");
+  };
+
+  googleCallback = async (req: Request, res: Response) => {
+    try {
+      const googleProfile = req.user as any;
+      if (!googleProfile) throw new Error("Google login failed");
+
+      const { accessToken, refreshToken } = await this.googleLoginUC.execute(
+        googleProfile
+      );
+
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
+      const redirectUrl = `${process.env.CLIENT_URL}/success?token=${accessToken}`;
+      res.redirect(redirectUrl);
+    } catch (e: any) {
+      res.redirect(
+        `${process.env.FRONTEND_URL}/login?error=${encodeURIComponent(
+          e.message
+        )}`
+      );
+    }
+  };
 
   register = async (req: Request, res: Response) => {
     try {

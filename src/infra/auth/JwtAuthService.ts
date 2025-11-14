@@ -2,6 +2,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { IAuthService } from "../../application/services/IAuthService";
+import crypto from "crypto";
 
 export class JwtAuthService implements IAuthService {
   async hashPassword(plain: string): Promise<string> {
@@ -32,5 +33,10 @@ export class JwtAuthService implements IAuthService {
     } catch {
       return null;
     }
+  }
+
+  // AuthService.ts
+  generateRandomPassword(length = 16): string {
+    return crypto.randomBytes(length).toString("hex");
   }
 }

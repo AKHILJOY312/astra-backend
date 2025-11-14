@@ -13,6 +13,7 @@ import { UserRepository } from "../infra/db/mongoose/repositories/UserRepository
 import { VerifyEmail } from "../application/use-cases/auth/VerifyEmail";
 import { VerifyResetToken } from "../application/use-cases/auth/VerifyResetToken";
 import { createProtectMiddleware } from "../infra/middleware/protect";
+import { GoogleLogin } from "../application/use-cases/auth/GoogleLogin";
 
 const userRepo = new UserRepository();
 const authSvc = new JwtAuthService();
@@ -27,6 +28,7 @@ const meUC = new GetMe(userRepo);
 const forgotUC = new ForgotPassword(userRepo, emailSvc);
 const resetUC = new ResetPassword(userRepo, authSvc);
 const verifyResetUC = new VerifyResetToken(userRepo);
+const googleLoginUC = new GoogleLogin(userRepo, authSvc);
 export const protect = createProtectMiddleware(userRepo);
 
 export const authController = new AuthController(
@@ -38,5 +40,6 @@ export const authController = new AuthController(
   meUC,
   forgotUC,
   resetUC,
-  verifyResetUC
+  verifyResetUC,
+  googleLoginUC
 );

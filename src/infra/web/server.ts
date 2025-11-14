@@ -10,6 +10,8 @@ import { Server as SocketIOServer } from "socket.io";
 import AuthRoutes from "../../interface-adapters/http/routes/authRoutes";
 // import { SocketController } from "../../interface-adapters/controllers/websocket/SocketController";
 import { connectDB } from "../../config/database";
+import { setupGoogleStrategy } from "../passport/googleStrategy";
+import passport from "passport";
 
 const app = express();
 const server = http.createServer(app);
@@ -38,8 +40,14 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
-// Routes
+setupGoogleStrategy();
 
+app.use(passport.initialize());
+// Routes
+app.use((req, res, next) => {
+  console.log("REQUEST URL:", req.method, req.url);
+  next();
+});
 app.use("/api/auth/", AuthRoutes);
 // WebSocket
 // new SocketController(io);
