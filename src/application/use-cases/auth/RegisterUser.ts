@@ -32,6 +32,7 @@ export class RegisterUser {
       email: dto.email,
       password: hashed,
       isVerified: false,
+      isAdmin: false,
       verificationToken: token,
       verificationTokenExpires: expires,
     });

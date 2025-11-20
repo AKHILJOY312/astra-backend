@@ -5,6 +5,7 @@ export interface UserProps {
   email: string;
   password: string;
   isVerified: boolean;
+  isAdmin: boolean;
   verificationToken?: string | null;
   verificationTokenExpires?: Date | null;
   resetPasswordToken?: string | null;
@@ -33,6 +34,9 @@ export class User {
   }
   get isVerified(): boolean {
     return this._props.isVerified;
+  }
+  get isAdmin(): boolean {
+    return this._props.isAdmin;
   }
   get verificationToken(): string | null | undefined {
     return this._props.verificationToken;

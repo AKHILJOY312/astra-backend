@@ -9,6 +9,7 @@ export class UserRepository implements IUserRepository {
       name: doc.name,
       email: doc.email,
       password: doc.password,
+      isAdmin: doc.isAdmin,
       isVerified: doc.isVerified ?? false,
       verificationToken: doc.verificationToken ?? null,
       verificationTokenExpires: doc.verificationTokenExpires ?? null,

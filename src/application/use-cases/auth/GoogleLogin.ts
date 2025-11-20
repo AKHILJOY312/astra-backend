@@ -28,6 +28,7 @@ export class GoogleLogin {
         name: name!,
         email,
         password: "", // will be replaced
+        isAdmin: false,
         isVerified: true,
       });
 

@@ -15,6 +15,14 @@ import { VerifyResetToken } from "../application/use-cases/auth/VerifyResetToken
 import { createProtectMiddleware } from "../infra/middleware/protect";
 import { GoogleLogin } from "../application/use-cases/auth/GoogleLogin";
 
+//Plan
+import { PlanRepository } from "../infra/db/mongoose/repositories/PlanRepository";
+import { CreatePlan } from "../application/use-cases/billing/plan/CreatePlan";
+import { UpdatePlan } from "../application/use-cases/billing/plan/UpdatePlan";
+import { SoftDeletePlan } from "../application/use-cases/billing/plan/SoftDeletePlan";
+import { GetPlansPaginated } from "../application/use-cases/billing/plan/GetPlansPaginated";
+import { PlanController } from "../interface-adapters/controllers/plan/PlanController";
+
 const userRepo = new UserRepository();
 const authSvc = new JwtAuthService();
 const emailSvc = new NodemailerEmailService();
@@ -29,6 +37,13 @@ const forgotUC = new ForgotPassword(userRepo, emailSvc);
 const resetUC = new ResetPassword(userRepo, authSvc);
 const verifyResetUC = new VerifyResetToken(userRepo);
 const googleLoginUC = new GoogleLogin(userRepo, authSvc);
+
+//__________________________Plan__________________________________
+const planRepo = new PlanRepository();
+const createPlan = new CreatePlan(planRepo);
+const updatePlan = new UpdatePlan(planRepo);
+const deletePlan = new SoftDeletePlan(planRepo);
+const getPlansPaginated = new GetPlansPaginated(planRepo);
 export const protect = createProtectMiddleware(userRepo);
 
 export const authController = new AuthController(
@@ -42,4 +57,11 @@ export const authController = new AuthController(
   resetUC,
   verifyResetUC,
   googleLoginUC
+);
+
+export const planController = new PlanController(
+  createPlan,
+  updatePlan,
+  deletePlan,
+  getPlansPaginated
 );
