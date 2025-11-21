@@ -146,9 +146,8 @@ export class AuthController {
 
   resetPassword = async (req: Request, res: Response) => {
     const { token } = req.query as { token: string };
-    console.log(token);
     const { password, confirmPassword } = req.body;
-    console.log(password);
+
     try {
       const msg = await this.resetUC.execute(token, password, confirmPassword);
       res.json(msg);
