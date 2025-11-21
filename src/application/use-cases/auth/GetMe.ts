@@ -5,7 +5,7 @@ export class GetMe {
   constructor(private userRepo: IUserRepository) {}
 
   async execute(userId: string): Promise<{
-    user: { id: string; name: string; email: string };
+    user: { id: string; name: string; email: string; isAdmin: boolean };
   }> {
     const user = await this.userRepo.findById(userId);
 
@@ -16,6 +16,7 @@ export class GetMe {
         id: user.id!,
         name: user.name,
         email: user.email,
+        isAdmin: user.isAdmin,
       },
     };
   }
