@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 dotenv.config();
 import { Server as SocketIOServer } from "socket.io";
 import AuthRoutes from "../../interface-adapters/http/routes/authRoutes";
+import adminAuthRoutes from "../../interface-adapters/http/routes/admin/adminAuthRoutes";
 import planRoutes from "../../interface-adapters/http/routes/admin/planRoutes";
 // import { SocketController } from "../../interface-adapters/controllers/websocket/SocketController";
 import { connectDB } from "../../config/database";
@@ -51,7 +52,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/auth/", AuthRoutes);
-
+app.use("/api/admin/auth", adminAuthRoutes);
 app.use("/api/admin/plans", planRoutes);
 // WebSocket
 // new SocketController(io);

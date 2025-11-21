@@ -14,6 +14,11 @@ import { VerifyEmail } from "../application/use-cases/auth/VerifyEmail";
 import { VerifyResetToken } from "../application/use-cases/auth/VerifyResetToken";
 import { createProtectMiddleware } from "../infra/middleware/protect";
 import { GoogleLogin } from "../application/use-cases/auth/GoogleLogin";
+//Admin Auth
+import { AdminLogin } from "../application/use-cases/auth/admin/AdminLogin";
+import { AdminForgotPassword } from "../application/use-cases/auth/admin/AdminForgotPassword";
+import { AdminResetPassword } from "../application/use-cases/auth/admin/AdminResetPassword";
+import { AdminAuthController } from "../interface-adapters/controllers/auth/AdminAuthController";
 
 //Plan
 import { PlanRepository } from "../infra/db/mongoose/repositories/PlanRepository";
@@ -38,6 +43,11 @@ const resetUC = new ResetPassword(userRepo, authSvc);
 const verifyResetUC = new VerifyResetToken(userRepo);
 const googleLoginUC = new GoogleLogin(userRepo, authSvc);
 
+//_______________________________________________________________
+const adminLogin = new AdminLogin(userRepo, authSvc);
+const adminForgotPassword = new AdminForgotPassword(userRepo, emailSvc);
+const adminResetPassword = new AdminResetPassword(userRepo, authSvc);
+
 //__________________________Plan__________________________________
 const planRepo = new PlanRepository();
 const createPlan = new CreatePlan(planRepo);
@@ -57,6 +67,12 @@ export const authController = new AuthController(
   resetUC,
   verifyResetUC,
   googleLoginUC
+);
+
+export const adminAuthController = new AdminAuthController(
+  adminLogin,
+  adminForgotPassword,
+  adminResetPassword
 );
 
 export const planController = new PlanController(
