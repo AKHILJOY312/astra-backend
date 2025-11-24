@@ -1,40 +1,54 @@
-import mongoose from "mongoose";
+// src/infrastructure/persistence/mongoose/models/ProjectModel.ts
+import mongoose, { Schema, Document } from "mongoose";
+import {
+  Project,
+  ProjectProps,
+} from "../../../../domain/entities/project/Project";
 
-const projectSchema = new mongoose.Schema(
+interface ProjectDoc extends Document {
+  projectName: string;
+  imageUrl?: string | null;
+  description?: string;
+  ownerId: mongoose.Types.ObjectId;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+const projectSchema = new Schema<ProjectDoc>(
   {
-    _id: {
-      type: mongoose.Schema.Types.UUID,
-      default: () => uuidv4(),
-    },
-    project_name: {
-      type: String,
+    projectName: { type: String, required: true, trim: true },
+    imageUrl: { type: String, default: null },
+    description: { type: String, default: "" },
+    ownerId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
       required: true,
-    },
-    image_url: {
-      type: String,
-      default: null,
-    },
-    description: {
-      type: String,
-      default: "",
-    },
-    owner_id: {
-      type: mongoose.Schema.Types.UUID,
-      required: true,
-      ref: "User", // assuming a 'User' collection exists
-    },
-    created_at: {
-      type: Date,
-      default: Date.now,
-    },
-    updated_at: {
-      type: Date,
-      default: Date.now,
+      index: true,
     },
   },
-  {
-    timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
-  }
+  { timestamps: true }
 );
 
-const Project = mongoose.model("Project", projectSchema);
+export const ProjectModel = mongoose.model<ProjectDoc>(
+  "Project",
+  projectSchema
+);
+
+// Mapper: DB → Domain Entity
+export const toProjectEntity = (doc: ProjectDoc): Project => {
+  const props: ProjectProps = {
+    id: doc._id.toString(),
+    projectName: doc.projectName,
+    imageUrl: doc.imageUrl,
+    description: doc.description,
+    ownerId: doc.ownerId.toString(),
+    createdAt: doc.createdAt,
+    updatedAt: doc.updatedAt,
+  };
+
+  const project = new Project(props);
+  project.setId(doc._id.toString());
+  if (doc.createdAt) project.setCreatedAt(doc.createdAt);
+  if (doc.updatedAt) project.setUpdatedAt(doc.updatedAt);
+  return project;
+};

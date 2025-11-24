@@ -7,5 +7,6 @@ export interface CreatePlanDto {
   billingCycle: "monthly" | "yearly";
   features: string[];
   maxProjects: number;
+  maxMembersPerProject: number;
   maxStorage: number;
 }

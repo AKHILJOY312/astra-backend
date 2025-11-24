@@ -1,12 +1,12 @@
 // infrastructure/repositories/PlanRepository.ts
-import PlanModel from "../modals/PlanModal";
+import { PlanModel } from "../modals/PlanModal";
 import { Plan } from "../../../../domain/entities/billing/Plan";
 import { IPlanRepository } from "../../../../application/repositories/IPlanRepository";
 
 export class PlanRepository implements IPlanRepository {
-  // Convert Mongo Document → Domain Entity
+  // Mapper: Mongo Doc → Domain Entity
   private toDomain(doc: any): Plan {
-    return new Plan({
+    const props = {
       id: doc.id,
       name: doc.name,
       description: doc.description,
@@ -14,18 +14,23 @@ export class PlanRepository implements IPlanRepository {
       finalAmount: doc.finalAmount,
       currency: doc.currency,
       billingCycle: doc.billingCycle,
-      features: doc.features,
+      features: doc.features || [],
       maxProjects: doc.maxProjects,
-      maxStorage: doc.maxStorage,
+      maxMembersPerProject: doc.maxMembersPerProject,
       isActive: doc.isActive,
+      maxStorage: doc.maxStorage,
       isDeleted: doc.isDeleted,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
-    });
+    };
+
+    const plan = new Plan(props);
+    if (doc._id) plan.setId(doc._id.toString());
+    return plan;
   }
 
-  // Convert Domain Entity → MongoDB format
-  private toPersistence(plan: Plan) {
+  // Mapper: Domain Entity → MongoDB save format
+  private toPersistence(plan: Plan): any {
     return {
       id: plan.id,
       name: plan.name,
@@ -36,17 +41,11 @@ export class PlanRepository implements IPlanRepository {
       billingCycle: plan.billingCycle,
       features: plan.features,
       maxProjects: plan.maxProjects,
-      maxStorage: plan.maxStorage,
+      maxMembersPerProject: plan.maxMembersPerProject,
       isActive: plan.isActive,
       isDeleted: plan.isDeleted,
-      createdAt: plan.createdAt,
-      updatedAt: plan.updatedAt,
     };
   }
-
-  // =================================
-  //              CRUD
-  // =================================
 
   async create(plan: Plan): Promise<Plan> {
     const data = this.toPersistence(plan);
@@ -56,7 +55,7 @@ export class PlanRepository implements IPlanRepository {
 
   async update(plan: Plan): Promise<void> {
     const data = this.toPersistence(plan);
-    await PlanModel.updateOne({ id: data.id }, { $set: data });
+    await PlanModel.updateOne({ id: plan.id }, { $set: data });
   }
 
   async delete(id: string): Promise<Plan | null> {
@@ -71,25 +70,33 @@ export class PlanRepository implements IPlanRepository {
       },
       { new: true }
     );
-
     return doc ? this.toDomain(doc) : null;
   }
 
   async findById(id: string): Promise<Plan | null> {
-    const doc = await PlanModel.findOne({ id, isDeleted: false });
+    const doc = await PlanModel.findOne({
+      $or: [{ id }, { _id: id }],
+      isDeleted: false,
+    });
     return doc ? this.toDomain(doc) : null;
   }
 
   async findAllPaginated(page: number, limit: number): Promise<Plan[]> {
     const docs = await PlanModel.find({ isDeleted: false })
+      .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
-      .limit(limit)
-      .sort({ createdAt: -1 });
+      .limit(limit);
 
-    return docs.map((doc: any) => this.toDomain(doc));
+    return docs.map((doc) => this.toDomain(doc));
   }
 
   async count(): Promise<number> {
     return PlanModel.countDocuments({ isDeleted: false });
+  }
+
+  // Bonus: useful for use cases
+  async findAllActive(): Promise<Plan[]> {
+    const docs = await PlanModel.find({ isActive: true, isDeleted: false });
+    return docs.map((doc) => this.toDomain(doc));
   }
 }

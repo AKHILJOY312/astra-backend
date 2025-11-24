@@ -7,9 +7,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 dotenv.config();
 import { Server as SocketIOServer } from "socket.io";
-import AuthRoutes from "../../interface-adapters/http/routes/authRoutes";
-import adminAuthRoutes from "../../interface-adapters/http/routes/admin/adminAuthRoutes";
-import planRoutes from "../../interface-adapters/http/routes/admin/planRoutes";
+import routes from "../../interface-adapters/http/routes/index";
 // import { SocketController } from "../../interface-adapters/controllers/websocket/SocketController";
 import { connectDB } from "../../config/database";
 import { setupGoogleStrategy } from "../passport/googleStrategy";
@@ -51,9 +49,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/api/auth/", AuthRoutes);
-app.use("/api/admin/auth", adminAuthRoutes);
-app.use("/api/admin/plans", planRoutes);
+app.use("/api", routes);
+
 // WebSocket
 // new SocketController(io);
 
