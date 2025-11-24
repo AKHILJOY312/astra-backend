@@ -8,6 +8,7 @@ export interface PlanProps {
   billingCycle: "monthly" | "yearly";
   features: string[];
   maxProjects: number;
+  maxMembersPerProject: number;
   maxStorage: number;
   isActive: boolean;
   isDeleted: boolean;
@@ -57,7 +58,9 @@ export class Plan {
   get maxProjects() {
     return this._props.maxProjects;
   }
-
+  get maxMembersPerProject() {
+    return this._props.maxMembersPerProject;
+  }
   get maxStorage() {
     return this._props.maxStorage;
   }
