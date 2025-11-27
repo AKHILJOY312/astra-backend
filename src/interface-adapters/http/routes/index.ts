@@ -10,6 +10,10 @@ import subscriptionRoutes from "./subscriptionRoutes";
 
 const router = Router();
 
+router.use((req, res, next) => {
+  console.log("req.body:", req.body);
+  next();
+});
 // Public routes
 router.use("/auth", AuthRoutes);
 

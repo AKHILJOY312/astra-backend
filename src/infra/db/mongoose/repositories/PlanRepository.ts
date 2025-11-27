@@ -18,8 +18,7 @@ export class PlanRepository implements IPlanRepository {
       maxProjects: doc.maxProjects,
       maxMembersPerProject: doc.maxMembersPerProject,
       isActive: doc.isActive,
-      maxStorage: doc.maxStorage,
-      isDeleted: doc.isDeleted,
+      isDeleted: doc.isDeleted || false,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     };
@@ -54,8 +53,10 @@ export class PlanRepository implements IPlanRepository {
   }
 
   async update(plan: Plan): Promise<void> {
+    console.log("plan:", plan);
     const data = this.toPersistence(plan);
-    await PlanModel.updateOne({ id: plan.id }, { $set: data });
+    console.log("data:", data);
+    await PlanModel.updateOne({ _id: plan.id }, { $set: data });
   }
 
   async delete(id: string): Promise<Plan | null> {
@@ -74,11 +75,7 @@ export class PlanRepository implements IPlanRepository {
   }
 
   async findById(id: string): Promise<Plan | null> {
-    const doc = await PlanModel.findOne({
-      id: id,
-      isActive: true,
-      isDeleted: false,
-    });
+    const doc = await PlanModel.findOne({ _id: id });
     console.log("doc" + doc);
     return doc ? this.toDomain(doc) : null;
   }

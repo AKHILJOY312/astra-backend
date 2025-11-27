@@ -132,7 +132,7 @@ export class Plan {
     this._props.maxProjects = max;
   }
   setMaxMembersPerProject(max: number) {
-    this._props.maxProjects = max;
+    this._props.maxMembersPerProject = max;
   }
 
   setActive(isActive: boolean) {
