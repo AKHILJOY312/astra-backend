@@ -13,7 +13,7 @@ export class CreatePlan {
     }
 
     const plan = new Plan({
-      id: uuidv4(),
+      id: `PLAN-${uuidv4()}`,
       name: dto.name,
       description: dto.description,
       price: dto.price,

@@ -31,16 +31,30 @@ export class PlanController {
   };
 
   update = async (req: Request, res: Response) => {
-    const dto = {
-      id: req.params.id,
-      ...req.body,
-    };
-    await this.updatePlan.execute(dto);
-    res.json({ message: "Plan updated" });
+    try {
+      const dto = {
+        id: req.params.id,
+        ...req.body,
+      };
+
+      const result = await this.updatePlan.execute(dto);
+
+      return res.json({
+        success: true,
+        message: "Plan updated successfully",
+        data: result,
+      });
+    } catch (error: any) {
+      console.error("Update plan error:", error);
+
+      return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: error.message || "Failed to update plan",
+      });
+    }
   };
 
   delete = async (req: Request, res: Response) => {
-    console.log("delete:" + req.params.id);
     await this.deletePlan.execute({ id: req.params.id });
     res.json({ message: "Plan deleted" });
   };

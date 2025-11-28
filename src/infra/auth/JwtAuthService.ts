@@ -15,7 +15,7 @@ export class JwtAuthService implements IAuthService {
 
   generateAccessToken(userId: string, email: string): string {
     return jwt.sign({ id: userId, email }, process.env.ACCESS_TOKEN_SECRET!, {
-      expiresIn: "24h",
+      expiresIn: "15m",
     });
   }
 

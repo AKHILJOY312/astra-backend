@@ -45,6 +45,7 @@ setupGoogleStrategy();
 app.use(passport.initialize());
 // Routes
 app.use((req, res, next) => {
+  console.log("###################################################");
   console.log("REQUEST URL:", req.method, req.url);
   next();
 });

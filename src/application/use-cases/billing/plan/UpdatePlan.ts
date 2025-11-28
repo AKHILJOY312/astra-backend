@@ -7,7 +7,6 @@ export class UpdatePlan {
   constructor(private planRepo: IPlanRepository) {}
 
   async execute(dto: UpdatePlanDto): Promise<Plan | null> {
-    console.log("dto:", dto);
     const plan = await this.planRepo.findById(dto.id);
     if (!plan) throw new Error("Plan not found");
 

@@ -24,7 +24,8 @@ export class PlanRepository implements IPlanRepository {
     };
 
     const plan = new Plan(props);
-    if (doc._id) plan.setId(doc._id.toString());
+
+    // if (doc._id) plan.setId(doc._id.toString());
     return plan;
   }
 
@@ -53,10 +54,9 @@ export class PlanRepository implements IPlanRepository {
   }
 
   async update(plan: Plan): Promise<void> {
-    console.log("plan:", plan);
     const data = this.toPersistence(plan);
-    console.log("data:", data);
-    await PlanModel.updateOne({ _id: plan.id }, { $set: data });
+
+    await PlanModel.updateOne({ id: plan.id }, { $set: data });
   }
 
   async delete(id: string): Promise<Plan | null> {
@@ -75,8 +75,8 @@ export class PlanRepository implements IPlanRepository {
   }
 
   async findById(id: string): Promise<Plan | null> {
-    const doc = await PlanModel.findOne({ _id: id });
-    console.log("doc" + doc);
+    const doc = await PlanModel.findOne({ id: id });
+
     return doc ? this.toDomain(doc) : null;
   }
 
@@ -86,7 +86,9 @@ export class PlanRepository implements IPlanRepository {
       .skip((page - 1) * limit)
       .limit(limit);
 
-    return docs.map((doc) => this.toDomain(doc));
+    const result = docs.map((doc) => this.toDomain(doc));
+
+    return result;
   }
 
   async count(): Promise<number> {
