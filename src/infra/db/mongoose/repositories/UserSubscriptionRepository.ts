@@ -16,8 +16,9 @@ export class UserSubscriptionRepository implements IUserSubscriptionRepository {
       startDate: subscription.startDate,
       endDate: subscription.endDate,
       status: subscription.status,
-      stripeSubscriptionId: subscription.stripeSubscriptionId,
+      razorPayOrderId: subscription.razorPayOrderId,
     });
+    console.log("create: ", subscription);
     const saved = await doc.save();
     return toUserSubscriptionEntity(saved);
   }
@@ -29,7 +30,8 @@ export class UserSubscriptionRepository implements IUserSubscriptionRepository {
       currency: subscription.currency,
       endDate: subscription.endDate,
       status: subscription.status,
-      stripeSubscriptionId: subscription.stripeSubscriptionId,
+      razorPayOrderId: subscription.razorPayOrderId,
+      razorpayPaymentId: subscription.razorpayPaymentId,
     });
   }
 
@@ -43,6 +45,12 @@ export class UserSubscriptionRepository implements IUserSubscriptionRepository {
       userId,
       status: "active",
       $or: [{ endDate: null }, { endDate: { $gt: new Date() } }],
+    });
+    return doc ? toUserSubscriptionEntity(doc) : null;
+  }
+  async findByRazorpayOrderId(id: string): Promise<UserSubscription | null> {
+    const doc = await UserSubscriptionModel.findOne({
+      razorPayOrderId: id,
     });
     return doc ? toUserSubscriptionEntity(doc) : null;
   }

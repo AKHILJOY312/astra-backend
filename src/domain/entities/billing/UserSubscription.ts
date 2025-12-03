@@ -1,19 +1,18 @@
-// src/core/entities/UserSubscription.ts
-export type PlanType = "free" | "premium" | "pro";
 export type SubscriptionStatus = "active" | "canceled" | "expired" | "pending";
 
 export interface UserSubscriptionProps {
   id?: string;
   userId: string;
-  planType: PlanType;
+  planType: string;
   amount: number;
   currency: string;
   startDate: Date;
   endDate?: Date | null;
   status: SubscriptionStatus;
-  stripeSubscriptionId?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  razorPayOrderId?: string;
+  razorpayPaymentId?: string;
 }
 
 export class UserSubscription {
@@ -48,8 +47,12 @@ export class UserSubscription {
   get status() {
     return this._props.status;
   }
-  get stripeSubscriptionId() {
-    return this._props.stripeSubscriptionId;
+
+  get razorPayOrderId() {
+    return this._props.razorPayOrderId;
+  }
+  get razorpayPaymentId() {
+    return this._props.razorpayPaymentId;
   }
   get createdAt() {
     return this._props.createdAt;
@@ -88,16 +91,31 @@ export class UserSubscription {
     this._props.id = id;
   }
 
-  setStripeSubscriptionId(id: string) {
-    this._props.stripeSubscriptionId = id;
-  }
-
   setEndDate(date: Date | null) {
     this._props.endDate = date || undefined;
   }
 
   setUpdatedAt(date: Date) {
     this._props.updatedAt = date;
+  }
+  setPlan(planType: string, amount: number, currency: string) {
+    this._props.planType = planType;
+    this._props.amount = amount;
+    this._props.currency = currency;
+  }
+
+  setOrderId(orderId: string) {
+    this._props.razorPayOrderId = orderId;
+  }
+  setPaymentId(paymentId: string) {
+    this._props.razorpayPaymentId;
+  }
+  setStartDate(date: Date) {
+    this._props.startDate = date;
+  }
+
+  setStatus(status: SubscriptionStatus) {
+    this._props.status = status;
   }
 
   public toJSON() {

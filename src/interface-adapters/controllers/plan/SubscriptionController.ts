@@ -1,50 +1,79 @@
 // src/interfaces/http/controllers/subscription/SubscriptionController.ts
 import { Request, Response } from "express";
-import { UpgradeSubscriptionUseCase } from "../../../application/use-cases/upgradetopremium/UpgradeSubscriptionUseCase";
-import { GetUserLimitsUseCase } from "../../../application/use-cases/upgradetopremium/GetUserLimitsUseCase";
-import { HTTP_STATUS } from "../../http/constants/httpStatus";
+import { UpgradeToPlanUseCase } from "@/application/use-cases/upgradetopremium/UpgradeToPlanUseCase";
+import { GetUserLimitsUseCase } from "@/application/use-cases/upgradetopremium/GetUserLimitsUseCase";
+import { GetAvailablePlansUseCase } from "@/application/use-cases/plan/user/GetAvailablePlansUseCase";
+import { CapturePaymentUseCase } from "@/application/use-cases/upgradetopremium/CapturePaymentUseCase";
 
 export class SubscriptionController {
   constructor(
-    private upgradeUseCase: UpgradeSubscriptionUseCase,
-    private getLimitsUseCase: GetUserLimitsUseCase
+    private upgradeUseCase: UpgradeToPlanUseCase,
+    private getLimitsUseCase: GetUserLimitsUseCase,
+    private getAvailablePlans: GetAvailablePlansUseCase,
+    private captureUseCase: CapturePaymentUseCase
   ) {}
 
+  // GET /api/subscription/plans
+  async getPlansToSubscribe(req: Request, res: Response) {
+    try {
+      const plans = await this.getAvailablePlans.execute();
+      return res.json({ success: true, plans });
+    } catch (err: any) {
+      return res.status(500).json({ success: false, message: err.message });
+    }
+  }
+
+  // GET /api/subscription/limits
   async getLimits(req: Request, res: Response) {
     const userId = req.user!.id;
     const projectId = req.query.projectId as string | undefined;
-
     const limits = await this.getLimitsUseCase.execute(userId, projectId);
-
-    return res.json({
-      success: true,
-      data: limits,
-    });
+    return res.json({ success: true, data: limits });
   }
 
+  // POST /api/subscription/upgrade
   async upgrade(req: Request, res: Response) {
-    const { planId, paymentIntent } = req.body; // from Stripe webhook or client
     const userId = req.user!.id;
+    const { planId } = req.body;
 
-    // Validate planId exists & is active (via PlanRepo)
+    if (!planId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "planId is required" });
+    }
 
     try {
-      const { subscription } = await this.upgradeUseCase.execute({
-        userId,
-        newPlanId: planId,
-        amount: 999, // from plan
-        currency: "USD",
-        stripeSubscriptionId: paymentIntent?.id,
-        endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
-      });
+      const result = await this.upgradeUseCase.execute({ userId, planId });
 
       return res.json({
         success: true,
-        message: "Upgraded successfully",
-        data: subscription.toJSON(),
+        message: "Order created successfully",
+        data: {
+          subscription: result.subscription.toJSON(),
+          razorpayOrderId: result.razorpayOrderId,
+          amount: result.amount,
+          currency: result.currency,
+          keyId: result.keyId,
+        },
       });
     } catch (err: any) {
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({ error: err.message });
+      console.log("error: ", err);
+      return res.status(400).json({
+        success: false,
+        message: err.message || "Upgrade failed",
+      });
+    }
+  }
+
+  async capture(req: Request, res: Response) {
+    try {
+      const result = await this.captureUseCase.execute(req.body);
+      if (!result.success) {
+        return res.status(400).json(result);
+      }
+      return res.json(result);
+    } catch (err: any) {
+      return res.status(500).json({ success: false, message: err.message });
     }
   }
 }

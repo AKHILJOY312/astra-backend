@@ -22,10 +22,10 @@ import { AdminAuthController } from "../interface-adapters/controllers/auth/Admi
 
 //Plan
 import { PlanRepository } from "../infra/db/mongoose/repositories/PlanRepository";
-import { CreatePlan } from "../application/use-cases/billing/plan/CreatePlan";
-import { UpdatePlan } from "../application/use-cases/billing/plan/UpdatePlan";
-import { SoftDeletePlan } from "../application/use-cases/billing/plan/SoftDeletePlan";
-import { GetPlansPaginated } from "../application/use-cases/billing/plan/GetPlansPaginated";
+import { CreatePlan } from "../application/use-cases/plan/admin/CreatePlan";
+import { UpdatePlan } from "../application/use-cases/plan/admin/UpdatePlan";
+import { SoftDeletePlan } from "../application/use-cases/plan/admin/SoftDeletePlan";
+import { GetPlansPaginated } from "../application/use-cases/plan/admin/GetPlansPaginated";
 import { PlanController } from "../interface-adapters/controllers/plan/PlanController";
 
 import { ProjectRepository } from "../infra/db/mongoose/repositories/ProjectRepository";
@@ -39,7 +39,7 @@ import { RemoveMemberFromProjectUseCase } from "../application/use-cases/project
 import { ChangeMemberRoleUseCase } from "../application/use-cases/project/ChangeMemberRoleUseCase";
 import { CreateChannelUseCase } from "../application/use-cases/channel/CreateChannelUseCase";
 import { GetUserLimitsUseCase } from "../application/use-cases/upgradetopremium/GetUserLimitsUseCase";
-import { UpgradeSubscriptionUseCase } from "../application/use-cases/upgradetopremium/UpgradeSubscriptionUseCase";
+import { UpgradeToPlanUseCase } from "../application/use-cases/upgradetopremium/UpgradeToPlanUseCase";
 
 import { ProjectController } from "../interface-adapters/controllers/project/ProjectController";
 import { MemberController } from "../interface-adapters/controllers/project/MemberController";
@@ -47,12 +47,16 @@ import { ChannelController } from "../interface-adapters/controllers/channel/Cha
 import { SubscriptionController } from "../interface-adapters/controllers/plan/SubscriptionController";
 import { UserService } from "../application/services/UserService";
 import { GetUserProjectsUseCase } from "../application/use-cases/project/GetUserProjectsUseCase";
+import { GetAvailablePlansUseCase } from "../application/use-cases/plan/user/GetAvailablePlansUseCase";
+import { RazorpayService } from "@/infra/payment/RazorpayService";
+import { CapturePaymentUseCase } from "@/application/use-cases/upgradetopremium/CapturePaymentUseCase";
 
 const userRepo = new UserRepository();
 const userService = new UserService(userRepo);
 
 const authSvc = new JwtAuthService();
 const emailSvc = new NodemailerEmailService();
+const razorpaySvc = new RazorpayService();
 
 const registerUC = new RegisterUser(userRepo, authSvc, emailSvc);
 const verifyEmailUC = new VerifyEmail(userRepo);
@@ -137,7 +141,13 @@ const getLimitsUC = new GetUserLimitsUseCase(
   userSubRepo,
   planRepo
 );
-const upgradeSubUC = new UpgradeSubscriptionUseCase(userSubRepo, planRepo);
+const getAvailablePlansUC = new GetAvailablePlansUseCase(planRepo);
+const upgradeSubUC = new UpgradeToPlanUseCase(
+  userSubRepo,
+  planRepo,
+  razorpaySvc
+);
+const capturePaymentUC = new CapturePaymentUseCase(userSubRepo);
 
 // Controllers
 export const projectController = new ProjectController(
@@ -153,5 +163,7 @@ export const memberController = new MemberController(
 export const channelController = new ChannelController(createChannelUC);
 export const subscriptionController = new SubscriptionController(
   upgradeSubUC,
-  getLimitsUC
+  getLimitsUC,
+  getAvailablePlansUC,
+  capturePaymentUC
 );

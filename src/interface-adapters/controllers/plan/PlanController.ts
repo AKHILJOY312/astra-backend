@@ -1,9 +1,9 @@
 // src/interfaces/controllers/PlanController.ts
 import { Request, Response } from "express";
-import { CreatePlan } from "../../../application/use-cases/billing/plan/CreatePlan";
-import { UpdatePlan } from "../../../application/use-cases/billing/plan/UpdatePlan";
-import { SoftDeletePlan } from "../../../application/use-cases/billing/plan/SoftDeletePlan";
-import { GetPlansPaginated } from "../../../application/use-cases/billing/plan/GetPlansPaginated";
+import { CreatePlan } from "../../../application/use-cases/plan/admin/CreatePlan";
+import { UpdatePlan } from "../../../application/use-cases/plan/admin/UpdatePlan";
+import { SoftDeletePlan } from "../../../application/use-cases/plan/admin/SoftDeletePlan";
+import { GetPlansPaginated } from "../../../application/use-cases/plan/admin/GetPlansPaginated";
 import { HTTP_STATUS } from "../../http/constants/httpStatus";
 
 export class PlanController {

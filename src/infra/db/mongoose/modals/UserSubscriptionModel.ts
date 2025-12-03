@@ -3,19 +3,19 @@ import mongoose, { Schema, Document } from "mongoose";
 import {
   UserSubscription,
   UserSubscriptionProps,
-  PlanType,
   SubscriptionStatus,
 } from "../../../../domain/entities/billing/UserSubscription";
 
 interface SubscriptionDoc extends Document {
   userId: mongoose.Types.ObjectId;
-  planType: PlanType;
+  planType: string;
   amount: number;
   currency: string;
   startDate: Date;
   endDate?: Date | null;
   status: SubscriptionStatus;
-  stripeSubscriptionId?: string;
+  razorPayOrderId: string;
+  razorpayPaymentId?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -30,8 +30,7 @@ const subscriptionSchema = new Schema<SubscriptionDoc>(
     },
     planType: {
       type: String,
-      enum: ["free", "premium", "pro"],
-      default: "free",
+      required: true,
     },
     amount: { type: Number, required: true },
     currency: { type: String, required: true, uppercase: true, default: "USD" },
@@ -42,7 +41,8 @@ const subscriptionSchema = new Schema<SubscriptionDoc>(
       enum: ["active", "canceled", "expired", "pending"],
       default: "active",
     },
-    stripeSubscriptionId: { type: String },
+    razorPayOrderId: { type: String, required: true },
+    razorpayPaymentId: { type: String },
   },
   { timestamps: true }
 );
@@ -65,7 +65,8 @@ export const toUserSubscriptionEntity = (
     startDate: doc.startDate,
     endDate: doc.endDate || undefined,
     status: doc.status,
-    stripeSubscriptionId: doc.stripeSubscriptionId,
+    razorPayOrderId: doc.razorPayOrderId,
+    razorpayPaymentId: doc.razorpayPaymentId,
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,
   };

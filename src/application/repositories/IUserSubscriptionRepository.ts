@@ -8,5 +8,6 @@ export interface IUserSubscriptionRepository {
   findByUserId(userId: string): Promise<UserSubscription | null>;
   findActiveByUserId(userId: string): Promise<UserSubscription | null>;
 
+  findByRazorpayOrderId(orderId: string): Promise<UserSubscription | null>;
   delete(id: string): Promise<UserSubscription | null>;
 }

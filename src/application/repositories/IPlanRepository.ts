@@ -8,4 +8,5 @@ export interface IPlanRepository {
   findAllPaginated(page: number, limit: number): Promise<Plan[]>;
   count(): Promise<number>;
   findByName(name: string): Promise<Plan | null>;
+  findAllActive(): Promise<Plan[]>;
 }

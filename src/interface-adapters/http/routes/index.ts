@@ -2,7 +2,7 @@
 import { Router } from "express";
 import AuthRoutes from "./authRoutes";
 import adminAuthRoutes from "./admin/adminAuthRoutes";
-import planRoutes from "./admin/planRoutes";
+import adminPlanRoutes from "./admin/planRoutes";
 
 import projectRoutes from "./projectRoutes";
 import channelRoutes from "./channelRoutes";
@@ -19,11 +19,11 @@ router.use("/auth", AuthRoutes);
 
 // Admin routes
 router.use("/admin/auth", adminAuthRoutes);
-router.use("/admin/plans", planRoutes);
+router.use("/admin/plans", adminPlanRoutes);
 
 // Protected user routes
 router.use("/projects", projectRoutes);
 router.use("/channels", channelRoutes);
 router.use("/subscription", subscriptionRoutes);
-
+// router.use("/plans", planRoutes);
 export default router;
