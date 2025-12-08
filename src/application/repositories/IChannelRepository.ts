@@ -3,7 +3,7 @@ import { Channel } from "../../domain/entities/channel/Channel";
 
 export interface IChannelRepository {
   create(channel: Channel): Promise<Channel>;
-  update(channel: Channel): Promise<void>;
+  update(channel: Channel): Promise<Channel>;
   delete(id: string): Promise<Channel | null>;
 
   findById(id: string): Promise<Channel | null>;

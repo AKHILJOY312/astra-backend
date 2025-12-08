@@ -1,22 +1,21 @@
 import express from "express";
 import cors from "cors";
-import http, { STATUS_CODES } from "http";
+import http from "http";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 dotenv.config();
-import { Server as SocketIOServer } from "socket.io";
+
 import routes from "../../interface-adapters/http/routes/index";
-// import { SocketController } from "../../interface-adapters/controllers/websocket/SocketController";
 import { connectDB } from "../../config/database";
 import { setupGoogleStrategy } from "../passport/googleStrategy";
 import passport from "passport";
 import { HTTP_STATUS } from "@/interface-adapters/http/constants/httpStatus";
+import { createSocketServer } from "../websocket/SocketServer";
 
 const app = express();
 const server = http.createServer(app);
-const io = new SocketIOServer(server, { cors: { origin: "*" } });
 
 connectDB();
 
@@ -46,7 +45,12 @@ setupGoogleStrategy();
 app.use(passport.initialize());
 // Routes
 app.use((req, res, next) => {
-  console.log("###################################################");
+  console.log(
+    "######################################################################################################"
+  );
+  console.log(
+    "######################################################################################################"
+  );
   console.log("REQUEST URL:", req.method, req.url);
   next();
 });
@@ -54,7 +58,8 @@ app.use((req, res, next) => {
 app.use("/api", routes);
 
 // WebSocket
-// new SocketController(io);
+
+createSocketServer(server);
 
 //  Catch-all route for undefined endpoints
 app.all("*", (req, res) => {

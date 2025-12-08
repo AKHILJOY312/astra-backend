@@ -30,13 +30,13 @@ export class EditChannelUseCase {
     console.log("input: ", input);
     const channel = await this.channelRepo.findById(channelId);
     if (!channel) throw new Error("Channel not found");
-
+    console.log("channel found: ", channel);
     // Only ADMIN can edit
     const membership = await this.membershipRepo.findByProjectAndUser(
       channel.projectId,
       userId
     );
-
+    console.log("membership found: ", membership);
     if (!membership || membership.role !== "manager") {
       throw new Error("Only project admins can edit channels");
     }
@@ -45,7 +45,7 @@ export class EditChannelUseCase {
     if (description !== undefined) channel.updateDescription(description);
     if (visibleToRoles) channel.updateVisibility(visibleToRoles);
     if (permissionsByRole) channel.updatePermissions(permissionsByRole);
-
-    await this.channelRepo.update(channel);
+    console.log("updated channel: ", channel);
+    return await this.channelRepo.update(channel);
   }
 }

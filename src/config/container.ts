@@ -53,6 +53,10 @@ import { CapturePaymentUseCase } from "@/application/use-cases/upgradetopremium/
 import { EditChannelUseCase } from "@/application/use-cases/channel/EditChannelUseCase";
 import { ListChannelsForUserUseCase } from "@/application/use-cases/channel/ListChannelsForUserUseCase";
 import { DeleteChannelUseCase } from "@/application/use-cases/channel/DeleteChannelUseCase";
+import { SendMessageUseCase } from "@/application/use-cases/message/SendMessageUseCase";
+import { ListMessagesUseCase } from "@/application/use-cases/message/ListMessagesUseCase";
+import { MessageRepository } from "@/infra/db/mongoose/repositories/MessageRepository";
+import { MessageController } from "@/interface-adapters/controllers/message/MessageController";
 
 const userRepo = new UserRepository();
 const userService = new UserService(userRepo);
@@ -120,7 +124,7 @@ const projectRepo = new ProjectRepository();
 const membershipRepo = new ProjectMembershipRepository();
 const channelRepo = new ChannelRepository();
 const userSubRepo = new UserSubscriptionRepository();
-
+const messageRepo = new MessageRepository();
 // Use Cases
 const createProjectUC = new CreateProjectUseCase(
   projectRepo,
@@ -152,6 +156,13 @@ const upgradeSubUC = new UpgradeToPlanUseCase(
 );
 const capturePaymentUC = new CapturePaymentUseCase(userSubRepo);
 
+//Messages
+export const sendMessageUC = new SendMessageUseCase(
+  messageRepo,
+  membershipRepo,
+  userRepo
+);
+export const listMessagesUC = new ListMessagesUseCase(messageRepo);
 //Channels
 const createChannelUC = new CreateChannelUseCase(channelRepo, membershipRepo);
 const editChannelUC = new EditChannelUseCase(channelRepo, membershipRepo);
@@ -183,4 +194,8 @@ export const subscriptionController = new SubscriptionController(
   getLimitsUC,
   getAvailablePlansUC,
   capturePaymentUC
+);
+export const messageController = new MessageController(
+  sendMessageUC,
+  listMessagesUC
 );

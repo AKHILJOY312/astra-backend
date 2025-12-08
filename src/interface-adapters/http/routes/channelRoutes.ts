@@ -1,6 +1,9 @@
 // src/interfaces/http/routes/channelRoutes.ts
 import { Router } from "express";
-import { channelController } from "../../../config/container";
+import {
+  channelController,
+  messageController,
+} from "../../../config/container";
 import { protect } from "../../../config/container";
 
 const router = Router({ mergeParams: true });
@@ -22,8 +25,8 @@ router
 
 //getting the message for channels
 // GET /:projectId/channels/:channelId/message?cursor=...&limit=20 — get messages (cursor-based)
-// router.get(
-//   "/:channelId/messages",
-//   messageContoller.listMessage.bind(messageContoller)
-// );
+router.get(
+  "/:channelId/messages",
+  messageController.listMessagesPerChannel.bind(messageController)
+);
 export default router;
