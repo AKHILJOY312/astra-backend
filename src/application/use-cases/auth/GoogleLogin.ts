@@ -26,7 +26,8 @@ export class GoogleLogin {
       const newUser = new User({
         name: name!,
         email,
-        password: "", // will be replaced
+        password: "",
+        isBlocked: false,
         isAdmin: false,
         isVerified: true,
       });

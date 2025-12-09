@@ -6,10 +6,13 @@ export interface UserProps {
   password: string;
   isVerified: boolean;
   isAdmin: boolean;
+  isBlocked: boolean;
   verificationToken?: string | null;
   verificationTokenExpires?: Date | null;
   resetPasswordToken?: string | null;
   resetPasswordExpires?: Date | null;
+  securityStamp?: string;
+  createdAt?: Date;
 }
 
 export class User {
@@ -38,6 +41,15 @@ export class User {
   get isAdmin(): boolean {
     return this._props.isAdmin;
   }
+  get isBlocked(): boolean {
+    return this._props.isBlocked;
+  }
+  get securityStamp(): string | undefined {
+    return this._props.securityStamp;
+  }
+  get createdAt(): Date | undefined {
+    return this._props.createdAt;
+  }
   get verificationToken(): string | null | undefined {
     return this._props.verificationToken;
   }
@@ -58,6 +70,10 @@ export class User {
   // set password(newPassword: string) {
   //   this.password = newPassword;
   // }
+
+  setSecurityStamp(stamp: string): void {
+    this._props.securityStamp = stamp;
+  }
   // ---- BUSINESS METHODS ----
   verify(): void {
     this._props.isVerified = true;
@@ -80,5 +96,11 @@ export class User {
 
   setPassword(hash: string): void {
     this._props.password = hash;
+  }
+  setBlockStatus(isBlocked: boolean): void {
+    this._props.isBlocked = isBlocked;
+  }
+  setAdminRole(isAdmin: boolean): void {
+    this._props.isAdmin = isAdmin;
   }
 }

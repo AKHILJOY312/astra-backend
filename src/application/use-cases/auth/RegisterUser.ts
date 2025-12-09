@@ -32,6 +32,7 @@ export class RegisterUser {
       password: hashed,
       isVerified: false,
       isAdmin: false,
+      isBlocked: false,
       verificationToken: token,
       verificationTokenExpires: expires,
     });

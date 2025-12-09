@@ -57,11 +57,15 @@ import { SendMessageUseCase } from "@/application/use-cases/message/SendMessageU
 import { ListMessagesUseCase } from "@/application/use-cases/message/ListMessagesUseCase";
 import { MessageRepository } from "@/infra/db/mongoose/repositories/MessageRepository";
 import { MessageController } from "@/interface-adapters/controllers/message/MessageController";
+import { AdminUserController } from "@/interface-adapters/controllers/user/AdminUserController";
+import { ListUsersUseCase } from "@/application/use-cases/user/ListUserUseCase";
+import { BlockUserUseCase } from "@/application/use-cases/user/BlockUserUseCase";
+import { AssignAdminRoleUseCase } from "@/application/use-cases/user/AssingAdminRoleUseCase";
 
 const userRepo = new UserRepository();
 const userService = new UserService(userRepo);
 
-const authSvc = new JwtAuthService();
+const authSvc = new JwtAuthService(userRepo);
 const emailSvc = new NodemailerEmailService();
 const razorpaySvc = new RazorpayService();
 
@@ -81,6 +85,10 @@ const adminLogin = new AdminLogin(userRepo, authSvc);
 const adminForgotPassword = new AdminForgotPassword(userRepo, emailSvc);
 const adminResetPassword = new AdminResetPassword(userRepo, authSvc);
 
+//__________________________ADMIN USER USE-CASE__________________________
+const listUsersUC = new ListUsersUseCase(userRepo);
+const blockUserUC = new BlockUserUseCase(userRepo, authSvc);
+const assignAdminRoleUC = new AssignAdminRoleUseCase(userRepo);
 //__________________________Plan__________________________________
 const planRepo = new PlanRepository();
 const createPlan = new CreatePlan(planRepo);
@@ -107,7 +115,11 @@ export const adminAuthController = new AdminAuthController(
   adminForgotPassword,
   adminResetPassword
 );
-
+export const adminUserController = new AdminUserController(
+  listUsersUC,
+  blockUserUC,
+  assignAdminRoleUC
+);
 export const planController = new PlanController(
   createPlan,
   updatePlan,

@@ -10,4 +10,5 @@ export interface IAuthService {
   verifyRefreshToken(token: string): { id: string } | null;
 
   generateRandomPassword(): string;
+  invalidateUserSessions(userId: string): Promise<void>;
 }

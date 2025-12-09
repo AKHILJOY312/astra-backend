@@ -1,7 +1,11 @@
 // src/infrastructure/db/mongoose/repositories/UserRepository.ts
 import UserModel from "../models/UserModal";
 import { User, UserProps } from "../../../../domain/entities/user/User";
-import { IUserRepository } from "../../../../application/repositories/IUserRepository";
+import {
+  IUserRepository,
+  PaginationResult,
+} from "../../../../application/repositories/IUserRepository";
+import { ListUsersQuery } from "@/application/use-cases/user/ListUserUseCase";
 
 export class UserRepository implements IUserRepository {
   private toDomain(doc: any): User {
@@ -10,6 +14,7 @@ export class UserRepository implements IUserRepository {
       email: doc.email,
       password: doc.password,
       isAdmin: doc.isAdmin,
+      isBlocked: doc.isBlocked,
       isVerified: doc.isVerified ?? false,
       verificationToken: doc.verificationToken ?? null,
       verificationTokenExpires: doc.verificationTokenExpires ?? null,
@@ -65,24 +70,6 @@ export class UserRepository implements IUserRepository {
     return created;
   }
 
-  // async save(user: User): Promise<void> {
-  //   if (!user.id) throw new Error("Cannot save user without id");
-
-  //   await UserModel.updateOne(
-  //     { _id: user.id },
-  //     {
-  //       $set: {
-  //         isVerified: user.isVerified,
-  //         verificationToken: user.verificationToken ?? undefined,
-  //         verificationTokenExpires: user.verificationTokenExpires ?? undefined,
-  //         resetPasswordToken: user.resetPasswordToken ?? undefined,
-  //         resetPasswordExpires: user.resetPasswordExpires ?? undefined,
-  //         password: user.password,
-  //       },
-  //     }
-  //   );
-  // }
-  // good to remove the filed in the db for verificationand etc
   async save(user: User): Promise<void> {
     if (!user.id) throw new Error("Cannot save user without id");
 
@@ -110,5 +97,58 @@ export class UserRepository implements IUserRepository {
 
     // Perform a single clean update
     await UserModel.updateOne({ _id: user.id }, { $set, $unset });
+  }
+
+  async findUsersWithPagination(
+    query: ListUsersQuery
+  ): Promise<PaginationResult> {
+    const { page = 1, limit = 10, search } = query;
+    const skip = (page - 1) * limit;
+
+    let filter: any = {};
+    if (search) {
+      const searchRegex = new RegExp(search, "i");
+      filter.$or = [{ name: searchRegex }, { email: searchRegex }];
+    }
+
+    const [docs, total] = await Promise.all([
+      UserModel.find(filter)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .select("-password"),
+      UserModel.countDocuments(filter),
+    ]);
+
+    const users = docs.map((doc) => this.toDomain(doc));
+
+    return {
+      users,
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  async updateStatus(userId: string, isBlocked: boolean): Promise<void> {
+    await UserModel.updateOne(
+      { _id: userId },
+      { $set: { isBlocked: isBlocked } }
+    );
+  }
+
+  async updateRole(userId: string, isAdmin: boolean): Promise<void> {
+    await UserModel.updateOne({ _id: userId }, { $set: { isAdmin: isAdmin } });
+  }
+
+  async countAdmins(): Promise<number> {
+    return UserModel.countDocuments({ isAdmin: true });
+  }
+  async updateSecurityStamp(userId: string, stamp: string): Promise<void> {
+    await UserModel.updateOne(
+      { _id: userId },
+      { $set: { securityStamp: stamp } }
+    );
   }
 }
