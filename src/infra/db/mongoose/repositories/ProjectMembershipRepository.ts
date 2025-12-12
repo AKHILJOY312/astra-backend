@@ -1,5 +1,5 @@
 // src/infrastructure/persistence/mongoose/repositories/ProjectMembershipRepository.ts
-import { IProjectMembershipRepository } from "../../.././../application/repositories/IProjectMembershipRepository";
+import { IProjectMembershipRepository } from "../../../../application/ports/repositories/IProjectMembershipRepository";
 import { ProjectMembership } from "../../../../domain/entities/project/ProjectMembership";
 import {
   ProjectMembershipModel,

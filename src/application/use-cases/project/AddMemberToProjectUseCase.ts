@@ -3,10 +3,12 @@ import {
   ProjectMembership,
   ProjectRole,
 } from "../../../domain/entities/project/ProjectMembership";
-import { IProjectRepository } from "../../repositories/IProjectRepository";
-import { IProjectMembershipRepository } from "../../repositories/IProjectMembershipRepository";
-import { IPlanRepository } from "../../repositories/IPlanRepository";
-import { IUserSubscriptionRepository } from "../../repositories/IUserSubscriptionRepository";
+import { IProjectRepository } from "../../ports/repositories/IProjectRepository";
+import { IProjectMembershipRepository } from "../../ports/repositories/IProjectMembershipRepository";
+import { IPlanRepository } from "../../ports/repositories/IPlanRepository";
+import { IUserSubscriptionRepository } from "../../ports/repositories/IUserSubscriptionRepository";
+import { inject, injectable } from "inversify";
+import { TYPES } from "@/config/types";
 
 export interface AddMemberDTO {
   projectId: string;
@@ -19,12 +21,15 @@ export interface AddMemberResultDTO {
   membership: ProjectMembership;
 }
 
+@injectable()
 export class AddMemberToProjectUseCase {
   constructor(
+    @inject(TYPES.ProjectMembershipRepository)
     private membershipRepo: IProjectMembershipRepository,
-    private projectRepo: IProjectRepository,
+    @inject(TYPES.ProjectRepository) private projectRepo: IProjectRepository,
+    @inject(TYPES.UserSubscriptionRepository)
     private subscriptionRepo: IUserSubscriptionRepository,
-    private planRepo: IPlanRepository
+    @inject(TYPES.PlanRepository) private planRepo: IPlanRepository
   ) {}
 
   async execute(input: AddMemberDTO): Promise<AddMemberResultDTO> {

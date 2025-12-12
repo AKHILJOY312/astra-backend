@@ -1,34 +1,41 @@
 import { Router } from "express";
-import { authController, protect } from "../../../config/container";
+import { Container } from "inversify";
+import { TYPES } from "../../../config/types";
+import { AuthController } from "../../controllers/auth/AuthController";
+import { createProtectMiddleware } from "../../../infra/middleware/protect";
 import passport from "passport";
 
-const router = Router();
+export function getAuthRoutes(container: Container): Router {
+  const router = Router();
 
-router.post("/register", authController.register);
-router.get("/verify-email", authController.verifyEmail);
-router.post("/login", authController.login);
-router.post("/refresh-token", authController.refreshToken);
-router.post("/logout", authController.logout);
-router.get("/me", protect, authController.me);
-router.post("/forgot-password", authController.forgotPassword);
-router.get("/verify-reset-token", authController.verifyResetToken);
-router.post("/reset-password", authController.resetPassword);
-// router.get("/google", authController.googleLogin);
-// router.get("/google/callback", authController.googleCallback);
+  const authController = container.get<AuthController>(TYPES.AuthController);
 
-router.get("/google", authController.googleLogin);
+  const protect = container.get<ReturnType<typeof createProtectMiddleware>>(
+    TYPES.ProtectMiddleware
+  );
 
-// This starts Google OAuth
-router.get(
-  "/google/passport",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
+  router.post("/register", authController.register);
+  router.get("/verify-email", authController.verifyEmail);
+  router.post("/login", authController.login);
+  router.post("/refresh-token", authController.refreshToken);
+  router.post("/logout", authController.logout);
+  router.get("/me", protect, authController.me);
+  router.post("/forgot-password", authController.forgotPassword);
+  router.get("/verify-reset-token", authController.verifyResetToken);
+  router.post("/reset-password", authController.resetPassword);
 
-// This handles callback
-router.get(
-  "/google/callback",
-  passport.authenticate("google", { session: false }),
-  authController.googleCallback
-);
+  router.get("/google", authController.googleLogin);
 
-export default router;
+  router.get(
+    "/google/passport",
+    passport.authenticate("google", { scope: ["profile", "email"] })
+  );
+
+  router.get(
+    "/google/callback",
+    passport.authenticate("google", { session: false }),
+    authController.googleCallback
+  );
+
+  return router;
+}

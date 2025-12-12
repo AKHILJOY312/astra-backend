@@ -1,10 +1,15 @@
 import { Plan } from "../../../../domain/entities/billing/Plan";
-import { IPlanRepository } from "../../../repositories/IPlanRepository";
+import { IPlanRepository } from "../../../ports/repositories/IPlanRepository";
 import { CreatePlanDto } from "../../../dto/plan/CreatePlanDto";
 import { v4 as uuidv4 } from "uuid";
+import { inject, injectable } from "inversify";
+import { TYPES } from "@/config/types";
 
+@injectable()
 export class CreatePlan {
-  constructor(private planRepo: IPlanRepository) {}
+  constructor(
+    @inject(TYPES.PlanRepository) private planRepo: IPlanRepository
+  ) {}
 
   async execute(dto: CreatePlanDto): Promise<Plan> {
     const existing = await this.planRepo.findByName(dto.name);

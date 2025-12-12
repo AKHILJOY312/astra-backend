@@ -1,11 +1,15 @@
 // src/core/use-cases/channel/DeleteChannelUseCase.ts
 
-import { IChannelRepository } from "../../repositories/IChannelRepository";
-import { IProjectMembershipRepository } from "../../repositories/IProjectMembershipRepository";
+import { inject, injectable } from "inversify";
+import { IChannelRepository } from "../../ports/repositories/IChannelRepository";
+import { IProjectMembershipRepository } from "../../ports/repositories/IProjectMembershipRepository";
+import { TYPES } from "@/config/types";
 
+@injectable()
 export class DeleteChannelUseCase {
   constructor(
-    private channelRepo: IChannelRepository,
+    @inject(TYPES.ChannelRepository) private channelRepo: IChannelRepository,
+    @inject(TYPES.ProjectMembershipRepository)
     private membershipRepo: IProjectMembershipRepository
   ) {}
 

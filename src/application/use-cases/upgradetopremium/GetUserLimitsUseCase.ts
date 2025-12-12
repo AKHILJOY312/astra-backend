@@ -1,8 +1,10 @@
 // src/core/use-cases/subscription/GetUserLimitsUseCase.ts
-import { IProjectRepository } from "../../repositories/IProjectRepository";
-import { IProjectMembershipRepository } from "../../repositories/IProjectMembershipRepository";
-import { IUserSubscriptionRepository } from "../../repositories/IUserSubscriptionRepository";
-import { IPlanRepository } from "../../repositories/IPlanRepository";
+import { IProjectRepository } from "../../ports/repositories/IProjectRepository";
+import { IProjectMembershipRepository } from "../../ports/repositories/IProjectMembershipRepository";
+import { IUserSubscriptionRepository } from "../../ports/repositories/IUserSubscriptionRepository";
+import { IPlanRepository } from "../../ports/repositories/IPlanRepository";
+import { inject, injectable } from "inversify";
+import { TYPES } from "@/config/types";
 
 export interface UserLimitsDTO {
   currentProjects: number;
@@ -14,12 +16,15 @@ export interface UserLimitsDTO {
   canAddMember: boolean;
 }
 
+@injectable()
 export class GetUserLimitsUseCase {
   constructor(
-    private projectRepo: IProjectRepository,
+    @inject(TYPES.ProjectRepository) private projectRepo: IProjectRepository,
+    @inject(TYPES.ProjectMembershipRepository)
     private membershipRepo: IProjectMembershipRepository,
+    @inject(TYPES.UserSubscriptionRepository)
     private subscriptionRepo: IUserSubscriptionRepository,
-    private planRepo: IPlanRepository
+    @inject(TYPES.PlanRepository) private planRepo: IPlanRepository
   ) {}
 
   async execute(userId: string, projectId?: string): Promise<UserLimitsDTO> {

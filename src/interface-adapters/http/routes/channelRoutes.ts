@@ -1,32 +1,41 @@
-// src/interfaces/http/routes/channelRoutes.ts
 import { Router } from "express";
-import {
-  channelController,
-  messageController,
-} from "../../../config/container";
-import { protect } from "../../../config/container";
+import { Container } from "inversify";
+import { TYPES } from "../../../config/types";
+import { ChannelController } from "../../controllers/channel/ChannelController";
+import { MessageController } from "../../controllers/message/MessageController";
+import { createProtectMiddleware } from "../../../infra/middleware/protect";
 
-const router = Router({ mergeParams: true });
+export function getChannelRoutes(container: Container): Router {
+  const router = Router({ mergeParams: true });
 
-router.use(protect);
-
-// Channel routes (nested under project)
-
-router
-  .route("/")
-  .post(channelController.createChannel.bind(channelController))
-  .get(
-    channelController.listProjectChannelsBasedOnRole.bind(channelController)
+  const channelController = container.get<ChannelController>(
+    TYPES.ChannelController
   );
-router
-  .route("/:channelId")
-  .patch(channelController.editChannel.bind(channelController))
-  .delete(channelController.deleteChannel.bind(channelController));
+  const messageController = container.get<MessageController>(
+    TYPES.MessageController
+  );
+  const protect = container.get<ReturnType<typeof createProtectMiddleware>>(
+    TYPES.ProtectMiddleware
+  );
 
-//getting the message for channels
-// GET /:projectId/channels/:channelId/message?cursor=...&limit=20 — get messages (cursor-based)
-router.get(
-  "/:channelId/messages",
-  messageController.listMessagesPerChannel.bind(messageController)
-);
-export default router;
+  router.use(protect);
+
+  router
+    .route("/")
+    .post(channelController.createChannel.bind(channelController))
+    .get(
+      channelController.listProjectChannelsBasedOnRole.bind(channelController)
+    );
+
+  router
+    .route("/:channelId")
+    .patch(channelController.editChannel.bind(channelController))
+    .delete(channelController.deleteChannel.bind(channelController));
+
+  router.get(
+    "/:channelId/messages",
+    messageController.listMessagesPerChannel.bind(messageController)
+  );
+
+  return router;
+}

@@ -1,5 +1,5 @@
 // src/infrastructure/persistence/mongoose/repositories/ProjectRepository.ts
-import { IProjectRepository } from "../../../../application/repositories/IProjectRepository";
+import { IProjectRepository } from "../../../../application/ports/repositories/IProjectRepository";
 import { Project } from "../../../../domain/entities/project/Project";
 import { ProjectMembershipModel } from "../models/ProjectMembershipModal";
 import { ProjectModel, toProjectEntity } from "../models/ProjectModal";

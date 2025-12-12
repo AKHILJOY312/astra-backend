@@ -1,10 +1,15 @@
 // src/application/use-cases/plan/GetAvailablePlansUseCase.ts
 
-import { IPlanRepository } from "../../../repositories/IPlanRepository";
+import { inject, injectable } from "inversify";
+import { IPlanRepository } from "../../../ports/repositories/IPlanRepository";
 import { Plan } from "@/domain/entities/billing/Plan";
+import { TYPES } from "@/config/types";
 
+@injectable()
 export class GetAvailablePlansUseCase {
-  constructor(private planRepo: IPlanRepository) {}
+  constructor(
+    @inject(TYPES.PlanRepository) private planRepo: IPlanRepository
+  ) {}
 
   async execute(): Promise<Plan[]> {
     const plans = await this.planRepo.findAllActive();

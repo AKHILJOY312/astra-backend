@@ -1,8 +1,14 @@
-import { IUserRepository } from "../../repositories/IUserRepository";
-import { IAuthService } from "../../services/IAuthService";
+import { inject, injectable } from "inversify";
+import { IUserRepository } from "../../ports/repositories/IUserRepository";
+import { IAuthService } from "../../ports/services/IAuthService";
+import { TYPES } from "@/config/types";
 
+@injectable()
 export class RefreshToken {
-  constructor(private userRepo: IUserRepository, private auth: IAuthService) {}
+  constructor(
+    @inject(TYPES.UserRepository) private userRepo: IUserRepository,
+    @inject(TYPES.AuthService) private auth: IAuthService
+  ) {}
 
   async execute(refreshToken: string): Promise<{ accessToken: string }> {
     const payload = this.auth.verifyRefreshToken(refreshToken);

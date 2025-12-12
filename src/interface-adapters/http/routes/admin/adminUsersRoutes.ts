@@ -1,19 +1,33 @@
-// src/interfaces/http/routes/adminAuthRoutes.ts
 import { Router } from "express";
-import { adminUserController } from "../../../../config/container";
-import { protect } from "../../../../config/container";
+import { Container } from "inversify";
+import { TYPES } from "../../../../config/types";
+import { AdminUserController } from "../../../controllers/user/AdminUserController";
+import { createProtectMiddleware } from "../../../../infra/middleware/protect";
 import { adminOnly } from "../../../../infra/middleware/adminOnly";
 
-const router = Router();
-router.use(protect, adminOnly);
-router.get("/", adminUserController.listUsers.bind(adminUserController));
-router.patch(
-  "/:id/status",
-  adminUserController.blockUser.bind(adminUserController)
-);
-router.patch(
-  "/:id/role",
-  adminUserController.updateRole.bind(adminUserController)
-);
+export function getAdminUserRoutes(container: Container): Router {
+  const router = Router();
 
-export default router;
+  const adminUserController = container.get<AdminUserController>(
+    TYPES.AdminUserController
+  );
+  const protect = container.get<ReturnType<typeof createProtectMiddleware>>(
+    TYPES.ProtectMiddleware
+  );
+
+  router.use(protect, adminOnly);
+
+  router.get("/", adminUserController.listUsers.bind(adminUserController));
+
+  router.patch(
+    "/:id/status",
+    adminUserController.blockUser.bind(adminUserController)
+  );
+
+  router.patch(
+    "/:id/role",
+    adminUserController.updateRole.bind(adminUserController)
+  );
+
+  return router;
+}

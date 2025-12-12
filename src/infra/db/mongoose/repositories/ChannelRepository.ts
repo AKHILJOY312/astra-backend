@@ -1,5 +1,5 @@
 // src/infrastructure/persistence/mongoose/repositories/ChannelRepository.ts
-import { IChannelRepository } from "@/application/repositories/IChannelRepository";
+import { IChannelRepository } from "@/application/ports/repositories/IChannelRepository";
 import { Channel } from "../../../../domain/entities/channel/Channel";
 import { ChannelModel, toChannelEntity } from "../models/ChannelModal";
 

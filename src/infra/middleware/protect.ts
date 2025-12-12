@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { IUserRepository } from "../../application/repositories/IUserRepository";
+import { IUserRepository } from "../../application/ports/repositories/IUserRepository";
 import {
   AUTH_MESSAGES,
   ERROR_MESSAGES,
@@ -54,14 +54,12 @@ export const createProtectMiddleware = (userRepo: IUserRepository) => {
           .status(HTTP_STATUS.UNAUTHORIZED)
           .json({ message: ERROR_MESSAGES.USER_NOT_FOUND });
       }
-      console.log("passing");
-      console.log("user.Secu: ", user.securityStamp, "decade: ", decoded.stamp);
+
       if (user.securityStamp !== decoded.stamp) {
         return res
           .status(HTTP_STATUS.UNAUTHORIZED)
           .json({ message: "Token has been revoked. Please login again." });
       }
-      console.log("passing2");
       req.user = {
         id: user.id!,
         name: user.name,

@@ -1,12 +1,17 @@
 // src/infrastructure/auth/JwtAuthService.ts
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { IAuthService } from "../../application/services/IAuthService";
+import { IAuthService } from "../../application/ports/services/IAuthService";
 import crypto from "crypto";
-import { IUserRepository } from "@/application/repositories/IUserRepository";
+import { IUserRepository } from "@/application/ports/repositories/IUserRepository";
+import { inject, injectable } from "inversify";
+import { TYPES } from "@/config/types";
 
+@injectable()
 export class JwtAuthService implements IAuthService {
-  constructor(private userRepo: IUserRepository) {}
+  constructor(
+    @inject(TYPES.UserRepository) private userRepo: IUserRepository
+  ) {}
 
   async hashPassword(plain: string): Promise<string> {
     return bcrypt.hash(plain, 10);
@@ -54,7 +59,7 @@ export class JwtAuthService implements IAuthService {
     const user = await this.userRepo.findById(userId);
     console.log("Users: ", user);
     if (!user) throw new Error("User not found");
-    console.log("working 3");
+
     const newStamp = crypto.randomBytes(32).toString("hex");
 
     await this.userRepo.updateSecurityStamp(userId, newStamp);

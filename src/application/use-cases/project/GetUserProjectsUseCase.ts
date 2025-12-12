@@ -1,6 +1,8 @@
 // src/core/use-cases/project/GetUserProjectsUseCase.ts
+import { inject, injectable } from "inversify";
 import { Project } from "../../../domain/entities/project/Project";
-import { IProjectRepository } from "../../repositories/IProjectRepository";
+import { IProjectRepository } from "../../ports/repositories/IProjectRepository";
+import { TYPES } from "@/config/types";
 
 export interface GetUserProjectsDTO {
   userId: string;
@@ -10,8 +12,11 @@ export interface GetUserProjectsResultDTO {
   projects: Project[];
 }
 
+@injectable()
 export class GetUserProjectsUseCase {
-  constructor(private projectRepo: IProjectRepository) {}
+  constructor(
+    @inject(TYPES.ProjectRepository) private projectRepo: IProjectRepository
+  ) {}
 
   async execute(input: GetUserProjectsDTO): Promise<GetUserProjectsResultDTO> {
     const { userId } = input;

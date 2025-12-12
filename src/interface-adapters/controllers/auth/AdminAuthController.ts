@@ -4,11 +4,16 @@ import { AdminLogin } from "../../../application/use-cases/auth/admin/AdminLogin
 import { AdminForgotPassword } from "../../../application/use-cases/auth/admin/AdminForgotPassword";
 import { AdminResetPassword } from "../../../application/use-cases/auth/admin/AdminResetPassword";
 import { HTTP_STATUS } from "../../http/constants/httpStatus";
+import { inject, injectable } from "inversify";
+import { TYPES } from "@/config/types";
 
+@injectable()
 export class AdminAuthController {
   constructor(
-    private adminLogin: AdminLogin,
+    @inject(TYPES.AdminLogin) private adminLogin: AdminLogin,
+    @inject(TYPES.AdminForgotPassword)
     private adminForgotPassword: AdminForgotPassword,
+    @inject(TYPES.AdminResetPassword)
     private adminResetPassword: AdminResetPassword
   ) {}
 

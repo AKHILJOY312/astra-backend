@@ -1,11 +1,15 @@
 // src/core/use-cases/channel/ListChannelsForUserUseCase.ts
 
-import { IChannelRepository } from "../../repositories/IChannelRepository";
-import { IProjectMembershipRepository } from "../../repositories/IProjectMembershipRepository";
+import { inject, injectable } from "inversify";
+import { IChannelRepository } from "../../ports/repositories/IChannelRepository";
+import { IProjectMembershipRepository } from "../../ports/repositories/IProjectMembershipRepository";
+import { TYPES } from "@/config/types";
 
+@injectable()
 export class ListChannelsForUserUseCase {
   constructor(
-    private channelRepo: IChannelRepository,
+    @inject(TYPES.ChannelRepository) private channelRepo: IChannelRepository,
+    @inject(TYPES.ProjectMembershipRepository)
     private membershipRepo: IProjectMembershipRepository
   ) {}
 
@@ -19,7 +23,7 @@ export class ListChannelsForUserUseCase {
     const userRole = membership.role;
 
     const channels = await this.channelRepo.findByProjectId(projectId);
-    console.log("channels: ", channels);
+
     // Filter by visibility
     return channels.filter((c) => c.visibleToRoles.includes(userRole));
   }

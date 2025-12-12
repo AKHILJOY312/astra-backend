@@ -6,12 +6,16 @@ import { SoftDeletePlan } from "../../../application/use-cases/plan/admin/SoftDe
 import { GetPlansPaginated } from "../../../application/use-cases/plan/admin/GetPlansPaginated";
 import { HTTP_STATUS } from "../../http/constants/httpStatus";
 import { PLAN_MESSAGES } from "@/interface-adapters/http/constants/messages";
+import { inject, injectable } from "inversify";
+import { TYPES } from "@/config/types";
 
+@injectable()
 export class PlanController {
   constructor(
-    private createPlan: CreatePlan,
-    private updatePlan: UpdatePlan,
-    private deletePlan: SoftDeletePlan,
+    @inject(TYPES.CreatePlan) private createPlan: CreatePlan,
+    @inject(TYPES.UpdatePlan) private updatePlan: UpdatePlan,
+    @inject(TYPES.SoftDeletePlan) private deletePlan: SoftDeletePlan,
+    @inject(TYPES.GetPlansPaginated)
     private getPlansPaginated: GetPlansPaginated
   ) {}
 

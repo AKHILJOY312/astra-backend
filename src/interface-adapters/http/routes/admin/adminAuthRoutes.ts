@@ -1,11 +1,24 @@
-// src/interfaces/http/routes/adminAuthRoutes.ts
 import { Router } from "express";
-import { adminAuthController } from "../../../../config/container";
+import { Container } from "inversify";
+import { TYPES } from "../../../../config/types";
+import { AdminAuthController } from "../../../controllers/auth/AdminAuthController";
 
-const router = Router();
+export function getAdminAuthRoutes(container: Container): Router {
+  const router = Router();
 
-router.post("/login", adminAuthController.login);
-router.post("/forgot-password", adminAuthController.forgotPassword);
-router.post("/reset-password", adminAuthController.resetPassword);
+  const adminAuthController = container.get<AdminAuthController>(
+    TYPES.AdminAuthController
+  );
 
-export default router;
+  router.post("/login", adminAuthController.login.bind(adminAuthController));
+  router.post(
+    "/forgot-password",
+    adminAuthController.forgotPassword.bind(adminAuthController)
+  );
+  router.post(
+    "/reset-password",
+    adminAuthController.resetPassword.bind(adminAuthController)
+  );
+
+  return router;
+}

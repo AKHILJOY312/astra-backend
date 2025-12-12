@@ -1,5 +1,5 @@
 // src/core/repositories/IProjectRepository.ts
-import { Project } from "../../domain/entities/project/Project";
+import { Project } from "../../../domain/entities/project/Project";
 
 export interface IProjectRepository {
   create(project: Project): Promise<Project>;

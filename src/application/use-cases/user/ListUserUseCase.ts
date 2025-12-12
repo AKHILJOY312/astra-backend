@@ -1,9 +1,11 @@
 // src/application/usecases/ListUsersUseCase.ts
-import { IUserRepository } from "../../repositories/IUserRepository";
+import { IUserRepository } from "../../ports/repositories/IUserRepository";
 import {
   UserListResponseDTO,
   UserDTO,
 } from "../../dto/user/UserListResponseDTO";
+import { inject, injectable } from "inversify";
+import { TYPES } from "@/config/types";
 
 export interface ListUsersQuery {
   page: number;
@@ -11,13 +13,14 @@ export interface ListUsersQuery {
   search?: string;
 }
 
+@injectable()
 export class ListUsersUseCase {
-  constructor(private userRepo: IUserRepository) {}
+  constructor(
+    @inject(TYPES.UserRepository) private userRepo: IUserRepository
+  ) {}
 
   async execute(query: ListUsersQuery): Promise<UserListResponseDTO> {
-    console.log("ListUsersUseCase: execute called with", query);
     const result = await this.userRepo.findUsersWithPagination(query);
-    console.log("ListUsersUseCase: fetched users", result);
 
     const users: UserDTO[] = result.users.map((user) => ({
       id: user.id!,

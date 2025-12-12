@@ -1,5 +1,5 @@
 // src/core/repositories/IChannelRepository.ts
-import { Channel } from "../../domain/entities/channel/Channel";
+import { Channel } from "../../../domain/entities/channel/Channel";
 
 export interface IChannelRepository {
   create(channel: Channel): Promise<Channel>;

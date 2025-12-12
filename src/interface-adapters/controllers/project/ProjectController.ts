@@ -5,10 +5,15 @@ import { z } from "zod";
 import { GetUserProjectsUseCase } from "../../../application/use-cases/project/GetUserProjectsUseCase";
 import { HTTP_STATUS } from "../../http/constants/httpStatus";
 import { ERROR_MESSAGES } from "@/interface-adapters/http/constants/messages";
+import { inject, injectable } from "inversify";
+import { TYPES } from "@/config/types";
 
+@injectable()
 export class ProjectController {
   constructor(
+    @inject(TYPES.CreateProjectUseCase)
     private createProjectUseCase: CreateProjectUseCase,
+    @inject(TYPES.GetUserProjectsUseCase)
     private getUserProjectsUseCase: GetUserProjectsUseCase
   ) {}
 

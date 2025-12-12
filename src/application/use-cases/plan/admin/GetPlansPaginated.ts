@@ -1,9 +1,14 @@
 // src/application/use-cases/plan/GetPlansPaginated.ts
-import { IPlanRepository } from "../../../repositories/IPlanRepository";
+import { IPlanRepository } from "../../../ports/repositories/IPlanRepository";
 import { Plan } from "../../../../domain/entities/billing/Plan";
+import { inject, injectable } from "inversify";
+import { TYPES } from "@/config/types";
 
+@injectable()
 export class GetPlansPaginated {
-  constructor(private planRepo: IPlanRepository) {}
+  constructor(
+    @inject(TYPES.PlanRepository) private planRepo: IPlanRepository
+  ) {}
 
   async execute(
     page: number = 1,

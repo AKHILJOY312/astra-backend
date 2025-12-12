@@ -1,15 +1,29 @@
-// src/interfaces/http/routes/planRoutes.ts
 import { Router } from "express";
-import { planController } from "../../../../config/container";
-import { protect } from "../../../../config/container";
+import { Container } from "inversify";
+import { TYPES } from "../../../../config/types";
+import { PlanController } from "../../../controllers/plan/PlanController";
+import { createProtectMiddleware } from "../../../../infra/middleware/protect";
 import { adminOnly } from "../../../../infra/middleware/adminOnly";
 
-const router = Router();
+export function getAdminPlanRoutes(container: Container): Router {
+  const router = Router();
 
-router.use(protect, adminOnly);
+  const planController = container.get<PlanController>(TYPES.PlanController);
+  const protect = container.get<ReturnType<typeof createProtectMiddleware>>(
+    TYPES.ProtectMiddleware
+  );
 
-router.route("/").post(planController.create).get(planController.getAll);
+  router.use(protect, adminOnly);
 
-router.route("/:id").put(planController.update).delete(planController.delete);
+  router
+    .route("/")
+    .post(planController.create.bind(planController))
+    .get(planController.getAll.bind(planController));
 
-export default router;
+  router
+    .route("/:id")
+    .put(planController.update.bind(planController))
+    .delete(planController.delete.bind(planController));
+
+  return router;
+}

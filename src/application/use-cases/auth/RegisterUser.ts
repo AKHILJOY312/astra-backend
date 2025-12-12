@@ -1,15 +1,18 @@
 import { User } from "../../../domain/entities/user/User";
-import { IUserRepository } from "../../../application/repositories/IUserRepository";
-import { IAuthService } from "../../../application/services/IAuthService";
-import { IEmailService } from "../../../application/services/IEmailService";
+import { IUserRepository } from "../../ports/repositories/IUserRepository";
+import { IAuthService } from "../../ports/services/IAuthService";
+import { IEmailService } from "../../ports/services/IEmailService";
 import { RegisterUserDto } from "../../dto/RegisterUserDto";
 import crypto from "crypto";
+import { inject, injectable } from "inversify";
+import { TYPES } from "@/config/types";
 
+@injectable()
 export class RegisterUser {
   constructor(
-    private userRepo: IUserRepository,
-    private auth: IAuthService,
-    private email: IEmailService
+    @inject(TYPES.UserRepository) private userRepo: IUserRepository,
+    @inject(TYPES.AuthService) private auth: IAuthService,
+    @inject(TYPES.EmailService) private email: IEmailService
   ) {}
 
   async execute(dto: RegisterUserDto): Promise<{ message: string }> {

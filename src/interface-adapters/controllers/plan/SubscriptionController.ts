@@ -6,12 +6,19 @@ import { GetAvailablePlansUseCase } from "@/application/use-cases/plan/user/GetA
 import { CapturePaymentUseCase } from "@/application/use-cases/upgradetopremium/CapturePaymentUseCase";
 import { HTTP_STATUS } from "@/interface-adapters/http/constants/httpStatus";
 import { SUB_MESSAGE } from "@/interface-adapters/http/constants/messages";
+import { inject, injectable } from "inversify";
+import { TYPES } from "@/config/types";
 
+@injectable()
 export class SubscriptionController {
   constructor(
+    @inject(TYPES.UpgradeToPlanUseCase)
     private upgradeUseCase: UpgradeToPlanUseCase,
+    @inject(TYPES.GetUserLimitsUseCase)
     private getLimitsUseCase: GetUserLimitsUseCase,
+    @inject(TYPES.GetAvailablePlansUseCase)
     private getAvailablePlans: GetAvailablePlansUseCase,
+    @inject(TYPES.CapturePaymentUseCase)
     private captureUseCase: CapturePaymentUseCase
   ) {}
 

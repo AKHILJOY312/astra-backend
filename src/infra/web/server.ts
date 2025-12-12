@@ -13,6 +13,7 @@ import { setupGoogleStrategy } from "../passport/googleStrategy";
 import passport from "passport";
 import { HTTP_STATUS } from "@/interface-adapters/http/constants/httpStatus";
 import { createSocketServer } from "../websocket/SocketServer";
+import { container } from "@/config/container";
 
 const app = express();
 const server = http.createServer(app);
@@ -59,7 +60,7 @@ app.use("/api", routes);
 
 // WebSocket
 
-createSocketServer(server);
+createSocketServer(server, container);
 
 //  Catch-all route for undefined endpoints
 app.all("*", (req, res) => {

@@ -1,6 +1,8 @@
 import crypto from "crypto";
-import { IUserSubscriptionRepository } from "@/application/repositories/IUserSubscriptionRepository";
+import { IUserSubscriptionRepository } from "@/application/ports/repositories/IUserSubscriptionRepository";
 import { UserSubscription } from "@/domain/entities/billing/UserSubscription";
+import { inject, injectable } from "inversify";
+import { TYPES } from "@/config/types";
 
 export interface CapturePaymentInput {
   razorpayOrderId: string;
@@ -13,8 +15,12 @@ export interface CapturePaymentOutput {
   message: string;
 }
 
+@injectable()
 export class CapturePaymentUseCase {
-  constructor(private subscriptionRepo: IUserSubscriptionRepository) {}
+  constructor(
+    @inject(TYPES.UserSubscriptionRepository)
+    private subscriptionRepo: IUserSubscriptionRepository
+  ) {}
 
   async execute(input: CapturePaymentInput): Promise<CapturePaymentOutput> {
     const { razorpayOrderId, razorpayPaymentId, razorpaySignature } = input;

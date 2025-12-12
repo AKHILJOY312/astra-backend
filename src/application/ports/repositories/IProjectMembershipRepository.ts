@@ -2,7 +2,7 @@
 import {
   ProjectMembership,
   ProjectRole,
-} from "../../domain/entities/project/ProjectMembership";
+} from "../../../domain/entities/project/ProjectMembership";
 
 export interface IProjectMembershipRepository {
   create(membership: ProjectMembership): Promise<ProjectMembership>;

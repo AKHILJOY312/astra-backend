@@ -1,213 +1,264 @@
 // src/container.ts
-import { AuthController } from "../interface-adapters/controllers/auth/AuthController";
-import { ForgotPassword } from "../application/use-cases/auth/ForgotPassword";
-import { GetMe } from "../application/use-cases/auth/GetMe";
-import { JwtAuthService } from "../infra/auth/JwtAuthService";
-import { LoginUser } from "../application/use-cases/auth/LoginUser";
-import { LogoutUser } from "../application/use-cases/auth/LogoutUser";
-import { NodemailerEmailService } from "../infra/email/NodemailerEmailService";
-import { RefreshToken } from "../application/use-cases/auth/RefreshToken";
-import { RegisterUser } from "../application/use-cases/auth/RegisterUser";
-import { ResetPassword } from "../application/use-cases/auth/ResetPassword";
+
+import { Container } from "inversify";
+import { TYPES } from "./types";
+
+// Repositories
 import { UserRepository } from "../infra/db/mongoose/repositories/UserRepository";
-import { VerifyEmail } from "../application/use-cases/auth/VerifyEmail";
-import { VerifyResetToken } from "../application/use-cases/auth/VerifyResetToken";
-import { createProtectMiddleware } from "../infra/middleware/protect";
-import { GoogleLogin } from "../application/use-cases/auth/GoogleLogin";
-//Admin Auth
-import { AdminLogin } from "../application/use-cases/auth/admin/AdminLogin";
-import { AdminForgotPassword } from "../application/use-cases/auth/admin/AdminForgotPassword";
-import { AdminResetPassword } from "../application/use-cases/auth/admin/AdminResetPassword";
-import { AdminAuthController } from "../interface-adapters/controllers/auth/AdminAuthController";
-
-//Plan
 import { PlanRepository } from "../infra/db/mongoose/repositories/PlanRepository";
-import { CreatePlan } from "../application/use-cases/plan/admin/CreatePlan";
-import { UpdatePlan } from "../application/use-cases/plan/admin/UpdatePlan";
-import { SoftDeletePlan } from "../application/use-cases/plan/admin/SoftDeletePlan";
-import { GetPlansPaginated } from "../application/use-cases/plan/admin/GetPlansPaginated";
-import { PlanController } from "../interface-adapters/controllers/plan/PlanController";
-
 import { ProjectRepository } from "../infra/db/mongoose/repositories/ProjectRepository";
 import { ProjectMembershipRepository } from "../infra/db/mongoose/repositories/ProjectMembershipRepository";
 import { ChannelRepository } from "../infra/db/mongoose/repositories/ChannelRepository";
 import { UserSubscriptionRepository } from "../infra/db/mongoose/repositories/UserSubscriptionRepository";
-
-import { CreateProjectUseCase } from "../application/use-cases/project/CreateProjectUseCase";
-import { AddMemberToProjectUseCase } from "../application/use-cases/project/AddMemberToProjectUseCase";
-import { RemoveMemberFromProjectUseCase } from "../application/use-cases/project/RemoveMemberFromProjectUseCase";
-import { ChangeMemberRoleUseCase } from "../application/use-cases/project/ChangeMemberRoleUseCase";
-import { CreateChannelUseCase } from "../application/use-cases/channel/CreateChannelUseCase";
-import { GetUserLimitsUseCase } from "../application/use-cases/upgradetopremium/GetUserLimitsUseCase";
-import { UpgradeToPlanUseCase } from "../application/use-cases/upgradetopremium/UpgradeToPlanUseCase";
-
-import { ProjectController } from "../interface-adapters/controllers/project/ProjectController";
-import { MemberController } from "../interface-adapters/controllers/project/MemberController";
-import { ChannelController } from "../interface-adapters/controllers/channel/ChannelController";
-import { SubscriptionController } from "../interface-adapters/controllers/plan/SubscriptionController";
-import { UserService } from "../application/services/UserService";
-import { GetUserProjectsUseCase } from "../application/use-cases/project/GetUserProjectsUseCase";
-import { GetAvailablePlansUseCase } from "../application/use-cases/plan/user/GetAvailablePlansUseCase";
-import { RazorpayService } from "@/infra/payment/RazorpayService";
-import { CapturePaymentUseCase } from "@/application/use-cases/upgradetopremium/CapturePaymentUseCase";
-import { EditChannelUseCase } from "@/application/use-cases/channel/EditChannelUseCase";
-import { ListChannelsForUserUseCase } from "@/application/use-cases/channel/ListChannelsForUserUseCase";
-import { DeleteChannelUseCase } from "@/application/use-cases/channel/DeleteChannelUseCase";
-import { SendMessageUseCase } from "@/application/use-cases/message/SendMessageUseCase";
-import { ListMessagesUseCase } from "@/application/use-cases/message/ListMessagesUseCase";
 import { MessageRepository } from "@/infra/db/mongoose/repositories/MessageRepository";
-import { MessageController } from "@/interface-adapters/controllers/message/MessageController";
-import { AdminUserController } from "@/interface-adapters/controllers/user/AdminUserController";
+
+// Services
+import { JwtAuthService } from "../infra/auth/JwtAuthService";
+import { NodemailerEmailService } from "../infra/email/NodemailerEmailService";
+import { UserService } from "../application/services/UserService";
+import { RazorpayService } from "@/infra/payment/RazorpayService";
+
+// Use Cases (Auth/User)
+import { RegisterUser } from "../application/use-cases/auth/RegisterUser";
+import { VerifyEmail } from "../application/use-cases/auth/VerifyEmail";
+import { LoginUser } from "../application/use-cases/auth/LoginUser";
+import { RefreshToken } from "../application/use-cases/auth/RefreshToken";
+import { LogoutUser } from "../application/use-cases/auth/LogoutUser";
+import { GetMe } from "../application/use-cases/auth/GetMe";
+import { ForgotPassword } from "../application/use-cases/auth/ForgotPassword";
+import { ResetPassword } from "../application/use-cases/auth/ResetPassword";
+import { VerifyResetToken } from "../application/use-cases/auth/VerifyResetToken";
+import { GoogleLogin } from "../application/use-cases/auth/GoogleLogin";
+
+// Use Cases (Admin Auth)
+import { AdminLogin } from "../application/use-cases/auth/admin/AdminLogin";
+import { AdminForgotPassword } from "../application/use-cases/auth/admin/AdminForgotPassword";
+import { AdminResetPassword } from "../application/use-cases/auth/admin/AdminResetPassword";
+
+// Use Cases (Admin User)
 import { ListUsersUseCase } from "@/application/use-cases/user/ListUserUseCase";
 import { BlockUserUseCase } from "@/application/use-cases/user/BlockUserUseCase";
 import { AssignAdminRoleUseCase } from "@/application/use-cases/user/AssingAdminRoleUseCase";
 
-const userRepo = new UserRepository();
-const userService = new UserService(userRepo);
+// Use Cases (Plan)
+import { CreatePlan } from "../application/use-cases/plan/admin/CreatePlan";
+import { UpdatePlan } from "../application/use-cases/plan/admin/UpdatePlan";
+import { SoftDeletePlan } from "../application/use-cases/plan/admin/SoftDeletePlan";
+import { GetPlansPaginated } from "../application/use-cases/plan/admin/GetPlansPaginated";
+import { GetAvailablePlansUseCase } from "../application/use-cases/plan/user/GetAvailablePlansUseCase";
 
-const authSvc = new JwtAuthService(userRepo);
-const emailSvc = new NodemailerEmailService();
-const razorpaySvc = new RazorpayService();
+// Use Cases (Project/Membership)
+import { CreateProjectUseCase } from "../application/use-cases/project/CreateProjectUseCase";
+import { GetUserProjectsUseCase } from "../application/use-cases/project/GetUserProjectsUseCase";
+import { AddMemberToProjectUseCase } from "../application/use-cases/project/AddMemberToProjectUseCase";
+import { RemoveMemberFromProjectUseCase } from "../application/use-cases/project/RemoveMemberFromProjectUseCase";
+import { ChangeMemberRoleUseCase } from "../application/use-cases/project/ChangeMemberRoleUseCase";
 
-const registerUC = new RegisterUser(userRepo, authSvc, emailSvc);
-const verifyEmailUC = new VerifyEmail(userRepo);
-const loginUC = new LoginUser(userRepo, authSvc);
-const refreshUC = new RefreshToken(userRepo, authSvc);
-const logoutUC = new LogoutUser();
-const meUC = new GetMe(userRepo);
-const forgotUC = new ForgotPassword(userRepo, emailSvc);
-const resetUC = new ResetPassword(userRepo, authSvc);
-const verifyResetUC = new VerifyResetToken(userRepo);
-const googleLoginUC = new GoogleLogin(userRepo, authSvc);
+// Use Cases (Channel)
+import { CreateChannelUseCase } from "../application/use-cases/channel/CreateChannelUseCase";
+import { EditChannelUseCase } from "@/application/use-cases/channel/EditChannelUseCase";
+import { ListChannelsForUserUseCase } from "@/application/use-cases/channel/ListChannelsForUserUseCase";
+import { DeleteChannelUseCase } from "@/application/use-cases/channel/DeleteChannelUseCase";
 
-//_______________________________________________________________
-const adminLogin = new AdminLogin(userRepo, authSvc);
-const adminForgotPassword = new AdminForgotPassword(userRepo, emailSvc);
-const adminResetPassword = new AdminResetPassword(userRepo, authSvc);
+// Use Cases (Subscription/Payment)
+import { GetUserLimitsUseCase } from "../application/use-cases/upgradetopremium/GetUserLimitsUseCase";
+import { UpgradeToPlanUseCase } from "../application/use-cases/upgradetopremium/UpgradeToPlanUseCase";
+import { CapturePaymentUseCase } from "@/application/use-cases/upgradetopremium/CapturePaymentUseCase";
 
-//__________________________ADMIN USER USE-CASE__________________________
-const listUsersUC = new ListUsersUseCase(userRepo);
-const blockUserUC = new BlockUserUseCase(userRepo, authSvc);
-const assignAdminRoleUC = new AssignAdminRoleUseCase(userRepo);
-//__________________________Plan__________________________________
-const planRepo = new PlanRepository();
-const createPlan = new CreatePlan(planRepo);
-const updatePlan = new UpdatePlan(planRepo);
-const deletePlan = new SoftDeletePlan(planRepo);
-const getPlansPaginated = new GetPlansPaginated(planRepo);
-export const protect = createProtectMiddleware(userRepo);
-
-export const authController = new AuthController(
-  registerUC,
-  verifyEmailUC,
-  loginUC,
-  refreshUC,
-  logoutUC,
-  meUC,
-  forgotUC,
-  resetUC,
-  verifyResetUC,
-  googleLoginUC
-);
-
-export const adminAuthController = new AdminAuthController(
-  adminLogin,
-  adminForgotPassword,
-  adminResetPassword
-);
-export const adminUserController = new AdminUserController(
-  listUsersUC,
-  blockUserUC,
-  assignAdminRoleUC
-);
-export const planController = new PlanController(
-  createPlan,
-  updatePlan,
-  deletePlan,
-  getPlansPaginated
-);
-
-// src/config/container.ts (continue after your existing code)
-
-// ==================== PROJECT & CHANNEL & SUBSCRIPTION ====================
-
-// Repositories
-const projectRepo = new ProjectRepository();
-const membershipRepo = new ProjectMembershipRepository();
-const channelRepo = new ChannelRepository();
-const userSubRepo = new UserSubscriptionRepository();
-const messageRepo = new MessageRepository();
-// Use Cases
-const createProjectUC = new CreateProjectUseCase(
-  projectRepo,
-  userSubRepo,
-  planRepo,
-  membershipRepo
-);
-const getUserProjectsUC = new GetUserProjectsUseCase(projectRepo);
-const addMemberUC = new AddMemberToProjectUseCase(
-  membershipRepo,
-  projectRepo,
-  userSubRepo,
-  planRepo
-);
-const removeMemberUC = new RemoveMemberFromProjectUseCase(membershipRepo);
-const changeRoleUC = new ChangeMemberRoleUseCase(membershipRepo);
-
-const getLimitsUC = new GetUserLimitsUseCase(
-  projectRepo,
-  membershipRepo,
-  userSubRepo,
-  planRepo
-);
-const getAvailablePlansUC = new GetAvailablePlansUseCase(planRepo);
-const upgradeSubUC = new UpgradeToPlanUseCase(
-  userSubRepo,
-  planRepo,
-  razorpaySvc
-);
-const capturePaymentUC = new CapturePaymentUseCase(userSubRepo);
-
-//Messages
-export const sendMessageUC = new SendMessageUseCase(
-  messageRepo,
-  membershipRepo,
-  userRepo
-);
-export const listMessagesUC = new ListMessagesUseCase(messageRepo);
-//Channels
-const createChannelUC = new CreateChannelUseCase(channelRepo, membershipRepo);
-const editChannelUC = new EditChannelUseCase(channelRepo, membershipRepo);
-const listChannelUC = new ListChannelsForUserUseCase(
-  channelRepo,
-  membershipRepo
-);
-const deleteChannelUC = new DeleteChannelUseCase(channelRepo, membershipRepo);
+// Use Cases (Message)
+import { SendMessageUseCase } from "@/application/use-cases/message/SendMessageUseCase";
+import { ListMessagesUseCase } from "@/application/use-cases/message/ListMessagesUseCase";
 
 // Controllers
-export const projectController = new ProjectController(
-  createProjectUC,
-  getUserProjectsUC
-);
-export const memberController = new MemberController(
-  addMemberUC,
-  removeMemberUC,
-  changeRoleUC,
-  userService
-);
-export const channelController = new ChannelController(
-  createChannelUC,
-  editChannelUC,
-  deleteChannelUC,
-  listChannelUC
-);
-export const subscriptionController = new SubscriptionController(
-  upgradeSubUC,
-  getLimitsUC,
-  getAvailablePlansUC,
-  capturePaymentUC
-);
-export const messageController = new MessageController(
-  sendMessageUC,
-  listMessagesUC
-);
+import { AuthController } from "../interface-adapters/controllers/auth/AuthController";
+import { AdminAuthController } from "../interface-adapters/controllers/auth/AdminAuthController";
+import { AdminUserController } from "@/interface-adapters/controllers/user/AdminUserController";
+import { PlanController } from "../interface-adapters/controllers/plan/PlanController";
+import { ProjectController } from "../interface-adapters/controllers/project/ProjectController";
+import { MemberController } from "../interface-adapters/controllers/project/MemberController";
+import { ChannelController } from "../interface-adapters/controllers/channel/ChannelController";
+import { SubscriptionController } from "../interface-adapters/controllers/plan/SubscriptionController";
+import { MessageController } from "@/interface-adapters/controllers/message/MessageController";
+
+// Middleware
+import { createProtectMiddleware } from "../infra/middleware/protect";
+
+const container = new Container();
+
+// --- Repositories (Bind as a Singleton since they are state-less data access layers)
+container
+  .bind<UserRepository>(TYPES.UserRepository)
+  .to(UserRepository)
+  .inSingletonScope();
+container
+  .bind<PlanRepository>(TYPES.PlanRepository)
+  .to(PlanRepository)
+  .inSingletonScope();
+container
+  .bind<ProjectRepository>(TYPES.ProjectRepository)
+  .to(ProjectRepository)
+  .inSingletonScope();
+container
+  .bind<ProjectMembershipRepository>(TYPES.ProjectMembershipRepository)
+  .to(ProjectMembershipRepository)
+  .inSingletonScope();
+container
+  .bind<ChannelRepository>(TYPES.ChannelRepository)
+  .to(ChannelRepository)
+  .inSingletonScope();
+container
+  .bind<UserSubscriptionRepository>(TYPES.UserSubscriptionRepository)
+  .to(UserSubscriptionRepository)
+  .inSingletonScope();
+container
+  .bind<MessageRepository>(TYPES.MessageRepository)
+  .to(MessageRepository)
+  .inSingletonScope();
+
+// --- Services (Bind as a Singleton)
+container
+  .bind<UserService>(TYPES.UserService)
+  .to(UserService)
+  .inSingletonScope();
+container
+  .bind<JwtAuthService>(TYPES.AuthService)
+  .to(JwtAuthService)
+  .inSingletonScope();
+container
+  .bind<NodemailerEmailService>(TYPES.EmailService)
+  .to(NodemailerEmailService)
+  .inSingletonScope();
+container
+  .bind<RazorpayService>(TYPES.PaymentService)
+  .to(RazorpayService)
+  .inSingletonScope();
+
+// --- Middleware
+// Protect middleware is a factory function, so we bind the result of the function
+// to the SYMBOL, ensuring it has access to the UserRepository via Inversify resolution.
+container
+  .bind(TYPES.ProtectMiddleware)
+  .toDynamicValue(() => {
+    const userRepo = container.get<UserRepository>(TYPES.UserRepository);
+    return createProtectMiddleware(userRepo);
+  })
+  .inSingletonScope();
+
+// --- Use Cases (Bind as Transient by default, or Singleton if state-less and expensive to create)
+
+// Auth/User Use Cases
+container.bind<RegisterUser>(TYPES.RegisterUser).to(RegisterUser);
+container.bind<VerifyEmail>(TYPES.VerifyEmail).to(VerifyEmail);
+container.bind<LoginUser>(TYPES.LoginUser).to(LoginUser);
+container.bind<RefreshToken>(TYPES.RefreshToken).to(RefreshToken);
+container.bind<LogoutUser>(TYPES.LogoutUser).to(LogoutUser);
+container.bind<GetMe>(TYPES.GetMe).to(GetMe);
+container.bind<ForgotPassword>(TYPES.ForgotPassword).to(ForgotPassword);
+container.bind<ResetPassword>(TYPES.ResetPassword).to(ResetPassword);
+container.bind<VerifyResetToken>(TYPES.VerifyResetToken).to(VerifyResetToken);
+container.bind<GoogleLogin>(TYPES.GoogleLogin).to(GoogleLogin);
+
+// Admin Auth Use Cases
+container.bind<AdminLogin>(TYPES.AdminLogin).to(AdminLogin);
+container
+  .bind<AdminForgotPassword>(TYPES.AdminForgotPassword)
+  .to(AdminForgotPassword);
+container
+  .bind<AdminResetPassword>(TYPES.AdminResetPassword)
+  .to(AdminResetPassword);
+
+// Admin User Use Cases
+container.bind<ListUsersUseCase>(TYPES.ListUsersUseCase).to(ListUsersUseCase);
+container.bind<BlockUserUseCase>(TYPES.BlockUserUseCase).to(BlockUserUseCase);
+container
+  .bind<AssignAdminRoleUseCase>(TYPES.AssignAdminRoleUseCase)
+  .to(AssignAdminRoleUseCase);
+
+// Plan Use Cases
+container.bind<CreatePlan>(TYPES.CreatePlan).to(CreatePlan);
+container.bind<UpdatePlan>(TYPES.UpdatePlan).to(UpdatePlan);
+container.bind<SoftDeletePlan>(TYPES.SoftDeletePlan).to(SoftDeletePlan);
+container
+  .bind<GetPlansPaginated>(TYPES.GetPlansPaginated)
+  .to(GetPlansPaginated);
+container
+  .bind<GetAvailablePlansUseCase>(TYPES.GetAvailablePlansUseCase)
+  .to(GetAvailablePlansUseCase);
+
+// Project/Membership Use Cases
+container
+  .bind<CreateProjectUseCase>(TYPES.CreateProjectUseCase)
+  .to(CreateProjectUseCase);
+container
+  .bind<GetUserProjectsUseCase>(TYPES.GetUserProjectsUseCase)
+  .to(GetUserProjectsUseCase);
+container
+  .bind<AddMemberToProjectUseCase>(TYPES.AddMemberToProjectUseCase)
+  .to(AddMemberToProjectUseCase);
+container
+  .bind<RemoveMemberFromProjectUseCase>(TYPES.RemoveMemberFromProjectUseCase)
+  .to(RemoveMemberFromProjectUseCase);
+container
+  .bind<ChangeMemberRoleUseCase>(TYPES.ChangeMemberRoleUseCase)
+  .to(ChangeMemberRoleUseCase);
+
+// Channel Use Cases
+container
+  .bind<CreateChannelUseCase>(TYPES.CreateChannelUseCase)
+  .to(CreateChannelUseCase);
+container
+  .bind<EditChannelUseCase>(TYPES.EditChannelUseCase)
+  .to(EditChannelUseCase);
+container
+  .bind<ListChannelsForUserUseCase>(TYPES.ListChannelsForUserUseCase)
+  .to(ListChannelsForUserUseCase);
+container
+  .bind<DeleteChannelUseCase>(TYPES.DeleteChannelUseCase)
+  .to(DeleteChannelUseCase);
+
+// Subscription/Payment Use Cases
+container
+  .bind<GetUserLimitsUseCase>(TYPES.GetUserLimitsUseCase)
+  .to(GetUserLimitsUseCase);
+container
+  .bind<UpgradeToPlanUseCase>(TYPES.UpgradeToPlanUseCase)
+  .to(UpgradeToPlanUseCase);
+container
+  .bind<CapturePaymentUseCase>(TYPES.CapturePaymentUseCase)
+  .to(CapturePaymentUseCase);
+
+// Message Use Cases
+container
+  .bind<SendMessageUseCase>(TYPES.SendMessageUseCase)
+  .to(SendMessageUseCase);
+container
+  .bind<ListMessagesUseCase>(TYPES.ListMessagesUseCase)
+  .to(ListMessagesUseCase);
+
+// --- Controllers (Bind as Transient, since they usually serve a single request)
+container.bind<AuthController>(TYPES.AuthController).to(AuthController);
+container
+  .bind<AdminAuthController>(TYPES.AdminAuthController)
+  .to(AdminAuthController);
+container
+  .bind<AdminUserController>(TYPES.AdminUserController)
+  .to(AdminUserController);
+container.bind<PlanController>(TYPES.PlanController).to(PlanController);
+container
+  .bind<ProjectController>(TYPES.ProjectController)
+  .to(ProjectController);
+container.bind<MemberController>(TYPES.MemberController).to(MemberController);
+container
+  .bind<ChannelController>(TYPES.ChannelController)
+  .to(ChannelController);
+container
+  .bind<SubscriptionController>(TYPES.SubscriptionController)
+  .to(SubscriptionController);
+container
+  .bind<MessageController>(TYPES.MessageController)
+  .to(MessageController);
+
+export { container };
+
+// To resolve your protect middleware in your routes:
+// export const protect = container.get(TYPES.ProtectMiddleware) as ReturnType<typeof createProtectMiddleware>;
