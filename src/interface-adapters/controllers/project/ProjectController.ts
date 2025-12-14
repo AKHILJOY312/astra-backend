@@ -61,14 +61,24 @@ export class ProjectController {
   async getUserProjects(req: Request, res: Response) {
     try {
       const userId = req.user!.id;
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = Math.min(parseInt(req.query.limit as string) || 10, 30);
+      const search = req.query.search as string | undefined;
 
-      const { projects } = await this.getUserProjectsUseCase.execute({
+      const result = await this.getUserProjectsUseCase.execute({
         userId,
+        page,
+        limit,
+        search,
       });
 
       return res.status(HTTP_STATUS.OK).json({
         success: true,
-        data: projects.map((p) => p.toJSON()),
+        data: result.projects.map((p) => p.toJSON()),
+        page: result.page,
+        limit: result.limit,
+        totalPages: result.totalPages,
+        totalCount: result.totalCount,
       });
     } catch (err: any) {
       console.error(err);

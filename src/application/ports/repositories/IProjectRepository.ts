@@ -7,7 +7,19 @@ export interface IProjectRepository {
   delete(id: string): Promise<Project | null>;
   findById(id: string): Promise<Project | null>;
   findByOwnerId(ownerId: string): Promise<Project[]>;
-  findAllByUserId(userId: string): Promise<Project[]>; // projects user is member of
+  findPaginatedByUserId(input: {
+    userId: string;
+    page: number;
+    limit: number;
+    search?: string;
+  }): Promise<{
+    projects: Project[];
+    page: number;
+    limit: number;
+    totalPages: number;
+    totalCount: number;
+  }>;
+
   countByOwnerId(ownerId: string): Promise<number>;
   existsByIdAndOwnerId(id: string, ownerId: string): Promise<boolean>;
 }

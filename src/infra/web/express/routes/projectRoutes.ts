@@ -23,7 +23,7 @@ export function getProjectRoutes(container: Container): Router {
   router.post("/", projectController.createProject.bind(projectController));
 
   router.get(
-    "/me",
+    "/",
 
     projectController.getUserProjects.bind(projectController)
   );

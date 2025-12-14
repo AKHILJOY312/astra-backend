@@ -6,10 +6,17 @@ import { TYPES } from "@/config/types";
 
 export interface GetUserProjectsDTO {
   userId: string;
+  page: number;
+  limit: number;
+  search: string | undefined;
 }
 
 export interface GetUserProjectsResultDTO {
   projects: Project[];
+  page: number;
+  limit: number;
+  totalPages: number;
+  totalCount: number;
 }
 
 @injectable()
@@ -19,11 +26,16 @@ export class GetUserProjectsUseCase {
   ) {}
 
   async execute(input: GetUserProjectsDTO): Promise<GetUserProjectsResultDTO> {
-    const { userId } = input;
+    const { userId, page, limit, search } = input;
 
     // Fetch projects where user is owner or member
-    const projects = await this.projectRepo.findAllByUserId(userId);
+    const result = await this.projectRepo.findPaginatedByUserId({
+      userId,
+      page,
+      limit,
+      search,
+    });
 
-    return { projects };
+    return result;
   }
 }
