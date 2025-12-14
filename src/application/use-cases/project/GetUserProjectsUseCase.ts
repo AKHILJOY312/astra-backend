@@ -1,24 +1,41 @@
 // src/core/use-cases/project/GetUserProjectsUseCase.ts
+import { inject, injectable } from "inversify";
 import { Project } from "../../../domain/entities/project/Project";
-import { IProjectRepository } from "../../repositories/IProjectRepository";
+import { IProjectRepository } from "../../ports/repositories/IProjectRepository";
+import { TYPES } from "@/config/types";
 
 export interface GetUserProjectsDTO {
   userId: string;
+  page: number;
+  limit: number;
+  search: string | undefined;
 }
 
 export interface GetUserProjectsResultDTO {
   projects: Project[];
+  page: number;
+  limit: number;
+  totalPages: number;
+  totalCount: number;
 }
 
+@injectable()
 export class GetUserProjectsUseCase {
-  constructor(private projectRepo: IProjectRepository) {}
+  constructor(
+    @inject(TYPES.ProjectRepository) private projectRepo: IProjectRepository
+  ) {}
 
   async execute(input: GetUserProjectsDTO): Promise<GetUserProjectsResultDTO> {
-    const { userId } = input;
+    const { userId, page, limit, search } = input;
 
     // Fetch projects where user is owner or member
-    const projects = await this.projectRepo.findAllByUserId(userId);
+    const result = await this.projectRepo.findPaginatedByUserId({
+      userId,
+      page,
+      limit,
+      search,
+    });
 
-    return { projects };
+    return result;
   }
 }

@@ -1,11 +1,14 @@
-import { IUserRepository } from "../../repositories/IUserRepository";
-import { IEmailService } from "../../services/IEmailService";
+import { inject, injectable } from "inversify";
+import { IUserRepository } from "../../ports/repositories/IUserRepository";
+import { IEmailService } from "../../ports/services/IEmailService";
 import crypto from "crypto";
+import { TYPES } from "@/config/types";
 
+@injectable()
 export class ForgotPassword {
   constructor(
-    private userRepo: IUserRepository,
-    private email: IEmailService
+    @inject(TYPES.UserRepository) private userRepo: IUserRepository,
+    @inject(TYPES.EmailService) private email: IEmailService
   ) {}
 
   async execute(email: string): Promise<{ message: string }> {

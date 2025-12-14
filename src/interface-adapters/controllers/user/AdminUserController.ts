@@ -3,11 +3,15 @@ import { Request, Response } from "express";
 import { ListUsersUseCase } from "../../../application/use-cases/user/ListUserUseCase";
 import { BlockUserUseCase } from "../../../application/use-cases/user/BlockUserUseCase";
 import { AssignAdminRoleUseCase } from "../../../application/use-cases/user/AssingAdminRoleUseCase";
+import { inject, injectable } from "inversify";
+import { TYPES } from "@/config/types";
 
+@injectable()
 export class AdminUserController {
   constructor(
-    private listUsersUseCase: ListUsersUseCase,
-    private blockUserUseCase: BlockUserUseCase,
+    @inject(TYPES.ListUsersUseCase) private listUsersUseCase: ListUsersUseCase,
+    @inject(TYPES.BlockUserUseCase) private blockUserUseCase: BlockUserUseCase,
+    @inject(TYPES.AssignAdminRoleUseCase)
     private assignAdminRoleUseCase: AssignAdminRoleUseCase
   ) {}
 
@@ -16,11 +20,7 @@ export class AdminUserController {
       const page = parseInt(req.query.page as string) || 1;
       const limit = Math.min(parseInt(req.query.limit as string) || 10, 30);
       const search = req.query.search as string | undefined;
-      console.log("AdminUserController: listUsers called with", {
-        page,
-        limit,
-        search,
-      });
+
       const result = await this.listUsersUseCase.execute({
         page,
         limit,
@@ -35,9 +35,8 @@ export class AdminUserController {
   async blockUser(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
-      console.log("this is working ");
       const user = await this.blockUserUseCase.execute(id);
-      console.log("working after the blocking");
+
       res.status(200).json({ message: `User status updated `, user });
     } catch (error) {
       // Check for "User not found" error type

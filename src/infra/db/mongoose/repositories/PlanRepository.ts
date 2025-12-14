@@ -1,7 +1,7 @@
 // infrastructure/repositories/PlanRepository.ts
 import { PlanModel } from "../models/PlanModal";
 import { Plan } from "../../../../domain/entities/billing/Plan";
-import { IPlanRepository } from "../../../../application/repositories/IPlanRepository";
+import { IPlanRepository } from "../../../../application/ports/repositories/IPlanRepository";
 
 export class PlanRepository implements IPlanRepository {
   // Mapper: Mongo Doc → Domain Entity

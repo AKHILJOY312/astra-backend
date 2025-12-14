@@ -1,14 +1,18 @@
-import { IMessageRepository } from "@/application/repositories/IMessageRepository";
-import { IProjectMembershipRepository } from "@/application/repositories/IProjectMembershipRepository";
-import { IUserRepository } from "@/application/repositories/IUserRepository";
+import { IMessageRepository } from "@/application/ports/repositories/IMessageRepository";
+import { IProjectMembershipRepository } from "@/application/ports/repositories/IProjectMembershipRepository";
+import { IUserRepository } from "@/application/ports/repositories/IUserRepository";
+import { TYPES } from "@/config/types";
 import { Message } from "@/domain/entities/message/Message";
-import { send } from "process";
+import { inject, injectable } from "inversify";
 import { v4 as uuidv4 } from "uuid";
+
+@injectable()
 export class SendMessageUseCase {
   constructor(
-    private messageRepo: IMessageRepository,
+    @inject(TYPES.MessageRepository) private messageRepo: IMessageRepository,
+    @inject(TYPES.ProjectMembershipRepository)
     private membershipRepo: IProjectMembershipRepository,
-    private userRepo: IUserRepository
+    @inject(TYPES.UserRepository) private userRepo: IUserRepository
   ) {}
 
   async execute(input: {
@@ -25,7 +29,7 @@ export class SendMessageUseCase {
     if (!isMember) {
       throw new Error("User is not a member of the project");
     }
-
+    console.log("send message use case is working ");
     const senderDetails = await this.userRepo.findById(input.senderId);
     if (!senderDetails) {
       throw new Error("Sender user not found");

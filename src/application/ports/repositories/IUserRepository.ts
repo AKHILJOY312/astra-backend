@@ -1,6 +1,6 @@
 // src/domain/interfaces/IUserRepository.ts
-import { User } from "../../domain/entities/user/User";
-import { ListUsersQuery } from "../use-cases/user/ListUserUseCase";
+import { User } from "../../../domain/entities/user/User";
+import { ListUsersQuery } from "../../use-cases/user/ListUserUseCase";
 
 export interface PaginationResult {
   users: User[];

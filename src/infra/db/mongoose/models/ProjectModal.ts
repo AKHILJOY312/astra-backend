@@ -28,6 +28,9 @@ const projectSchema = new Schema<ProjectDoc>(
   },
   { timestamps: true }
 );
+projectSchema.index({ projectName: 1 });
+projectSchema.index({ createdAt: -1 });
+projectSchema.index({ ownerId: 1, createdAt: -1 });
 
 export const ProjectModel = mongoose.model<ProjectDoc>(
   "Project",

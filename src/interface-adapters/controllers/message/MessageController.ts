@@ -1,10 +1,14 @@
 import { ListMessagesUseCase } from "@/application/use-cases/message/ListMessagesUseCase";
 import { SendMessageUseCase } from "@/application/use-cases/message/SendMessageUseCase";
+import { TYPES } from "@/config/types";
 import { Request, Response } from "express";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export class MessageController {
   constructor(
-    private sendMessageUC: SendMessageUseCase,
+    @inject(TYPES.SendMessageUseCase) private sendMessageUC: SendMessageUseCase,
+    @inject(TYPES.ListMessagesUseCase)
     private listMessagesUC: ListMessagesUseCase
   ) {}
 

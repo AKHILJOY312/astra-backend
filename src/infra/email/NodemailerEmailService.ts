@@ -1,6 +1,6 @@
 // src/infrastructure/email/NodemailerEmailService.ts
 import nodemailer from "nodemailer";
-import { IEmailService } from "../../application/services/IEmailService";
+import { IEmailService } from "../../application/ports/services/IEmailService";
 // Create transporter once (reused across requests)
 const transporter = nodemailer.createTransport({
   service: "gmail",

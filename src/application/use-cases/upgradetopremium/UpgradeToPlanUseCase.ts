@@ -1,8 +1,9 @@
-import { Plan } from "@/domain/entities/billing/Plan";
 import { UserSubscription } from "@/domain/entities/billing/UserSubscription";
-import { IUserSubscriptionRepository } from "@/application/repositories/IUserSubscriptionRepository";
-import { IPlanRepository } from "@/application/repositories/IPlanRepository";
-import { IRazorpayService } from "@/application/services/IRazorpayService";
+import { IUserSubscriptionRepository } from "@/application/ports/repositories/IUserSubscriptionRepository";
+import { IPlanRepository } from "@/application/ports/repositories/IPlanRepository";
+import { IRazorpayService } from "@/application/ports/services/IRazorpayService";
+import { inject, injectable } from "inversify";
+import { TYPES } from "@/config/types";
 
 export interface UpgradeToPlanInput {
   userId: string;
@@ -17,11 +18,13 @@ export interface UpgradeToPlanOutput {
   keyId: string;
 }
 
+@injectable()
 export class UpgradeToPlanUseCase {
   constructor(
+    @inject(TYPES.UserSubscriptionRepository)
     private subscriptionRepo: IUserSubscriptionRepository,
-    private planRepo: IPlanRepository,
-    private razorpayService: IRazorpayService
+    @inject(TYPES.PlanRepository) private planRepo: IPlanRepository,
+    @inject(TYPES.PaymentService) private razorpayService: IRazorpayService
   ) {}
 
   async execute(input: UpgradeToPlanInput): Promise<UpgradeToPlanOutput> {

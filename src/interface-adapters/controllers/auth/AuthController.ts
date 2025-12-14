@@ -12,20 +12,23 @@ import { VerifyResetToken } from "../../../application/use-cases/auth/VerifyRese
 import { GoogleLogin } from "../../../application/use-cases/auth/GoogleLogin";
 import { HTTP_STATUS } from "../../http/constants/httpStatus";
 import { AUTH_MESSAGES } from "@/interface-adapters/http/constants/messages";
+import { inject, injectable } from "inversify";
+import { TYPES } from "@/config/types";
 
 // Dependency container (simple DI – you can replace with Inversify, tsyringe, etc.)
+@injectable()
 export class AuthController {
   constructor(
-    private registerUC: RegisterUser,
-    private verifyEmailUC: VerifyEmail,
-    private loginUC: LoginUser,
-    private refreshUC: RefreshToken,
-    private logoutUC: LogoutUser,
-    private meUC: GetMe,
-    private forgotUC: ForgotPassword,
-    private resetUC: ResetPassword,
-    private verifyResetUC: VerifyResetToken,
-    private googleLoginUC: GoogleLogin
+    @inject(TYPES.RegisterUser) private registerUC: RegisterUser,
+    @inject(TYPES.VerifyEmail) private verifyEmailUC: VerifyEmail,
+    @inject(TYPES.LoginUser) private loginUC: LoginUser,
+    @inject(TYPES.RefreshToken) private refreshUC: RefreshToken,
+    @inject(TYPES.LoginUser) private logoutUC: LogoutUser,
+    @inject(TYPES.GetMe) private meUC: GetMe,
+    @inject(TYPES.ForgotPassword) private forgotUC: ForgotPassword,
+    @inject(TYPES.ResetPassword) private resetUC: ResetPassword,
+    @inject(TYPES.VerifyResetToken) private verifyResetUC: VerifyResetToken,
+    @inject(TYPES.GoogleLogin) private googleLoginUC: GoogleLogin
   ) {}
 
   googleLogin = (_req: Request, res: Response) => {
@@ -126,7 +129,7 @@ export class AuthController {
   };
 
   me = async (req: Request, res: Response) => {
-    // @ts-ignore – set by protect middleware
+    // @ts-expect-error – set by protect middleware
     const userId: string = req.user.id;
 
     try {

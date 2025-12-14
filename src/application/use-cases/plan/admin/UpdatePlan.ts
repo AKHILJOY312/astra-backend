@@ -1,10 +1,15 @@
 // application/use-cases/billing/UpdatePlan.ts
-import { IPlanRepository } from "../../../repositories/IPlanRepository";
+import { IPlanRepository } from "../../../ports/repositories/IPlanRepository";
 import { UpdatePlanDto } from "../../../dto/plan/UpdatePlanDto";
 import { Plan } from "../../../../domain/entities/billing/Plan";
+import { inject, injectable } from "inversify";
+import { TYPES } from "@/config/types";
 
+@injectable()
 export class UpdatePlan {
-  constructor(private planRepo: IPlanRepository) {}
+  constructor(
+    @inject(TYPES.PlanRepository) private planRepo: IPlanRepository
+  ) {}
 
   async execute(dto: UpdatePlanDto): Promise<Plan | null> {
     const plan = await this.planRepo.findById(dto.id);

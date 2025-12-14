@@ -1,8 +1,10 @@
 // src/core/use-cases/channel/CreateChannelUseCase.ts
 
+import { inject, injectable } from "inversify";
 import { Channel } from "../../../domain/entities/channel/Channel";
-import { IChannelRepository } from "../../repositories/IChannelRepository";
-import { IProjectMembershipRepository } from "../../repositories/IProjectMembershipRepository";
+import { IChannelRepository } from "../../ports/repositories/IChannelRepository";
+import { IProjectMembershipRepository } from "../../ports/repositories/IProjectMembershipRepository";
+import { TYPES } from "@/config/types";
 
 export interface CreateChannelDTO {
   projectId: string;
@@ -18,9 +20,11 @@ export interface CreateChannelResultDTO {
   channel: Channel;
 }
 
+@injectable()
 export class CreateChannelUseCase {
   constructor(
-    private channelRepo: IChannelRepository,
+    @inject(TYPES.ChannelRepository) private channelRepo: IChannelRepository,
+    @inject(TYPES.ProjectMembershipRepository)
     private membershipRepo: IProjectMembershipRepository
   ) {}
 

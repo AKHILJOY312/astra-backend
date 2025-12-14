@@ -1,7 +1,12 @@
-import { IUserRepository } from "../../repositories/IUserRepository";
+import { inject, injectable } from "inversify";
+import { IUserRepository } from "../../ports/repositories/IUserRepository";
+import { TYPES } from "@/config/types";
 
+@injectable()
 export class GetMe {
-  constructor(private userRepo: IUserRepository) {}
+  constructor(
+    @inject(TYPES.UserRepository) private userRepo: IUserRepository
+  ) {}
 
   async execute(userId: string): Promise<{
     user: { id: string; name: string; email: string; isAdmin: boolean };

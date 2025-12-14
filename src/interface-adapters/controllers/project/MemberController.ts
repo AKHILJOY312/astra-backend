@@ -7,13 +7,19 @@ import { z } from "zod";
 import { UserService } from "../../../application/services/UserService";
 import { HTTP_STATUS } from "../../http/constants/httpStatus";
 import { ERROR_MESSAGES } from "@/interface-adapters/http/constants/messages";
+import { inject, injectable } from "inversify";
+import { TYPES } from "@/config/types";
 
+@injectable()
 export class MemberController {
   constructor(
+    @inject(TYPES.AddMemberToProjectUseCase)
     private addMemberUseCase: AddMemberToProjectUseCase,
+    @inject(TYPES.RemoveMemberFromProjectUseCase)
     private removeMemberUseCase: RemoveMemberFromProjectUseCase,
+    @inject(TYPES.ChangeMemberRoleUseCase)
     private changeRoleUseCase: ChangeMemberRoleUseCase,
-    private userService: UserService
+    @inject(TYPES.UserService) private userService: UserService
   ) {}
 
   // POST /projects/:projectId/members

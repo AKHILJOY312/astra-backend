@@ -1,12 +1,15 @@
+import { inject, injectable } from "inversify";
 import { User } from "../../../domain/entities/user/User";
-import { IUserRepository } from "../../repositories/IUserRepository";
-import { IAuthService } from "../../services/IAuthService";
+import { IUserRepository } from "../../ports/repositories/IUserRepository";
+import { IAuthService } from "../../ports/services/IAuthService";
 import crypto from "crypto";
+import { TYPES } from "@/config/types";
 
+@injectable()
 export class GoogleLogin {
   constructor(
-    private userRepo: IUserRepository,
-    private authService: IAuthService
+    @inject(TYPES.UserRepository) private userRepo: IUserRepository,
+    @inject(TYPES.AuthService) private authService: IAuthService
   ) {}
 
   async execute(profile: any): Promise<{

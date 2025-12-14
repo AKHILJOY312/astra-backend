@@ -1,5 +1,5 @@
 // src/infrastructure/persistence/mongoose/repositories/UserSubscriptionRepository.ts
-import { IUserSubscriptionRepository } from "../../../../application/repositories/IUserSubscriptionRepository";
+import { IUserSubscriptionRepository } from "../../../../application/ports/repositories/IUserSubscriptionRepository";
 import { UserSubscription } from "../../../../domain/entities/billing/UserSubscription";
 import {
   UserSubscriptionModel,

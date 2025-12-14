@@ -1,11 +1,14 @@
 // src/application/use-cases/admin/AdminLogin.ts
-import { IUserRepository } from "../../../repositories/IUserRepository";
-import { IAuthService } from "../../../services/IAuthService";
+import { inject, injectable } from "inversify";
+import { IUserRepository } from "../../../ports/repositories/IUserRepository";
+import { IAuthService } from "../../../ports/services/IAuthService";
+import { TYPES } from "@/config/types";
 
+@injectable()
 export class AdminLogin {
   constructor(
-    private userRepo: IUserRepository,
-    private authService: IAuthService
+    @inject(TYPES.UserRepository) private userRepo: IUserRepository,
+    @inject(TYPES.AuthService) private authService: IAuthService
   ) {}
 
   async execute(email: string, password: string) {

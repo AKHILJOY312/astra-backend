@@ -1,5 +1,5 @@
 // src/infrastructure/persistence/mongoose/repositories/ProjectRepository.ts
-import { IProjectRepository } from "../../../../application/repositories/IProjectRepository";
+import { IProjectRepository } from "../../../../application/ports/repositories/IProjectRepository";
 import { Project } from "../../../../domain/entities/project/Project";
 import { ProjectMembershipModel } from "../models/ProjectMembershipModal";
 import { ProjectModel, toProjectEntity } from "../models/ProjectModal";
@@ -65,6 +65,53 @@ export class ProjectRepository implements IProjectRepository {
         a.findIndex((t) => t._id.toString() === p._id.toString()) === i
     );
     return unique.map(toProjectEntity);
+  }
+  async findPaginatedByUserId({
+    userId,
+    page,
+    limit,
+    search,
+  }: {
+    userId: string;
+    page: number;
+    limit: number;
+    search?: string;
+  }) {
+    const skip = (page - 1) * limit;
+
+    // Step 1: Get member project IDs
+    const memberships = await ProjectMembershipModel.find(
+      { userId },
+      { projectId: 1, _id: 0 }
+    );
+
+    const memberProjectIds = memberships.map((m) => m.projectId);
+
+    // Step 2: Build filter
+    const filter: any = {
+      $or: [{ ownerId: userId }, { _id: { $in: memberProjectIds } }],
+    };
+
+    if (search) {
+      filter.projectName = { $regex: search, $options: "i" };
+    }
+
+    // Step 3: Count
+    const totalCount = await ProjectModel.countDocuments(filter);
+
+    // Step 4: Fetch paginated data
+    const docs = await ProjectModel.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    return {
+      projects: docs.map(toProjectEntity),
+      page,
+      limit,
+      totalPages: Math.ceil(totalCount / limit),
+      totalCount,
+    };
   }
 
   async countByOwnerId(ownerId: string): Promise<number> {

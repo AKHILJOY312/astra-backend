@@ -1,5 +1,7 @@
 // src/core/use-cases/project/RemoveMemberFromProjectUseCase.ts
-import { IProjectMembershipRepository } from "../../repositories/IProjectMembershipRepository";
+import { inject, injectable } from "inversify";
+import { IProjectMembershipRepository } from "../../ports/repositories/IProjectMembershipRepository";
+import { TYPES } from "@/config/types";
 
 export interface RemoveMemberDTO {
   projectId: string;
@@ -11,8 +13,12 @@ export interface RemoveMemberResultDTO {
   message: string;
 }
 
+@injectable()
 export class RemoveMemberFromProjectUseCase {
-  constructor(private membershipRepo: IProjectMembershipRepository) {}
+  constructor(
+    @inject(TYPES.ProjectMembershipRepository)
+    private membershipRepo: IProjectMembershipRepository
+  ) {}
 
   async execute(input: RemoveMemberDTO): Promise<RemoveMemberResultDTO> {
     const { projectId, memberId, requestedBy } = input;

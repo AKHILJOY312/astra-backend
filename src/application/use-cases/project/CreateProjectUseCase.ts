@@ -1,10 +1,12 @@
 // src/core/use-cases/project/CreateProjectUseCase.ts
 import { Project } from "../../../domain/entities/project/Project";
-import { IProjectRepository } from "../../repositories/IProjectRepository";
-import { IPlanRepository } from "../../repositories/IPlanRepository";
-import { IUserSubscriptionRepository } from "../../repositories/IUserSubscriptionRepository";
+import { IProjectRepository } from "../../ports/repositories/IProjectRepository";
+import { IPlanRepository } from "../../ports/repositories/IPlanRepository";
+import { IUserSubscriptionRepository } from "../../ports/repositories/IUserSubscriptionRepository";
 import { ProjectMembership } from "../../../domain/entities/project/ProjectMembership";
-import { IProjectMembershipRepository } from "../../repositories/IProjectMembershipRepository";
+import { IProjectMembershipRepository } from "../../ports/repositories/IProjectMembershipRepository";
+import { inject, injectable } from "inversify";
+import { TYPES } from "@/config/types";
 
 export interface CreateProjectDTO {
   projectName: string;
@@ -17,11 +19,14 @@ export interface CreateProjectResultDTO {
   project: Project;
 }
 
+@injectable()
 export class CreateProjectUseCase {
   constructor(
-    private projectRepo: IProjectRepository,
+    @inject(TYPES.ProjectRepository) private projectRepo: IProjectRepository,
+    @inject(TYPES.UserSubscriptionRepository)
     private subscriptionRepo: IUserSubscriptionRepository,
-    private planRepo: IPlanRepository,
+    @inject(TYPES.PlanRepository) private planRepo: IPlanRepository,
+    @inject(TYPES.ProjectMembershipRepository)
     private membershipRepo: IProjectMembershipRepository
   ) {}
 

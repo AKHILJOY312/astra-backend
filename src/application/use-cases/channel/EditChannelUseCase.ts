@@ -1,7 +1,9 @@
 // src/core/use-cases/channel/EditChannelUseCase.ts
 
-import { IChannelRepository } from "../../repositories/IChannelRepository";
-import { IProjectMembershipRepository } from "../../repositories/IProjectMembershipRepository";
+import { inject, injectable } from "inversify";
+import { IChannelRepository } from "../../ports/repositories/IChannelRepository";
+import { IProjectMembershipRepository } from "../../ports/repositories/IProjectMembershipRepository";
+import { TYPES } from "@/config/types";
 
 export interface EditChannelDTO {
   channelId: string;
@@ -12,9 +14,11 @@ export interface EditChannelDTO {
   permissionsByRole?: Record<string, "view" | "message" | "manager">;
 }
 
+@injectable()
 export class EditChannelUseCase {
   constructor(
-    private channelRepo: IChannelRepository,
+    @inject(TYPES.ChannelRepository) private channelRepo: IChannelRepository,
+    @inject(TYPES.ProjectMembershipRepository)
     private membershipRepo: IProjectMembershipRepository
   ) {}
 

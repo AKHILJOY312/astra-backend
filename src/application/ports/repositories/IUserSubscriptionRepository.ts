@@ -1,5 +1,5 @@
 // src/core/repositories/IUserSubscriptionRepository.ts
-import { UserSubscription } from "../../domain/entities/billing/UserSubscription";
+import { UserSubscription } from "../../../domain/entities/billing/UserSubscription";
 
 export interface IUserSubscriptionRepository {
   create(subscription: UserSubscription): Promise<UserSubscription>;

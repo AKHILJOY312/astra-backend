@@ -4,7 +4,7 @@ import { User, UserProps } from "../../../../domain/entities/user/User";
 import {
   IUserRepository,
   PaginationResult,
-} from "../../../../application/repositories/IUserRepository";
+} from "../../../../application/ports/repositories/IUserRepository";
 import { ListUsersQuery } from "@/application/use-cases/user/ListUserUseCase";
 
 export class UserRepository implements IUserRepository {

@@ -4,7 +4,7 @@ import {
   IRazorpayService,
   RazorpayOrderInput,
   RazorpayOrderResponse,
-} from "@/application/services/IRazorpayService";
+} from "@/application/ports/services/IRazorpayService";
 import crypto from "crypto";
 
 export class RazorpayService implements IRazorpayService {
