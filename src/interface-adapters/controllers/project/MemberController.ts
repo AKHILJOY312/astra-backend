@@ -9,6 +9,7 @@ import { HTTP_STATUS } from "../../http/constants/httpStatus";
 import { ERROR_MESSAGES } from "@/interface-adapters/http/constants/messages";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
+import { ListProjectMembersUseCase } from "@/application/use-cases/project/ListProjectMembersUseCase";
 
 @injectable()
 export class MemberController {
@@ -19,7 +20,9 @@ export class MemberController {
     private removeMemberUseCase: RemoveMemberFromProjectUseCase,
     @inject(TYPES.ChangeMemberRoleUseCase)
     private changeRoleUseCase: ChangeMemberRoleUseCase,
-    @inject(TYPES.UserService) private userService: UserService
+    @inject(TYPES.UserService) private userService: UserService,
+    @inject(TYPES.ListProjectMembers)
+    private listProjectMembersUC: ListProjectMembersUseCase
   ) {}
 
   // POST /projects/:projectId/members
@@ -69,6 +72,25 @@ export class MemberController {
         return res.status(HTTP_STATUS.FORBIDDEN).json({ error: err.message });
       }
       return res.status(HTTP_STATUS.BAD_REQUEST).json({ error: err.message });
+    }
+  }
+
+  async listMembers(req: Request, res: Response) {
+    const { projectId } = req.params;
+    const requestedBy = req.user!.id;
+
+    try {
+      const members = await this.listProjectMembersUC.execute({
+        projectId,
+        requestedBy,
+      });
+
+      return res.status(HTTP_STATUS.OK).json({
+        success: true,
+        data: members,
+      });
+    } catch (err: any) {
+      return res.status(HTTP_STATUS.FORBIDDEN).json({ error: err.message });
     }
   }
 

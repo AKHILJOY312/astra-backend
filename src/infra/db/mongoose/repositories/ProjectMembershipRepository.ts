@@ -1,10 +1,12 @@
 // src/infrastructure/persistence/mongoose/repositories/ProjectMembershipRepository.ts
+import { ProjectMemberView } from "@/application/dto/project/ProjectMemberView";
 import { IProjectMembershipRepository } from "../../../../application/ports/repositories/IProjectMembershipRepository";
 import { ProjectMembership } from "../../../../domain/entities/project/ProjectMembership";
 import {
   ProjectMembershipModel,
   toProjectMembershipEntity,
 } from "../models/ProjectMembershipModal";
+import mongoose from "mongoose";
 
 export class ProjectMembershipRepository
   implements IProjectMembershipRepository
@@ -81,6 +83,48 @@ export class ProjectMembershipRepository
       projectId,
       userId,
       role: "manager",
+    }));
+  }
+
+  async findMembersWithUserDetails(
+    projectId: string
+  ): Promise<ProjectMemberView[]> {
+    const results = await ProjectMembershipModel.aggregate([
+      {
+        $match: {
+          projectId: new mongoose.Types.ObjectId(projectId),
+        },
+      },
+      {
+        $lookup: {
+          from: "users", // MongoDB collection name
+          localField: "userId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: "$user" },
+      {
+        $project: {
+          _id: 1,
+          role: 1,
+          joinedAt: 1,
+          "user._id": 1,
+          "user.name": 1,
+          "user.email": 1,
+        },
+      },
+    ]);
+
+    return results.map((m) => ({
+      id: m._id.toString(),
+      role: m.role,
+      joinedAt: m.joinedAt,
+      user: {
+        id: m.user._id.toString(),
+        name: m.user.name,
+        email: m.user.email,
+      },
     }));
   }
 }
