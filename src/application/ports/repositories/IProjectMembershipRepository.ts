@@ -1,8 +1,6 @@
 // src/core/repositories/IProjectMembershipRepository.ts
-import {
-  ProjectMembership,
-  ProjectRole,
-} from "../../../domain/entities/project/ProjectMembership";
+import { ProjectMemberView } from "@/application/dto/project/ProjectMemberView";
+import { ProjectMembership } from "../../../domain/entities/project/ProjectMembership";
 
 export interface IProjectMembershipRepository {
   create(membership: ProjectMembership): Promise<ProjectMembership>;
@@ -22,4 +20,5 @@ export interface IProjectMembershipRepository {
   countManagersInProject(projectId: string): Promise<number>;
 
   existsManagerInProject(projectId: string, userId: string): Promise<boolean>;
+  findMembersWithUserDetails(projectId: string): Promise<ProjectMemberView[]>;
 }

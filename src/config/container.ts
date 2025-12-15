@@ -82,6 +82,7 @@ import { MessageController } from "@/interface-adapters/controllers/message/Mess
 
 // Middleware
 import { createProtectMiddleware } from "../infra/middleware/protect";
+import { ListProjectMembersUseCase } from "@/application/use-cases/project/ListProjectMembersUseCase";
 
 const container = new Container();
 
@@ -201,7 +202,9 @@ container
 container
   .bind<ChangeMemberRoleUseCase>(TYPES.ChangeMemberRoleUseCase)
   .to(ChangeMemberRoleUseCase);
-
+container
+  .bind<ListProjectMembersUseCase>(TYPES.ListProjectMembers)
+  .to(ListProjectMembersUseCase);
 // Channel Use Cases
 container
   .bind<CreateChannelUseCase>(TYPES.CreateChannelUseCase)

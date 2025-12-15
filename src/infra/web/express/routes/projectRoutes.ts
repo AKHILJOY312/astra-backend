@@ -32,6 +32,11 @@ export function getProjectRoutes(container: Container): Router {
     "/:projectId/members",
     memberController.addMember.bind(memberController)
   );
+
+  router.get(
+    "/:projectId/members",
+    memberController.listMembers.bind(memberController)
+  );
   router.delete(
     "/:projectId/members/:memberId",
     memberController.removeMember.bind(memberController)
