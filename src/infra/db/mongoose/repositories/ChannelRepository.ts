@@ -20,14 +20,19 @@ export class ChannelRepository implements IChannelRepository {
   }
 
   async update(channel: Channel): Promise<Channel> {
-    const saved = await ChannelModel.findByIdAndUpdate(channel.id, {
-      channelName: channel.channelName,
-      description: channel.description,
+    const saved = await ChannelModel.findByIdAndUpdate(
+      channel.id,
+      {
+        channelName: channel.channelName,
+        description: channel.description,
 
-      visibleToRoles: channel.visibleToRoles,
-      permissionsByRole: channel.permissionsByRole,
-    });
+        visibleToRoles: channel.visibleToRoles,
+        permissionsByRole: channel.permissionsByRole,
+      },
+      { new: true }
+    );
     if (!saved) throw new Error("Channel not found for update");
+
     return toChannelEntity(saved);
   }
 
