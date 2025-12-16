@@ -7,6 +7,7 @@ export interface UserProps {
   isVerified: boolean;
   isAdmin: boolean;
   isBlocked: boolean;
+  imageUrl?: string;
   verificationToken?: string | null;
   verificationTokenExpires?: Date | null;
   resetPasswordToken?: string | null;
@@ -43,6 +44,9 @@ export class User {
   }
   get isBlocked(): boolean {
     return this._props.isBlocked;
+  }
+  get ImageUrl(): string | undefined {
+    return this._props.imageUrl;
   }
   get securityStamp(): string | undefined {
     return this._props.securityStamp;
@@ -102,5 +106,8 @@ export class User {
   }
   setAdminRole(isAdmin: boolean): void {
     this._props.isAdmin = isAdmin;
+  }
+  setImageUrl(imageUrl: string): void {
+    this._props.imageUrl = imageUrl;
   }
 }

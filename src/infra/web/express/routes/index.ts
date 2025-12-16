@@ -8,7 +8,7 @@ import { getAdminUserRoutes } from "./admin/adminUsersRoutes";
 import { getProjectRoutes } from "./projectRoutes";
 import { getChannelRoutes } from "./channelRoutes";
 import { getSubscriptionRoutes } from "./subscriptionRoutes";
-
+import { getUserRoutes } from "./userRoutes";
 const router = Router();
 
 router.use((req, res, next) => {
@@ -22,6 +22,7 @@ router.use("/admin/auth", getAdminAuthRoutes(container));
 router.use("/admin/plans", getAdminPlanRoutes(container));
 router.use("/admin/users", getAdminUserRoutes(container));
 
+router.use("/users", getUserRoutes(container));
 router.use("/projects", getProjectRoutes(container));
 router.use("/projects/:projectId/channels", getChannelRoutes(container));
 router.use("/subscription", getSubscriptionRoutes(container));

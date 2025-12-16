@@ -21,11 +21,12 @@ export class UserRepository implements IUserRepository {
       resetPasswordToken: doc.resetPasswordToken ?? null,
       resetPasswordExpires: doc.resetPasswordExpires ?? null,
       securityStamp: doc.securityStamp,
+      imageUrl: doc.avatar_url ?? null,
     };
 
     const user = new User(props);
     if (doc._id) {
-      user.setId(doc._id.toString()); // ← CORRECT
+      user.setId(doc._id.toString());
     }
     return user;
   }

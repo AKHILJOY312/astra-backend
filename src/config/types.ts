@@ -29,6 +29,7 @@ const TYPES = {
   ChannelController: Symbol.for("ChannelController"),
   SubscriptionController: Symbol.for("SubscriptionController"),
   MessageController: Symbol.for("MessageController"),
+  UserController: Symbol.for("UserController"),
 
   // Use Cases (User/Auth)
   RegisterUser: Symbol.for("RegisterUser"),
@@ -51,6 +52,11 @@ const TYPES = {
   ListUsersUseCase: Symbol.for("ListUsersUseCase"),
   BlockUserUseCase: Symbol.for("BlockUserUseCase"),
   AssignAdminRoleUseCase: Symbol.for("AssignAdminRoleUseCase"),
+
+  // Use Cases ( User)
+  GetUserProfileUseCase: Symbol.for("GetUserProfileUseCase"),
+  UpdateUserProfileUseCase: Symbol.for("UpdateUserProfileUseCase"),
+  DeleteUserAccountUseCase: Symbol.for("DeleteUserAccountUseCase"),
 
   // Use Cases (Plan Admin)
   CreatePlan: Symbol.for("CreatePlan"),

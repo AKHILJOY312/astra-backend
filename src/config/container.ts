@@ -84,6 +84,10 @@ import { MessageController } from "@/interface-adapters/controllers/message/Mess
 import { createProtectMiddleware } from "../infra/middleware/protect";
 import { ListProjectMembersUseCase } from "@/application/use-cases/project/ListProjectMembersUseCase";
 import { UpdateProjectUseCase } from "@/application/use-cases/project/UpdateProjectUseCase";
+import { UserController } from "@/interface-adapters/controllers/user/UserController";
+import { GetUserProfileUseCase } from "@/application/use-cases/user/GetUserProfileUseCase";
+import { UpdateUserProfileUseCase } from "@/application/use-cases/user/UpdateUserProfileUseCase";
+import { DeleteUserAccountUseCase } from "@/application/use-cases/user/DeleteUserAccountUseCase";
 
 const container = new Container();
 
@@ -176,6 +180,17 @@ container
   .bind<AssignAdminRoleUseCase>(TYPES.AssignAdminRoleUseCase)
   .to(AssignAdminRoleUseCase);
 
+//User Use Case
+container
+  .bind<GetUserProfileUseCase>(TYPES.GetUserProfileUseCase)
+  .to(GetUserProfileUseCase);
+container
+  .bind<UpdateUserProfileUseCase>(TYPES.UpdateUserProfileUseCase)
+  .to(UpdateUserProfileUseCase);
+container
+  .bind<DeleteUserAccountUseCase>(TYPES.DeleteUserAccountUseCase)
+  .to(DeleteUserAccountUseCase);
+
 // Plan Use Cases
 container.bind<CreatePlan>(TYPES.CreatePlan).to(CreatePlan);
 container.bind<UpdatePlan>(TYPES.UpdatePlan).to(UpdatePlan);
@@ -265,6 +280,7 @@ container
 container
   .bind<MessageController>(TYPES.MessageController)
   .to(MessageController);
+container.bind<UserController>(TYPES.UserController).to(UserController);
 
 export { container };
 
