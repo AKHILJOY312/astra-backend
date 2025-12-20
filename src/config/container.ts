@@ -81,7 +81,7 @@ import { SubscriptionController } from "../interface-adapters/controllers/plan/S
 import { MessageController } from "@/interface-adapters/controllers/message/MessageController";
 
 // Middleware
-import { createProtectMiddleware } from "../infra/middleware/protect";
+import { createProtectMiddleware } from "../infra/web/express/middleware/protect";
 import { ListProjectMembersUseCase } from "@/application/use-cases/project/ListProjectMembersUseCase";
 import { UpdateProjectUseCase } from "@/application/use-cases/project/UpdateProjectUseCase";
 import { UserController } from "@/interface-adapters/controllers/user/UserController";

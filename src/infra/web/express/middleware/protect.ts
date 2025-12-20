@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { IUserRepository } from "../../application/ports/repositories/IUserRepository";
+import { IUserRepository } from "../../../../application/ports/repositories/IUserRepository";
 import {
   AUTH_MESSAGES,
   ERROR_MESSAGES,

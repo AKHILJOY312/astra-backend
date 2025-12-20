@@ -3,7 +3,7 @@ import { Container } from "inversify";
 import { TYPES } from "@/config/types";
 import { ChannelController } from "@/interface-adapters/controllers/channel/ChannelController";
 import { MessageController } from "@/interface-adapters/controllers/message/MessageController";
-import { createProtectMiddleware } from "@/infra/middleware/protect";
+import { createProtectMiddleware } from "@/infra/web/express/middleware/protect";
 
 export function getChannelRoutes(container: Container): Router {
   const router = Router({ mergeParams: true });

@@ -2,7 +2,7 @@ import { Router } from "express";
 import { Container } from "inversify";
 import { TYPES } from "@/config/types";
 import { UserController } from "@/interface-adapters/controllers/user/UserController";
-import { createProtectMiddleware } from "@/infra/middleware/protect";
+import { createProtectMiddleware } from "@/infra/web/express/middleware/protect";
 
 export function getUserRoutes(container: Container): Router {
   const router = Router();

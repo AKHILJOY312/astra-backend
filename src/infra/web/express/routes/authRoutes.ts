@@ -2,7 +2,7 @@ import { Router } from "express";
 import { Container } from "inversify";
 import { TYPES } from "@/config/types";
 import { AuthController } from "@/interface-adapters/controllers/auth/AuthController";
-import { createProtectMiddleware } from "@/infra/middleware/protect";
+import { createProtectMiddleware } from "@/infra/web/express/middleware/protect";
 import passport from "passport";
 
 export function getAuthRoutes(container: Container): Router {

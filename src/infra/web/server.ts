@@ -14,7 +14,8 @@ import passport from "passport";
 import { HTTP_STATUS } from "@/interface-adapters/http/constants/httpStatus";
 import { createSocketServer } from "../websocket/SocketServer";
 import { container } from "@/config/container";
-import { globalErrorHandler } from "../middleware/globalErrorHandler";
+import { globalErrorHandler } from "./express/middleware/globalErrorHandler";
+import { logger, morganMiddleware } from "../logger/logger";
 
 const app = express();
 const server = http.createServer(app);
@@ -41,6 +42,7 @@ const limiter = rateLimit({
 });
 
 app.use(limiter);
+app.use(morganMiddleware);
 
 setupGoogleStrategy();
 
@@ -75,5 +77,5 @@ app.use(globalErrorHandler);
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`Astra Backend running on http://localhost:${PORT}`);
+  logger.info(`Astra Backend running on http://localhost:${PORT}`);
 });

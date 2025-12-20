@@ -3,7 +3,7 @@ import { Container } from "inversify";
 import { TYPES } from "@/config/types";
 import { ProjectController } from "@/interface-adapters/controllers/project/ProjectController";
 import { MemberController } from "@/interface-adapters/controllers/project/MemberController";
-import { createProtectMiddleware } from "@/infra/middleware/protect";
+import { createProtectMiddleware } from "@/infra/web/express/middleware/protect";
 
 export function getProjectRoutes(container: Container): Router {
   const router = Router();

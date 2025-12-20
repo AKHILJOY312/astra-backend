@@ -30,7 +30,7 @@ export class JwtAuthService implements IAuthService {
       { id: userId, email, stamp: securityStamp },
       process.env.ACCESS_TOKEN_SECRET!,
       {
-        expiresIn: "7d",
+        expiresIn: "1m",
       }
     );
   }
