@@ -23,6 +23,7 @@ import {
   clearRefreshTokenCookie,
   setRefreshTokenCookie,
 } from "@/infra/web/express/utils/cookieUtils";
+import { ENV } from "@/config/env.config";
 
 @injectable()
 export class AuthController {
@@ -54,7 +55,7 @@ export class AuthController {
 
       setRefreshTokenCookie(res, refreshToken);
 
-      const redirectUrl = `${process.env.CLIENT_URL}/success?token=${accessToken}`;
+      const redirectUrl = `${ENV.CLIENT_URL}/success?token=${accessToken}`;
       res.redirect(redirectUrl);
     } catch (error) {
       // Type narrowed: error is unknown here (best practice)
@@ -64,7 +65,7 @@ export class AuthController {
           : "Authentication failed";
 
       const errorRedirect = `${
-        process.env.CLIENT_URL
+        ENV.CLIENT_URL
       }/auth/login?error=${encodeURIComponent(message)}`;
       res.redirect(errorRedirect);
     }

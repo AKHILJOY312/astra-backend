@@ -2,6 +2,7 @@
 import nodemailer, { Transporter, SendMailOptions } from "nodemailer";
 import { IEmailService } from "@/application/ports/services/IEmailService";
 import { injectable } from "inversify";
+import { ENV } from "@/config/env.config";
 
 @injectable()
 export class NodemailerEmailService implements IEmailService {
@@ -10,9 +11,9 @@ export class NodemailerEmailService implements IEmailService {
   private clientUrl: string;
 
   constructor() {
-    const email = process.env.NODEMAILER_Email;
-    const pass = process.env.NODEMAILER_Password;
-    this.clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+    const email = ENV.MAIL.USER;
+    const pass = ENV.MAIL.PASS;
+    this.clientUrl = ENV.CLIENT_URL || "http://localhost:5173";
 
     if (!email || !pass) {
       throw new Error(

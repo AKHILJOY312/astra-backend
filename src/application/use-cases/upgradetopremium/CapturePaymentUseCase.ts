@@ -3,6 +3,7 @@ import { IUserSubscriptionRepository } from "@/application/ports/repositories/IU
 import { UserSubscription } from "@/domain/entities/billing/UserSubscription";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
+import { ENV } from "@/config/env.config";
 
 export interface CapturePaymentInput {
   razorpayOrderId: string;
@@ -27,7 +28,7 @@ export class CapturePaymentUseCase {
 
     // 1️⃣ Verify Razorpay Signature
     const expectedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET!)
+      .createHmac("sha256", ENV.PAYMENTS.RAZORPAY_SECRET!)
       .update(`${razorpayOrderId}|${razorpayPaymentId}`)
       .digest("hex");
 

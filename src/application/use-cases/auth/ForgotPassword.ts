@@ -3,6 +3,7 @@ import { IUserRepository } from "../../ports/repositories/IUserRepository";
 import { IEmailService } from "../../ports/services/IEmailService";
 import crypto from "crypto";
 import { TYPES } from "@/config/types";
+import { ENV } from "@/config/env.config";
 
 @injectable()
 export class ForgotPassword {
@@ -25,7 +26,7 @@ export class ForgotPassword {
     user.setResetToken(token, expires);
     await this.userRepo.save(user);
 
-    const resetUrl = `${process.env.CLIENT_URL}/verify-email?token=${token}&type=reset`;
+    const resetUrl = `${ENV.CLIENT_URL}/verify-email?token=${token}&type=reset`;
     await this.email.sendPasswordReset(email, token, resetUrl);
     console.log("resetUrl: ", resetUrl);
     return { message: "Password reset link sent to your email" };

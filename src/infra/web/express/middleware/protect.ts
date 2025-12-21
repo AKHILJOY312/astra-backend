@@ -6,6 +6,7 @@ import {
   ERROR_MESSAGES,
 } from "@/interface-adapters/http/constants/messages";
 import { HTTP_STATUS } from "@/interface-adapters/http/constants/httpStatus";
+import { ENV } from "@/config/env.config";
 
 interface JwtPayload {
   id: string;
@@ -40,10 +41,7 @@ export const createProtectMiddleware = (userRepo: IUserRepository) => {
       "---------------------------------------------------------------------------------"
     );
     try {
-      const decoded = jwt.verify(
-        token,
-        process.env.ACCESS_TOKEN_SECRET!
-      ) as JwtPayload;
+      const decoded = jwt.verify(token, ENV.JWT.ACCESS_SECRET!) as JwtPayload;
 
       const user = await userRepo.findById(decoded.id);
 

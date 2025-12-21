@@ -5,6 +5,7 @@ import { IRazorpayService } from "@/application/ports/services/IRazorpayService"
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
 import { BadRequestError } from "@/application/error/AppError";
+import { ENV } from "@/config/env.config";
 
 export interface UpgradeToPlanInput {
   userId: string;
@@ -81,7 +82,7 @@ export class UpgradeToPlanUseCase {
       razorpayOrderId: order.id,
       amount: order.amount,
       currency: order.currency,
-      keyId: process.env.RAZORPAY_KEY_ID!,
+      keyId: ENV.PAYMENTS.RAZORPAY_ID!,
     };
   }
 

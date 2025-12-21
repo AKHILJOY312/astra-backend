@@ -6,14 +6,15 @@ import {
   RazorpayOrderResponse,
 } from "@/application/ports/services/IRazorpayService";
 import crypto from "crypto";
+import { ENV } from "@/config/env.config";
 
 export class RazorpayService implements IRazorpayService {
   private razorpay: Razorpay;
 
   constructor() {
     this.razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID!,
-      key_secret: process.env.RAZORPAY_KEY_SECRET!,
+      key_id: ENV.PAYMENTS.RAZORPAY_ID!,
+      key_secret: ENV.PAYMENTS.RAZORPAY_SECRET!,
     });
   }
 
@@ -33,7 +34,7 @@ export class RazorpayService implements IRazorpayService {
   }): boolean {
     const text = `${params.razorpay_order_id}|${params.razorpay_payment_id}`;
     const generatedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET!)
+      .createHmac("sha256", ENV.PAYMENTS.RAZORPAY_SECRET!)
       .update(text)
       .digest("hex");
 

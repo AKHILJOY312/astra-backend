@@ -136,6 +136,7 @@ import { AuthenticatedSocket } from "./handlers/BaseSocketHandler";
 import { MessageHandler } from "./handlers/MessageHandler";
 import { ChannelHandler } from "./handlers/ChannelHandler";
 import { JwtPayload } from "./types/type";
+import { ENV } from "@/config/env.config";
 
 const authenticateSocket = (socket: Socket, next: (err?: Error) => void) => {
   const token = socket.handshake.auth?.token as string | undefined;
@@ -145,10 +146,7 @@ const authenticateSocket = (socket: Socket, next: (err?: Error) => void) => {
   }
 
   try {
-    const payload = jwt.verify(
-      token,
-      process.env.ACCESS_TOKEN_SECRET!
-    ) as JwtPayload;
+    const payload = jwt.verify(token, ENV.JWT.ACCESS_SECRET!) as JwtPayload;
     (socket as AuthenticatedSocket).data.user = payload;
     next();
   } catch {
@@ -162,7 +160,7 @@ export function createSocketServer(
 ) {
   const io = new Server(httpServer, {
     cors: {
-      origin: process.env.CLIENT_URL || "http://localhost:5173",
+      origin: ENV.CLIENT_URL || "http://localhost:5173",
       credentials: true,
     },
   });

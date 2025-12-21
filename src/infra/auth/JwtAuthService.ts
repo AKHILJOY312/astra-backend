@@ -1,11 +1,12 @@
 // src/infrastructure/auth/JwtAuthService.ts
-import jwt from "jsonwebtoken";
+import jwt, { SignOptions } from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { IAuthService } from "../../application/ports/services/IAuthService";
 import crypto from "crypto";
 import { IUserRepository } from "@/application/ports/repositories/IUserRepository";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
+import { ENV } from "@/config/env.config";
 
 @injectable()
 export class JwtAuthService implements IAuthService {
@@ -26,24 +27,26 @@ export class JwtAuthService implements IAuthService {
     email: string,
     securityStamp: string
   ): string {
+    const options: SignOptions = {
+      expiresIn: ENV.JWT.ACCESS_EXPIRY as SignOptions["expiresIn"],
+    };
     return jwt.sign(
       { id: userId, email, stamp: securityStamp },
-      process.env.ACCESS_TOKEN_SECRET!,
-      {
-        expiresIn: "1m",
-      }
+      ENV.JWT.ACCESS_SECRET!,
+      options
     );
   }
 
   generateRefreshToken(userId: string): string {
-    return jwt.sign({ id: userId }, process.env.REFRESH_TOKEN_SECRET!, {
-      expiresIn: "7d",
-    });
+    const options: SignOptions = {
+      expiresIn: ENV.JWT.REFRESH_EXPIRY as SignOptions["expiresIn"],
+    };
+    return jwt.sign({ id: userId }, ENV.JWT.REFRESH_SECRET!, options);
   }
 
   verifyRefreshToken(token: string): { id: string } | null {
     try {
-      return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET!) as {
+      return jwt.verify(token, ENV.JWT.REFRESH_SECRET!) as {
         id: string;
       };
     } catch {

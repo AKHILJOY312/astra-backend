@@ -1,6 +1,7 @@
 // src/utils/logger.ts
 import winston from "winston";
 import morgan from "morgan";
+import { ENV } from "@/config/env.config";
 
 // Custom format for console (pretty in development)
 const consoleFormat = winston.format.combine(
@@ -22,7 +23,7 @@ const fileFormat = winston.format.combine(
 
 // Create Winston logger
 const logger = winston.createLogger({
-  level: process.env.NODE_ENV === "production" ? "info" : "debug",
+  level: ENV.NODE_ENV === "production" ? "info" : "debug",
   format: fileFormat,
   transports: [
     // Write all logs with level `error` and below to `error.log`
@@ -33,7 +34,7 @@ const logger = winston.createLogger({
 });
 
 // Add console transport in development
-if (process.env.NODE_ENV !== "production") {
+if (ENV.NODE_ENV !== "production") {
   logger.add(
     new winston.transports.Console({
       format: consoleFormat,
