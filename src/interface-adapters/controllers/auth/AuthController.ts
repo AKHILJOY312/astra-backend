@@ -18,7 +18,10 @@ import { AUTH_MESSAGES } from "@/interface-adapters/http/constants/messages";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
 import { asyncHandler } from "@/infra/web/express/handler/asyncHandler";
-import { BadRequestError } from "@/application/error/AppError";
+import {
+  BadRequestError,
+  UnauthorizedError,
+} from "@/application/error/AppError";
 import {
   clearRefreshTokenCookie,
   setRefreshTokenCookie,
@@ -97,16 +100,39 @@ export class AuthController {
 
   refreshToken = asyncHandler(async (req: Request, res: Response) => {
     const token = req.cookies.refreshToken;
-    if (!token)
-      return res
-        .status(HTTP_STATUS.UNAUTHORIZED)
-        .json({ message: AUTH_MESSAGES.NO_REFRESH_TOKEN });
+    if (!token) {
+      throw new UnauthorizedError(AUTH_MESSAGES.NO_REFRESH_TOKEN);
+    }
+    // return res
+    //   .status(HTTP_STATUS.UNAUTHORIZED)
+    //   .json({ message: AUTH_MESSAGES.NO_REFRESH_TOKEN });
 
     const { accessToken } = await this.refreshUC.execute(token);
     res.json({ accessToken });
   });
 
-  logout = (_: Request, res: Response) => {
+  // logout = (_: Request, res: Response) => {
+  //   clearRefreshTokenCookie(res);
+  //   res.json({ message: AUTH_MESSAGES.LOGOUT_SUCCESS });
+  // };
+  logout = async (req: Request, res: Response) => {
+    const refreshToken = req.cookies.refreshToken as string | undefined;
+    // const accessToken = req.headers.authorization?.split(" ")[1]; // Optional: if client sends it
+
+    if (!refreshToken) {
+      return res.status(200).json({ message: "No active session" });
+    }
+
+    // 1. Blacklist refresh token (using existing use case)
+    const refreshExpiresAt: Date = new Date(
+      Date.now() + 7 * 24 * 60 * 60 * 1000
+    ); // fallback
+    // const refreshPayload = jwt.decode(refreshToken) as { exp?: number } | null;
+    // if (refreshPayload?.exp) {
+    //   refreshExpiresAt = new Date(refreshPayload.exp * 1000);
+    // }
+
+    await this.logoutUC.execute(refreshToken, refreshExpiresAt);
     clearRefreshTokenCookie(res);
     res.json({ message: AUTH_MESSAGES.LOGOUT_SUCCESS });
   };
@@ -120,10 +146,13 @@ export class AuthController {
 
   forgotPassword = asyncHandler(async (req: Request, res: Response) => {
     const { email } = req.body;
-    if (!email)
-      return res
-        .status(HTTP_STATUS.BAD_REQUEST)
-        .json({ message: AUTH_MESSAGES.EMAIL_REQUIRED });
+    if (!email) {
+      throw new BadRequestError(AUTH_MESSAGES.EMAIL_REQUIRED);
+    }
+    // return res
+    //   .status(HTTP_STATUS.BAD_REQUEST)
+    //   .json({ message: AUTH_MESSAGES.EMAIL_REQUIRED });
+
     const msg = await this.forgotUC.execute(email);
     res.json(msg);
   });

@@ -88,6 +88,7 @@ import { UserController } from "@/interface-adapters/controllers/user/UserContro
 import { GetUserProfileUseCase } from "@/application/use-cases/user/GetUserProfileUseCase";
 import { UpdateUserProfileUseCase } from "@/application/use-cases/user/UpdateUserProfileUseCase";
 import { DeleteUserAccountUseCase } from "@/application/use-cases/user/DeleteUserAccountUseCase";
+import { MongoTokenBlacklistService } from "@/infra/services/MongoTokenBlacklistService";
 
 const container = new Container();
 
@@ -138,6 +139,10 @@ container
   .bind<RazorpayService>(TYPES.PaymentService)
   .to(RazorpayService)
   .inSingletonScope();
+container
+  .bind<MongoTokenBlacklistService>(TYPES.TokenBlacklistService)
+  .to(MongoTokenBlacklistService)
+  .inSingletonScope();
 
 // --- Middleware
 // Protect middleware is a factory function, so we bind the result of the function
@@ -146,7 +151,10 @@ container
   .bind(TYPES.ProtectMiddleware)
   .toDynamicValue(() => {
     const userRepo = container.get<UserRepository>(TYPES.UserRepository);
-    return createProtectMiddleware(userRepo);
+    const blacklistService = container.get<MongoTokenBlacklistService>(
+      TYPES.TokenBlacklistService
+    );
+    return createProtectMiddleware(userRepo, blacklistService);
   })
   .inSingletonScope();
 

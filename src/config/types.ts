@@ -15,7 +15,7 @@ const TYPES = {
   AuthService: Symbol.for("AuthService"), // For JwtAuthService
   EmailService: Symbol.for("EmailService"), // For NodemailerEmailService
   PaymentService: Symbol.for("PaymentService"), // For RazorpayService
-
+  TokenBlacklistService: Symbol.for("TokenBlacklistService"),
   // Middleware
   ProtectMiddleware: Symbol.for("ProtectMiddleware"),
 
