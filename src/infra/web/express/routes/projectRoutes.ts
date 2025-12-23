@@ -4,6 +4,7 @@ import { TYPES } from "@/config/types";
 import { ProjectController } from "@/interface-adapters/controllers/project/ProjectController";
 import { MemberController } from "@/interface-adapters/controllers/project/MemberController";
 import { createProtectMiddleware } from "@/infra/web/express/middleware/protect";
+import { API_ROUTES } from "@/config/routes.config";
 
 export function getProjectRoutes(container: Container): Router {
   const router = Router();
@@ -20,27 +21,27 @@ export function getProjectRoutes(container: Container): Router {
 
   router.use(protect);
 
-  router.post("/", projectController.createProject.bind(projectController));
+  router
+    .route(API_ROUTES.PROJECTS.BASE)
+    .post(projectController.createProject.bind(projectController))
+    .get(projectController.getUserProjects.bind(projectController));
 
-  router.get("/", projectController.getUserProjects.bind(projectController));
   router.patch(
-    "/:projectId",
+    API_ROUTES.PROJECTS.BY_ID,
     projectController.updateProject.bind(projectController)
   );
-  router.post(
-    "/:projectId/members",
-    memberController.addMember.bind(memberController)
-  );
-  router.get(
-    "/:projectId/members",
-    memberController.listMembers.bind(memberController)
-  );
+
+  router
+    .route(API_ROUTES.PROJECTS.MEMBERS)
+    .post(memberController.addMember.bind(memberController))
+    .get(memberController.listMembers.bind(memberController));
+
   router.delete(
-    "/:projectId/members/:memberId",
+    API_ROUTES.PROJECTS.BY_MEMBER_ID,
     memberController.removeMember.bind(memberController)
   );
   router.patch(
-    "/:projectId/members/:memberId/role",
+    API_ROUTES.PROJECTS.MEMBER_ROLE,
     memberController.changeRole.bind(memberController)
   );
 

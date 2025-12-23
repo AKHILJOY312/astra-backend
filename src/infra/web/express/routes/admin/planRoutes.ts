@@ -4,6 +4,7 @@ import { TYPES } from "@/config/types";
 import { PlanController } from "@/interface-adapters/controllers/plan/PlanController";
 import { createProtectMiddleware } from "@/infra/web/express/middleware/protect";
 import { adminOnly } from "@/infra/web/express/middleware/adminOnly";
+import { API_ROUTES } from "@/config/routes.config";
 
 export function getAdminPlanRoutes(container: Container): Router {
   const router = Router();
@@ -16,12 +17,12 @@ export function getAdminPlanRoutes(container: Container): Router {
   router.use(protect, adminOnly);
 
   router
-    .route("/")
+    .route(API_ROUTES.ADMIN.ROOT)
     .post(planController.create.bind(planController))
     .get(planController.getAll.bind(planController));
 
   router
-    .route("/:id")
+    .route(API_ROUTES.ADMIN.BY_ID)
     .put(planController.update.bind(planController))
     .delete(planController.delete.bind(planController));
 

@@ -4,6 +4,7 @@ import { TYPES } from "@/config/types";
 import { AuthController } from "@/interface-adapters/controllers/auth/AuthController";
 import { createProtectMiddleware } from "@/infra/web/express/middleware/protect";
 import passport from "passport";
+import { API_ROUTES } from "@/config/routes.config";
 
 export function getAuthRoutes(container: Container): Router {
   const router = Router();
@@ -14,27 +15,55 @@ export function getAuthRoutes(container: Container): Router {
     TYPES.ProtectMiddleware
   );
 
-  router.post("/register", authController.register);
-  router.get("/verify-email", authController.verifyEmail);
-  router.post("/login", authController.login);
-  router.post("/refresh-token", authController.refreshToken);
-  router.post("/logout", authController.logout);
-  router.get("/me", protect, authController.me);
-  router.post("/forgot-password", authController.forgotPassword);
-  router.get("/verify-reset-token", authController.verifyResetToken);
-  router.post("/reset-password", authController.resetPassword);
-
-  router.get("/google", authController.googleLogin);
+  router.post(
+    API_ROUTES.AUTH.REGISTER,
+    authController.register.bind(authController)
+  );
+  router.get(
+    API_ROUTES.AUTH.VERIFY_EMAIL,
+    authController.verifyEmail.bind(authController)
+  );
+  router.post(API_ROUTES.AUTH.LOGIN, authController.login.bind(authController));
+  router.post(
+    API_ROUTES.AUTH.REFRESH,
+    authController.refreshToken.bind(authController)
+  );
+  router.post(
+    API_ROUTES.AUTH.LOGOUT,
+    authController.logout.bind(authController)
+  );
+  router.get(
+    API_ROUTES.AUTH.ME,
+    protect,
+    authController.me.bind(authController)
+  );
+  router.post(
+    API_ROUTES.AUTH.FORGOT_PASSWORD,
+    authController.forgotPassword.bind(authController)
+  );
+  router.get(
+    API_ROUTES.AUTH.VERIFY_RESET_TOKEN,
+    authController.verifyResetToken.bind(authController)
+  );
+  router.post(
+    API_ROUTES.AUTH.RESET_PASSWORD,
+    authController.resetPassword.bind(authController)
+  );
 
   router.get(
-    "/google/passport",
+    API_ROUTES.AUTH.GOOGLE.ROOT,
+    authController.googleLogin.bind(authController)
+  );
+
+  router.get(
+    API_ROUTES.AUTH.GOOGLE.PASSPORT,
     passport.authenticate("google", { scope: ["profile", "email"] })
   );
 
   router.get(
-    "/google/callback",
+    API_ROUTES.AUTH.GOOGLE.CALLBACK,
     passport.authenticate("google", { session: false }),
-    authController.googleCallback
+    authController.googleCallback.bind(authController)
   );
 
   return router;

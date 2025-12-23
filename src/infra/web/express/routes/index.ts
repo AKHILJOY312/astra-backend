@@ -9,6 +9,7 @@ import { getProjectRoutes } from "./projectRoutes";
 import { getChannelRoutes } from "./channelRoutes";
 import { getSubscriptionRoutes } from "./subscriptionRoutes";
 import { getUserRoutes } from "./userRoutes";
+import { API_ROUTES } from "@/config/routes.config";
 const router = Router();
 
 router.use((req, res, next) => {
@@ -16,15 +17,15 @@ router.use((req, res, next) => {
   next();
 });
 
-router.use("/auth", getAuthRoutes(container));
+router.use(API_ROUTES.AUTH.ROOT, getAuthRoutes(container));
 
-router.use("/admin/auth", getAdminAuthRoutes(container));
-router.use("/admin/plans", getAdminPlanRoutes(container));
-router.use("/admin/users", getAdminUserRoutes(container));
+router.use(API_ROUTES.ADMIN.AUTH, getAdminAuthRoutes(container));
+router.use(API_ROUTES.ADMIN.PLANS, getAdminPlanRoutes(container));
+router.use(API_ROUTES.ADMIN.USERS, getAdminUserRoutes(container));
 
-router.use("/users", getUserRoutes(container));
-router.use("/projects", getProjectRoutes(container));
-router.use("/projects/:projectId/channels", getChannelRoutes(container));
-router.use("/subscription", getSubscriptionRoutes(container));
+router.use(API_ROUTES.USERS.ROOT, getUserRoutes(container));
+router.use(API_ROUTES.PROJECTS.ROOT, getProjectRoutes(container));
+router.use(API_ROUTES.PROJECTS.CHANNELS, getChannelRoutes(container));
+router.use(API_ROUTES.SUBSCRIPTION.ROOT, getSubscriptionRoutes(container));
 
 export default router;
