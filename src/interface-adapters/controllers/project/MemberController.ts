@@ -3,7 +3,6 @@ import { Request, Response } from "express";
 import { AddMemberToProjectUseCase } from "../../../application/use-cases/project/AddMemberToProjectUseCase";
 import { RemoveMemberFromProjectUseCase } from "../../../application/use-cases/project/RemoveMemberFromProjectUseCase";
 import { ChangeMemberRoleUseCase } from "../../../application/use-cases/project/ChangeMemberRoleUseCase";
-import { z } from "zod";
 import { UserService } from "../../../application/services/UserService";
 import { HTTP_STATUS } from "../../http/constants/httpStatus";
 // import { ERROR_MESSAGES } from "@/interface-adapters/http/constants/messages";
@@ -12,15 +11,10 @@ import { TYPES } from "@/config/types";
 import { ListProjectMembersUseCase } from "@/application/use-cases/project/ListProjectMembersUseCase";
 import { NotFoundError, ValidationError } from "@/application/error/AppError";
 import { asyncHandler } from "@/infra/web/express/handler/asyncHandler";
-
-const AddMemberSchema = z.object({
-  userEmail: z.string().email(),
-  role: z.enum(["member", "lead", "manager"]).optional().default("member"),
-});
-
-const ChangeRoleSchema = z.object({
-  role: z.enum(["member", "lead", "manager"]),
-});
+import {
+  AddMemberSchema,
+  ChangeRoleSchema,
+} from "@/interface-adapters/http/validators/memberValidators";
 
 @injectable()
 export class MemberController {

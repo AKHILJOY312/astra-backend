@@ -1,6 +1,5 @@
 // src/interfaces/http/controllers/channel/ChannelController.ts
 import { Request, Response } from "express";
-import { z } from "zod";
 import { HTTP_STATUS } from "../../http/constants/httpStatus";
 
 import { CreateChannelUseCase } from "@/application/use-cases/channel/CreateChannelUseCase";
@@ -12,27 +11,10 @@ import { TYPES } from "@/config/types";
 import { BadRequestError, ValidationError } from "@/application/error/AppError";
 import { asyncHandler } from "@/infra/web/express/handler/asyncHandler";
 import { CHANNEL_MESSAGES } from "@/interface-adapters/http/constants/messages";
-
-const CreateChannelSchema = z.object({
-  channelName: z.string().min(1),
-  description: z.string().optional(),
-  visibleToRoles: z.array(z.string()),
-  permissionsByRole: z.record(
-    z.string(),
-    z.enum(["view", "message", "manager"])
-  ),
-});
-
-const EditChannelSchema = z.object({
-  channelId: z.string(),
-  userId: z.string(),
-  channelName: z.string().optional(),
-  description: z.string().optional(),
-  visibleToRoles: z.array(z.string()).optional(),
-  permissionsByRole: z
-    .record(z.string(), z.enum(["view", "message", "manager"]))
-    .optional(),
-});
+import {
+  CreateChannelSchema,
+  EditChannelSchema,
+} from "@/interface-adapters/http/validators/channelValidators";
 
 @injectable()
 export class ChannelController {

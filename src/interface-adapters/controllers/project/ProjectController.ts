@@ -1,7 +1,7 @@
 // src/interfaces/http/controllers/project/ProjectController.ts
 import { Request, Response } from "express";
 import { CreateProjectUseCase } from "../../../application/use-cases/project/CreateProjectUseCase";
-import { z } from "zod";
+
 import { GetUserProjectsUseCase } from "../../../application/use-cases/project/GetUserProjectsUseCase";
 import { HTTP_STATUS } from "../../http/constants/httpStatus";
 // import { ERROR_MESSAGES } from "@/interface-adapters/http/constants/messages";
@@ -11,24 +11,11 @@ import { UpdateProjectUseCase } from "@/application/use-cases/project/UpdateProj
 import { ValidationError } from "@/application/error/AppError";
 import { asyncHandler } from "@/infra/web/express/handler/asyncHandler";
 import { PROJECT_MESSAGE } from "@/interface-adapters/http/constants/messages";
-
-const CreateProjectSchema = z.object({
-  projectName: z.string().min(1).max(100),
-  description: z.string().optional(),
-  imageUrl: z.string().url().nullable().optional(),
-});
-
-const UpdateProjectSchema = z.object({
-  projectName: z.string().min(1).max(100).optional(),
-  description: z.string().optional(),
-  imageUrl: z.string().url().nullable().optional(),
-});
-
-const PaginationQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(30).default(10),
-  search: z.string().optional(),
-});
+import {
+  CreateProjectSchema,
+  PaginationQuerySchema,
+  UpdateProjectSchema,
+} from "@/interface-adapters/http/validators/projectValidators";
 
 @injectable()
 export class ProjectController {

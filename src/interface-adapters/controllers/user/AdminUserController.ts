@@ -5,15 +5,9 @@ import { BlockUserUseCase } from "../../../application/use-cases/user/BlockUserU
 import { AssignAdminRoleUseCase } from "../../../application/use-cases/user/AssingAdminRoleUseCase";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
-import { z } from "zod";
 import { BadRequestError } from "@/application/error/AppError";
 import { asyncHandler } from "@/infra/web/express/handler/asyncHandler";
-
-const ListUsersQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(30).default(10),
-  search: z.string().optional(),
-});
+import { ListUsersQuerySchema } from "@/interface-adapters/http/validators/adminUserValidators";
 
 @injectable()
 export class AdminUserController {
