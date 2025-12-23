@@ -4,7 +4,10 @@ import { UpgradeToPlanUseCase } from "@/application/use-cases/upgradetopremium/U
 import { GetUserLimitsUseCase } from "@/application/use-cases/upgradetopremium/GetUserLimitsUseCase";
 import { GetAvailablePlansUseCase } from "@/application/use-cases/plan/user/GetAvailablePlansUseCase";
 import { CapturePaymentUseCase } from "@/application/use-cases/upgradetopremium/CapturePaymentUseCase";
-import { SUB_MESSAGE } from "@/interface-adapters/http/constants/messages";
+import {
+  PLAN_MESSAGES,
+  SUB_MESSAGE,
+} from "@/interface-adapters/http/constants/messages";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
 import { BadRequestError } from "@/application/error/AppError";
@@ -43,7 +46,7 @@ export class SubscriptionController {
     const { planId } = req.body;
 
     if (!planId) {
-      throw new BadRequestError("Plan Id required");
+      throw new BadRequestError(PLAN_MESSAGES.ID_NEEDED);
     }
 
     const result = await this.upgradeUseCase.execute({ userId, planId });

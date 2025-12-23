@@ -6,6 +6,7 @@ import { AdminResetPassword } from "../../../application/use-cases/auth/admin/Ad
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
 import { asyncHandler } from "@/infra/web/express/handler/asyncHandler";
+import { AUTH_MESSAGES } from "@/interface-adapters/http/constants/messages";
 
 @injectable()
 export class AdminAuthController {
@@ -32,6 +33,6 @@ export class AdminAuthController {
   resetPassword = asyncHandler(async (req: Request, res: Response) => {
     const { token, password, confirmPassword } = req.body;
     await this.adminResetPassword.execute(token, password, confirmPassword);
-    res.json({ message: "Password reset successful" });
+    res.json({ message: AUTH_MESSAGES.PASSWORD_RESET_SUCCESS });
   });
 }

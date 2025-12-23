@@ -152,4 +152,11 @@ export class ProjectRepository implements IProjectRepository {
     }).exec();
     return count > 0;
   }
+  async existsByNameAndOwnerId(
+    projectName: string,
+    ownerId: string
+  ): Promise<boolean> {
+    const count = await ProjectModel.countDocuments({ projectName, ownerId });
+    return count > 0;
+  }
 }

@@ -24,4 +24,8 @@ export interface IProjectRepository extends IBaseRepository<Project> {
 
   countByOwnerId(ownerId: string): Promise<number>;
   existsByIdAndOwnerId(id: string, ownerId: string): Promise<boolean>;
+  existsByNameAndOwnerId(
+    projectName: string,
+    ownerId: string
+  ): Promise<boolean>;
 }

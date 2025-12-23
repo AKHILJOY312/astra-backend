@@ -14,7 +14,10 @@ import {
   GoogleProfile,
 } from "../../../application/use-cases/auth/GoogleLogin";
 import { HTTP_STATUS } from "../../http/constants/httpStatus";
-import { AUTH_MESSAGES } from "@/interface-adapters/http/constants/messages";
+import {
+  AUTH_MESSAGES,
+  ERROR_MESSAGES,
+} from "@/interface-adapters/http/constants/messages";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
 import { asyncHandler } from "@/infra/web/express/handler/asyncHandler";
@@ -50,7 +53,7 @@ export class AuthController {
   googleCallback = async (req: Request, res: Response) => {
     try {
       const googleProfile = req.user as GoogleProfile | undefined;
-      if (!googleProfile) throw new Error("Google login failed");
+      if (!googleProfile) throw new Error(ERROR_MESSAGES.GOOGLE_ERROR);
 
       const { accessToken, refreshToken } = await this.googleLoginUC.execute(
         googleProfile
@@ -81,7 +84,8 @@ export class AuthController {
 
   verifyEmail = asyncHandler(async (req: Request, res: Response) => {
     const { token } = req.query;
-    if (typeof token !== "string") throw new BadRequestError("Invalid token");
+    if (typeof token !== "string")
+      throw new BadRequestError(ERROR_MESSAGES.INVALID_TOKEN);
     const msg = await this.verifyEmailUC.execute(token);
     res.json(msg);
   });
@@ -120,7 +124,7 @@ export class AuthController {
     // const accessToken = req.headers.authorization?.split(" ")[1]; // Optional: if client sends it
 
     if (!refreshToken) {
-      return res.status(200).json({ message: "No active session" });
+      return res.json({ message: ERROR_MESSAGES.NO_SESSION });
     }
 
     // 1. Blacklist refresh token (using existing use case)

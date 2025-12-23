@@ -10,6 +10,7 @@ import { TYPES } from "@/config/types";
 import { UpdateProjectUseCase } from "@/application/use-cases/project/UpdateProjectUseCase";
 import { ValidationError } from "@/application/error/AppError";
 import { asyncHandler } from "@/infra/web/express/handler/asyncHandler";
+import { PROJECT_MESSAGE } from "@/interface-adapters/http/constants/messages";
 
 const CreateProjectSchema = z.object({
   projectName: z.string().min(1).max(100),
@@ -44,7 +45,7 @@ export class ProjectController {
     const result = CreateProjectSchema.safeParse(req.body);
 
     if (!result.success) {
-      throw new ValidationError("Invalid project data");
+      throw new ValidationError(PROJECT_MESSAGE.INVALID_DATA);
     }
 
     const { projectName, description, imageUrl } = result.data;
@@ -65,7 +66,7 @@ export class ProjectController {
   updateProject = asyncHandler(async (req: Request, res: Response) => {
     const result = UpdateProjectSchema.safeParse(req.body);
     if (!result.success) {
-      throw new ValidationError("Invalid update data");
+      throw new ValidationError(PROJECT_MESSAGE.INVALID_DATA);
     }
 
     const { projectId } = req.params;
@@ -86,7 +87,7 @@ export class ProjectController {
   getUserProjects = asyncHandler(async (req: Request, res: Response) => {
     const queryParsed = PaginationQuerySchema.safeParse(req.params);
     if (!queryParsed.success) {
-      throw new ValidationError("Invalid pagination parameters");
+      throw new ValidationError(PROJECT_MESSAGE.INVALID_DATA);
     }
     const { page, limit, search } = queryParsed.data;
     const userId = req.user!.id;

@@ -7,7 +7,11 @@ import { ProjectMembership } from "../../../domain/entities/project/ProjectMembe
 import { IProjectMembershipRepository } from "../../ports/repositories/IProjectMembershipRepository";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
-import { NotFoundError, PlanLimitError } from "@/application/error/AppError";
+import {
+  BadRequestError,
+  NotFoundError,
+  PlanLimitError,
+} from "@/application/error/AppError";
 
 export interface CreateProjectDTO {
   projectName: string;
@@ -35,7 +39,15 @@ export class CreateProjectUseCase {
     const { ownerId, projectName, description, imageUrl } = input;
     // 1. Count current projects
     const currentCount = await this.projectRepo.countByOwnerId(ownerId);
-
+    const sameNameExist = await this.projectRepo.existsByNameAndOwnerId(
+      projectName,
+      ownerId
+    );
+    if (sameNameExist) {
+      throw new BadRequestError(
+        "Project with this same name exists. Try a another name."
+      );
+    }
     // 2. Get user subscription + plan limits
     const subscription = await this.subscriptionRepo.findActiveByUserId(
       ownerId

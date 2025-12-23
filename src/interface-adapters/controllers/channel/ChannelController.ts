@@ -11,6 +11,7 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
 import { BadRequestError, ValidationError } from "@/application/error/AppError";
 import { asyncHandler } from "@/infra/web/express/handler/asyncHandler";
+import { CHANNEL_MESSAGES } from "@/interface-adapters/http/constants/messages";
 
 const CreateChannelSchema = z.object({
   channelName: z.string().min(1),
@@ -53,7 +54,7 @@ export class ChannelController {
       ...req.body,
     });
     if (!result.success) {
-      throw new ValidationError("Invalid channel data");
+      throw new ValidationError(CHANNEL_MESSAGES.WRONG_DATA);
     }
     const createdBy = req.user!.id;
     const { channel } = await this.createChannelUC.execute({
@@ -78,7 +79,7 @@ export class ChannelController {
       userId: req.user?.id,
     });
     if (!result.success) {
-      throw new BadRequestError("Invalid update data");
+      throw new BadRequestError(CHANNEL_MESSAGES.WRONG_DATA);
     }
     const data = await this.editChannelUC.execute({
       ...result.data,
