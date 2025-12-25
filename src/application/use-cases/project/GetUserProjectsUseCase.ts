@@ -1,26 +1,15 @@
 // src/core/use-cases/project/GetUserProjectsUseCase.ts
 import { inject, injectable } from "inversify";
-import { Project } from "../../../domain/entities/project/Project";
 import { IProjectRepository } from "../../ports/repositories/IProjectRepository";
 import { TYPES } from "@/config/types";
-
-export interface GetUserProjectsDTO {
-  userId: string;
-  page: number;
-  limit: number;
-  search: string | undefined;
-}
-
-export interface GetUserProjectsResultDTO {
-  projects: Project[];
-  page: number;
-  limit: number;
-  totalPages: number;
-  totalCount: number;
-}
+import {
+  GetUserProjectsDTO,
+  GetUserProjectsResultDTO,
+  IGetUserProjectsUseCase,
+} from "@/application/ports/use-cases/project/IGetUserProjectsUseCase";
 
 @injectable()
-export class GetUserProjectsUseCase {
+export class GetUserProjectsUseCase implements IGetUserProjectsUseCase {
   constructor(
     @inject(TYPES.ProjectRepository) private projectRepo: IProjectRepository
   ) {}

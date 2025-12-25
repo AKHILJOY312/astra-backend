@@ -1,11 +1,6 @@
 // src/interfaces/http/controllers/channel/ChannelController.ts
 import { Request, Response } from "express";
 import { HTTP_STATUS } from "../../http/constants/httpStatus";
-
-import { CreateChannelUseCase } from "@/application/use-cases/channel/CreateChannelUseCase";
-import { EditChannelUseCase } from "@/application/use-cases/channel/EditChannelUseCase";
-import { DeleteChannelUseCase } from "@/application/use-cases/channel/DeleteChannelUseCase";
-import { ListChannelsForUserUseCase } from "@/application/use-cases/channel/ListChannelsForUserUseCase";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
 import { BadRequestError, ValidationError } from "@/application/error/AppError";
@@ -15,17 +10,22 @@ import {
   CreateChannelSchema,
   EditChannelSchema,
 } from "@/interface-adapters/http/validators/channelValidators";
+import { ICreateChannelUseCase } from "@/application/ports/use-cases/channel/ICreateChannelUseCase";
+import { IEditChannelUseCase } from "@/application/ports/use-cases/channel/IEditChannelUseCase";
+import { IDeleteChannelUseCase } from "@/application/ports/use-cases/channel/IDeleteChannelUseCase";
+import { IListChannelsForUserUseCase } from "@/application/ports/use-cases/channel/IListChannelsForUserUseCase";
 
 @injectable()
 export class ChannelController {
   constructor(
     @inject(TYPES.CreateChannelUseCase)
-    private createChannelUC: CreateChannelUseCase,
-    @inject(TYPES.EditChannelUseCase) private editChannelUC: EditChannelUseCase,
+    private createChannelUC: ICreateChannelUseCase,
+    @inject(TYPES.EditChannelUseCase)
+    private editChannelUC: IEditChannelUseCase,
     @inject(TYPES.DeleteChannelUseCase)
-    private deleteChannelUC: DeleteChannelUseCase,
+    private deleteChannelUC: IDeleteChannelUseCase,
     @inject(TYPES.ListChannelsForUserUseCase)
-    private listChannelsForUserUC: ListChannelsForUserUseCase
+    private listChannelsForUserUC: IListChannelsForUserUseCase
   ) {}
 
   // ---------------------------------------------------
@@ -47,7 +47,7 @@ export class ChannelController {
 
     return res.status(HTTP_STATUS.CREATED).json({
       success: true,
-      data: channel.toJSON(),
+      data: channel,
     });
   });
 

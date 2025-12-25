@@ -5,9 +5,10 @@ import { v4 as uuidv4 } from "uuid";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
 import { BadRequestError } from "@/application/error/AppError";
+import { ICreatePlan } from "@/application/ports/use-cases/plan/admin/ICreatePlanUseCase";
 
 @injectable()
-export class CreatePlan {
+export class CreatePlan implements ICreatePlan {
   constructor(
     @inject(TYPES.PlanRepository) private planRepo: IPlanRepository
   ) {}

@@ -13,19 +13,14 @@ import {
   PlanLimitError,
 } from "@/application/error/AppError";
 
-export interface CreateProjectDTO {
-  projectName: string;
-  description?: string;
-  imageUrl?: string | null;
-  ownerId: string;
-}
-
-export interface CreateProjectResultDTO {
-  project: Project;
-}
+import {
+  CreateProjectDTO,
+  CreateProjectResultDTO,
+  ICreateProjectUseCase,
+} from "@/application/ports/use-cases/project/ICreateProjectUseCase";
 
 @injectable()
-export class CreateProjectUseCase {
+export class CreateProjectUseCase implements ICreateProjectUseCase {
   constructor(
     @inject(TYPES.ProjectRepository) private projectRepo: IProjectRepository,
     @inject(TYPES.UserSubscriptionRepository)

@@ -1,18 +1,6 @@
 // src/interfaces/controllers/AuthController.ts
 import { Request, Response } from "express";
-import { RegisterUser } from "../../../application/use-cases/auth/RegisterUser";
-import { VerifyEmail } from "../../../application/use-cases/auth/VerifyEmail";
-import { LoginUser } from "../../../application/use-cases/auth/LoginUser";
-import { RefreshToken } from "../../../application/use-cases/auth/RefreshToken";
-import { LogoutUser } from "../../../application/use-cases/auth/LogoutUser";
-import { GetMe } from "../../../application/use-cases/auth/GetMe";
-import { ForgotPassword } from "../../../application/use-cases/auth/ForgotPassword";
-import { ResetPassword } from "../../../application/use-cases/auth/ResetPassword";
-import { VerifyResetToken } from "../../../application/use-cases/auth/VerifyResetToken";
-import {
-  GoogleLogin,
-  GoogleProfile,
-} from "../../../application/use-cases/auth/GoogleLogin";
+
 import { HTTP_STATUS } from "../../http/constants/httpStatus";
 import {
   AUTH_MESSAGES,
@@ -30,20 +18,33 @@ import {
   setRefreshTokenCookie,
 } from "@/infra/web/express/utils/cookieUtils";
 import { ENV } from "@/config/env.config";
+import {
+  GoogleProfile,
+  IGoogleLogin,
+} from "@/application/ports/use-cases/auth/IGoogleLoginUseCase";
+import { IRegisterUser } from "@/application/ports/use-cases/auth/IRegisterUserUseCase";
+import { IVerifyEmail } from "@/application/ports/use-cases/auth/IVerifyEmailUseCase";
+import { ILoginUser } from "@/application/ports/use-cases/auth/ILoginUserUseCase";
+import { IRefreshToken } from "@/application/ports/use-cases/auth/IRefreshTokenUseCase";
+import { ILogoutUser } from "@/application/ports/use-cases/auth/ILogoutUserUseCase";
+import { IGetMe } from "@/application/ports/use-cases/auth/IGetMeUseCase";
+import { IForgotPassword } from "@/application/ports/use-cases/auth/IForgotPasswordUseCase";
+import { IResetPassword } from "@/application/ports/use-cases/auth/IResetPasswordUseCase";
+import { IVerifyResetToken } from "@/application/ports/use-cases/auth/IVerifyResetTokenUseCase";
 
 @injectable()
 export class AuthController {
   constructor(
-    @inject(TYPES.RegisterUser) private registerUC: RegisterUser,
-    @inject(TYPES.VerifyEmail) private verifyEmailUC: VerifyEmail,
-    @inject(TYPES.LoginUser) private loginUC: LoginUser,
-    @inject(TYPES.RefreshToken) private refreshUC: RefreshToken,
-    @inject(TYPES.LogoutUser) private logoutUC: LogoutUser,
-    @inject(TYPES.GetMe) private meUC: GetMe,
-    @inject(TYPES.ForgotPassword) private forgotUC: ForgotPassword,
-    @inject(TYPES.ResetPassword) private resetUC: ResetPassword,
-    @inject(TYPES.VerifyResetToken) private verifyResetUC: VerifyResetToken,
-    @inject(TYPES.GoogleLogin) private googleLoginUC: GoogleLogin
+    @inject(TYPES.RegisterUser) private registerUC: IRegisterUser,
+    @inject(TYPES.VerifyEmail) private verifyEmailUC: IVerifyEmail,
+    @inject(TYPES.LoginUser) private loginUC: ILoginUser,
+    @inject(TYPES.RefreshToken) private refreshUC: IRefreshToken,
+    @inject(TYPES.LogoutUser) private logoutUC: ILogoutUser,
+    @inject(TYPES.GetMe) private meUC: IGetMe,
+    @inject(TYPES.ForgotPassword) private forgotUC: IForgotPassword,
+    @inject(TYPES.ResetPassword) private resetUC: IResetPassword,
+    @inject(TYPES.VerifyResetToken) private verifyResetUC: IVerifyResetToken,
+    @inject(TYPES.GoogleLogin) private googleLoginUC: IGoogleLogin
   ) {}
 
   googleLogin = (_req: Request, res: Response) => {

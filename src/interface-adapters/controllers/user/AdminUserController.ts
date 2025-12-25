@@ -1,21 +1,21 @@
 // src/presentation/controllers/AdminUserController.ts
 import { Request, Response } from "express";
-import { ListUsersUseCase } from "../../../application/use-cases/user/ListUserUseCase";
-import { BlockUserUseCase } from "../../../application/use-cases/user/BlockUserUseCase";
-import { AssignAdminRoleUseCase } from "../../../application/use-cases/user/AssingAdminRoleUseCase";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
 import { BadRequestError } from "@/application/error/AppError";
 import { asyncHandler } from "@/infra/web/express/handler/asyncHandler";
 import { ListUsersQuerySchema } from "@/interface-adapters/http/validators/adminUserValidators";
+import { IListUsersUseCase } from "@/application/ports/use-cases/user/IListUsersUseCase";
+import { IBlockUserUseCase } from "@/application/ports/use-cases/user/IBlockUserUseCase";
+import { IAssignAdminRoleUseCase } from "@/application/ports/use-cases/user/IAssignAdminRoleUseCase";
 
 @injectable()
 export class AdminUserController {
   constructor(
-    @inject(TYPES.ListUsersUseCase) private listUsersUseCase: ListUsersUseCase,
-    @inject(TYPES.BlockUserUseCase) private blockUserUseCase: BlockUserUseCase,
+    @inject(TYPES.ListUsersUseCase) private listUsersUseCase: IListUsersUseCase,
+    @inject(TYPES.BlockUserUseCase) private blockUserUseCase: IBlockUserUseCase,
     @inject(TYPES.AssignAdminRoleUseCase)
-    private assignAdminRoleUseCase: AssignAdminRoleUseCase
+    private assignAdminRoleUseCase: IAssignAdminRoleUseCase
   ) {}
 
   listUsers = asyncHandler(

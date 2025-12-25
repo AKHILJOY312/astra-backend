@@ -1,33 +1,33 @@
 // src/interfaces/http/controllers/project/MemberController.ts
 import { Request, Response } from "express";
-import { AddMemberToProjectUseCase } from "../../../application/use-cases/project/AddMemberToProjectUseCase";
-import { RemoveMemberFromProjectUseCase } from "../../../application/use-cases/project/RemoveMemberFromProjectUseCase";
-import { ChangeMemberRoleUseCase } from "../../../application/use-cases/project/ChangeMemberRoleUseCase";
-import { UserService } from "../../../application/services/UserService";
 import { HTTP_STATUS } from "../../http/constants/httpStatus";
 // import { ERROR_MESSAGES } from "@/interface-adapters/http/constants/messages";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
-import { ListProjectMembersUseCase } from "@/application/use-cases/project/ListProjectMembersUseCase";
 import { NotFoundError, ValidationError } from "@/application/error/AppError";
 import { asyncHandler } from "@/infra/web/express/handler/asyncHandler";
 import {
   AddMemberSchema,
   ChangeRoleSchema,
 } from "@/interface-adapters/http/validators/memberValidators";
+import { IAddMemberToProjectUseCase } from "@/application/ports/use-cases/project/IAddMemberToProjectUseCase";
+import { IRemoveMemberFromProjectUseCase } from "@/application/ports/use-cases/project/IRemoveMemberFromProjectUseCase";
+import { IChangeMemberRoleUseCase } from "@/application/ports/use-cases/project/IChangeMemberRoleUseCase";
+import { IUserService } from "@/application/ports/services/IUserService";
+import { IListProjectMembersUseCase } from "@/application/ports/use-cases/project/IListProjectMembersUseCase";
 
 @injectable()
 export class MemberController {
   constructor(
     @inject(TYPES.AddMemberToProjectUseCase)
-    private addMemberUseCase: AddMemberToProjectUseCase,
+    private addMemberUseCase: IAddMemberToProjectUseCase,
     @inject(TYPES.RemoveMemberFromProjectUseCase)
-    private removeMemberUseCase: RemoveMemberFromProjectUseCase,
+    private removeMemberUseCase: IRemoveMemberFromProjectUseCase,
     @inject(TYPES.ChangeMemberRoleUseCase)
-    private changeRoleUseCase: ChangeMemberRoleUseCase,
-    @inject(TYPES.UserService) private userService: UserService,
+    private changeRoleUseCase: IChangeMemberRoleUseCase,
+    @inject(TYPES.UserService) private userService: IUserService,
     @inject(TYPES.ListProjectMembers)
-    private listProjectMembersUC: ListProjectMembersUseCase
+    private listProjectMembersUC: IListProjectMembersUseCase
   ) {}
 
   // POST /projects/:projectId/members

@@ -7,9 +7,10 @@ import {
   ForbiddenError,
   UnauthorizedError,
 } from "@/application/error/AppError";
+import { ILoginUser } from "@/application/ports/use-cases/auth/ILoginUserUseCase";
 
 @injectable()
-export class LoginUser {
+export class LoginUser implements ILoginUser {
   constructor(
     @inject(TYPES.UserRepository) private userRepo: IUserRepository,
     @inject(TYPES.AuthService) private auth: IAuthService

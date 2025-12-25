@@ -1,27 +1,17 @@
 // src/core/use-cases/project/AddMemberToProjectUseCase.ts
 import { inject, injectable } from "inversify";
-import {
-  ProjectMembership,
-  ProjectRole,
-} from "../../../domain/entities/project/ProjectMembership";
 
 import { IProjectMembershipRepository } from "../../ports/repositories/IProjectMembershipRepository";
 import { TYPES } from "@/config/types";
 import { NotFoundError, UnauthorizedError } from "@/application/error/AppError";
-
-export interface ChangeMemberRoleDTO {
-  projectId: string;
-  memberId: string; // userId to change role
-  newRole: ProjectRole;
-  requestedBy: string; // who is changing (must be manager)
-}
-
-export interface ChangeMemberRoleResultDTO {
-  membership: ProjectMembership;
-}
+import {
+  ChangeMemberRoleDTO,
+  ChangeMemberRoleResultDTO,
+  IChangeMemberRoleUseCase,
+} from "@/application/ports/use-cases/project/IChangeMemberRoleUseCase";
 
 @injectable()
-export class ChangeMemberRoleUseCase {
+export class ChangeMemberRoleUseCase implements IChangeMemberRoleUseCase {
   constructor(
     @inject(TYPES.ProjectMembershipRepository)
     private membershipRepo: IProjectMembershipRepository

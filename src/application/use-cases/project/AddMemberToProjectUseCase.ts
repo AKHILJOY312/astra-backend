@@ -1,8 +1,5 @@
 // src/core/use-cases/project/AddMemberToProjectUseCase.ts
-import {
-  ProjectMembership,
-  ProjectRole,
-} from "../../../domain/entities/project/ProjectMembership";
+import { ProjectMembership } from "../../../domain/entities/project/ProjectMembership";
 import { IProjectRepository } from "../../ports/repositories/IProjectRepository";
 import { IProjectMembershipRepository } from "../../ports/repositories/IProjectMembershipRepository";
 import { IPlanRepository } from "../../ports/repositories/IPlanRepository";
@@ -14,20 +11,14 @@ import {
   NotFoundError,
   UnauthorizedError,
 } from "@/application/error/AppError";
-
-export interface AddMemberDTO {
-  projectId: string;
-  userId: string;
-  role?: ProjectRole;
-  requestedBy: string;
-}
-
-export interface AddMemberResultDTO {
-  membership: ProjectMembership;
-}
+import {
+  AddMemberDTO,
+  AddMemberResultDTO,
+  IAddMemberToProjectUseCase,
+} from "@/application/ports/use-cases/project/IAddMemberToProjectUseCase";
 
 @injectable()
-export class AddMemberToProjectUseCase {
+export class AddMemberToProjectUseCase implements IAddMemberToProjectUseCase {
   constructor(
     @inject(TYPES.ProjectMembershipRepository)
     private membershipRepo: IProjectMembershipRepository,

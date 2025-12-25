@@ -2,14 +2,13 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
 import { IUserRepository } from "@/application/ports/repositories/IUserRepository";
 import { NotFoundError } from "@/application/error/AppError";
-
-interface UpdateProfileDTO {
-  name?: string;
-  email?: string;
-}
+import {
+  IUpdateUserProfileUseCase,
+  UpdateProfileDTO,
+} from "@/application/ports/use-cases/user/IUpdateUserProfileUseCase";
 
 @injectable()
-export class UpdateUserProfileUseCase {
+export class UpdateUserProfileUseCase implements IUpdateUserProfileUseCase {
   constructor(
     @inject(TYPES.UserRepository)
     private userRepo: IUserRepository

@@ -2,9 +2,11 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
 import { IUserRepository } from "@/application/ports/repositories/IUserRepository";
 import { IUserSubscriptionRepository } from "@/application/ports/repositories/IUserSubscriptionRepository";
+import { NotFoundError } from "@/application/error/AppError";
+import { IDeleteUserAccountUseCase } from "@/application/ports/use-cases/user/IDeleteUserAccountUseCase";
 
 @injectable()
-export class DeleteUserAccountUseCase {
+export class DeleteUserAccountUseCase implements IDeleteUserAccountUseCase {
   constructor(
     @inject(TYPES.UserRepository)
     private userRepo: IUserRepository,
@@ -15,7 +17,7 @@ export class DeleteUserAccountUseCase {
 
   async execute(userId: string) {
     const user = await this.userRepo.findById(userId);
-    if (!user) throw new Error("User");
+    if (!user) throw new NotFoundError("User");
 
     const subscription = await this.subscriptionRepo.findByUserId(userId);
 

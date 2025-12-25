@@ -5,16 +5,13 @@ import { IAuthService } from "../../ports/services/IAuthService";
 import crypto from "crypto";
 import { TYPES } from "@/config/types";
 import { NotFoundError } from "@/application/error/AppError";
+import {
+  GoogleProfile,
+  IGoogleLogin,
+} from "@/application/ports/use-cases/auth/IGoogleLoginUseCase";
 
-export interface GoogleProfile {
-  id?: string;
-  name?: string;
-  displayName?: string;
-  emails?: Array<{ value: string }>;
-  isAdmin?: boolean;
-}
 @injectable()
-export class GoogleLogin {
+export class GoogleLogin implements IGoogleLogin {
   constructor(
     @inject(TYPES.UserRepository) private userRepo: IUserRepository,
     @inject(TYPES.AuthService) private authService: IAuthService

@@ -1,21 +1,22 @@
 // src/interfaces/controllers/AdminAuthController.ts
 import { Request, Response } from "express";
-import { AdminLogin } from "../../../application/use-cases/auth/admin/AdminLogin";
-import { AdminForgotPassword } from "../../../application/use-cases/auth/admin/AdminForgotPassword";
-import { AdminResetPassword } from "../../../application/use-cases/auth/admin/AdminResetPassword";
+
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
 import { asyncHandler } from "@/infra/web/express/handler/asyncHandler";
 import { AUTH_MESSAGES } from "@/interface-adapters/http/constants/messages";
+import { IAdminLogin } from "@/application/ports/use-cases/auth/admin/IAdminLoginUseCase";
+import { IAdminForgotPassword } from "@/application/ports/use-cases/auth/admin/IAdminForgotPasswordUseCase";
+import { IAdminResetPassword } from "@/application/ports/use-cases/auth/admin/IAdminResetPasswordUseCase";
 
 @injectable()
 export class AdminAuthController {
   constructor(
-    @inject(TYPES.AdminLogin) private adminLogin: AdminLogin,
+    @inject(TYPES.AdminLogin) private adminLogin: IAdminLogin,
     @inject(TYPES.AdminForgotPassword)
-    private adminForgotPassword: AdminForgotPassword,
+    private adminForgotPassword: IAdminForgotPassword,
     @inject(TYPES.AdminResetPassword)
-    private adminResetPassword: AdminResetPassword
+    private adminResetPassword: IAdminResetPassword
   ) {}
 
   login = asyncHandler(async (req: Request, res: Response) => {

@@ -8,9 +8,10 @@ import {
   BadRequestError,
   UnauthorizedError,
 } from "@/application/error/AppError";
+import { IDeleteChannelUseCase } from "@/application/ports/use-cases/channel/IDeleteChannelUseCase";
 
 @injectable()
-export class DeleteChannelUseCase {
+export class DeleteChannelUseCase implements IDeleteChannelUseCase {
   constructor(
     @inject(TYPES.ChannelRepository) private channelRepo: IChannelRepository,
     @inject(TYPES.ProjectMembershipRepository)

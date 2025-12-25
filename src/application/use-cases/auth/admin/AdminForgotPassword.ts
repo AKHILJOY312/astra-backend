@@ -4,9 +4,10 @@ import { IUserRepository } from "../../../ports/repositories/IUserRepository";
 import { IEmailService } from "../../../ports/services/IEmailService";
 import crypto from "crypto";
 import { TYPES } from "@/config/types";
+import { IAdminForgotPassword } from "@/application/ports/use-cases/auth/admin/IAdminForgotPasswordUseCase";
 
 @injectable()
-export class AdminForgotPassword {
+export class AdminForgotPassword implements IAdminForgotPassword {
   constructor(
     @inject(TYPES.UserRepository) private userRepo: IUserRepository,
     @inject(TYPES.EmailService) private emailService: IEmailService

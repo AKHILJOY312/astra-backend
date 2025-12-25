@@ -9,23 +9,14 @@ import {
   BadRequestError,
   UnauthorizedError,
 } from "@/application/error/AppError";
-
-export interface CreateChannelDTO {
-  projectId: string;
-  channelName: string;
-  description?: string;
-  createdBy: string;
-
-  visibleToRoles: string[];
-  permissionsByRole: Record<string, "view" | "message" | "manager">;
-}
-
-export interface CreateChannelResultDTO {
-  channel: Channel;
-}
+import {
+  CreateChannelDTO,
+  CreateChannelResultDTO,
+} from "@/application/dto/channel/channelDtos";
+import { ICreateChannelUseCase } from "@/application/ports/use-cases/channel/ICreateChannelUseCase";
 
 @injectable()
-export class CreateChannelUseCase {
+export class CreateChannelUseCase implements ICreateChannelUseCase {
   constructor(
     @inject(TYPES.ChannelRepository) private channelRepo: IChannelRepository,
     @inject(TYPES.ProjectMembershipRepository)

@@ -8,18 +8,13 @@ import {
   BadRequestError,
   UnauthorizedError,
 } from "@/application/error/AppError";
-
-export interface EditChannelDTO {
-  channelId: string;
-  userId: string;
-  channelName?: string;
-  description?: string;
-  visibleToRoles?: string[];
-  permissionsByRole?: Record<string, "view" | "message" | "manager">;
-}
+import {
+  EditChannelDTO,
+  IEditChannelUseCase,
+} from "@/application/ports/use-cases/channel/IEditChannelUseCase";
 
 @injectable()
-export class EditChannelUseCase {
+export class EditChannelUseCase implements IEditChannelUseCase {
   constructor(
     @inject(TYPES.ChannelRepository) private channelRepo: IChannelRepository,
     @inject(TYPES.ProjectMembershipRepository)

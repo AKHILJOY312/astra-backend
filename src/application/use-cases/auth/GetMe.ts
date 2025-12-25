@@ -2,9 +2,10 @@ import { inject, injectable } from "inversify";
 import { IUserRepository } from "../../ports/repositories/IUserRepository";
 import { TYPES } from "@/config/types";
 import { NotFoundError } from "@/application/error/AppError";
+import { IGetMe } from "@/application/ports/use-cases/auth/IGetMeUseCase";
 
 @injectable()
-export class GetMe {
+export class GetMe implements IGetMe {
   constructor(
     @inject(TYPES.UserRepository) private userRepo: IUserRepository
   ) {}

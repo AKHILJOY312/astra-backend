@@ -1,20 +1,20 @@
 import { Request, Response } from "express";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
-import { GetUserProfileUseCase } from "@/application/use-cases/user/GetUserProfileUseCase";
-import { UpdateUserProfileUseCase } from "@/application/use-cases/user/UpdateUserProfileUseCase";
-import { DeleteUserAccountUseCase } from "@/application/use-cases/user/DeleteUserAccountUseCase";
 import { asyncHandler } from "@/infra/web/express/handler/asyncHandler";
+import { IGetUserProfileUseCase } from "@/application/ports/use-cases/user/IGetUserProfileUseCase";
+import { IUpdateUserProfileUseCase } from "@/application/ports/use-cases/user/IUpdateUserProfileUseCase";
+import { IDeleteUserAccountUseCase } from "@/application/ports/use-cases/user/IDeleteUserAccountUseCase";
 
 @injectable()
 export class UserController {
   constructor(
     @inject(TYPES.GetUserProfileUseCase)
-    private getProfileUC: GetUserProfileUseCase,
+    private getProfileUC: IGetUserProfileUseCase,
     @inject(TYPES.UpdateUserProfileUseCase)
-    private updateProfileUC: UpdateUserProfileUseCase,
+    private updateProfileUC: IUpdateUserProfileUseCase,
     @inject(TYPES.DeleteUserAccountUseCase)
-    private deleteAccountUC: DeleteUserAccountUseCase
+    private deleteAccountUC: IDeleteUserAccountUseCase
   ) {}
 
   getProfile = asyncHandler(async (req: Request, res: Response) => {

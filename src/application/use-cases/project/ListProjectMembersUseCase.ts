@@ -1,19 +1,17 @@
 // src/core/use-cases/project/ListProjectMembersUseCase.ts
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
-
 import { IProjectMembershipRepository } from "../../ports/repositories/IProjectMembershipRepository";
 import { IProjectRepository } from "../../ports/repositories/IProjectRepository";
 import { ProjectMemberView } from "@/application/dto/project/ProjectMemberView";
 import { NotFoundError, UnauthorizedError } from "@/application/error/AppError";
-
-export interface ListProjectMembersDTO {
-  projectId: string;
-  requestedBy: string;
-}
+import {
+  IListProjectMembersUseCase,
+  ListProjectMembersDTO,
+} from "@/application/ports/use-cases/project/IListProjectMembersUseCase";
 
 @injectable()
-export class ListProjectMembersUseCase {
+export class ListProjectMembersUseCase implements IListProjectMembersUseCase {
   constructor(
     @inject(TYPES.ProjectMembershipRepository)
     private readonly membershipRepo: IProjectMembershipRepository,

@@ -1,13 +1,9 @@
 // src/interfaces/http/controllers/project/ProjectController.ts
 import { Request, Response } from "express";
-import { CreateProjectUseCase } from "../../../application/use-cases/project/CreateProjectUseCase";
-
-import { GetUserProjectsUseCase } from "../../../application/use-cases/project/GetUserProjectsUseCase";
 import { HTTP_STATUS } from "../../http/constants/httpStatus";
 // import { ERROR_MESSAGES } from "@/interface-adapters/http/constants/messages";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
-import { UpdateProjectUseCase } from "@/application/use-cases/project/UpdateProjectUseCase";
 import { ValidationError } from "@/application/error/AppError";
 import { asyncHandler } from "@/infra/web/express/handler/asyncHandler";
 import { PROJECT_MESSAGE } from "@/interface-adapters/http/constants/messages";
@@ -16,16 +12,19 @@ import {
   PaginationQuerySchema,
   UpdateProjectSchema,
 } from "@/interface-adapters/http/validators/projectValidators";
+import { ICreateProjectUseCase } from "@/application/ports/use-cases/project/ICreateProjectUseCase";
+import { IGetUserProjectsUseCase } from "@/application/ports/use-cases/project/IGetUserProjectsUseCase";
+import { IUpdateProjectUseCase } from "@/application/ports/use-cases/project/IUpdateProjectUseCase";
 
 @injectable()
 export class ProjectController {
   constructor(
     @inject(TYPES.CreateProjectUseCase)
-    private createProjectUseCase: CreateProjectUseCase,
+    private createProjectUseCase: ICreateProjectUseCase,
     @inject(TYPES.GetUserProjectsUseCase)
-    private getUserProjectsUseCase: GetUserProjectsUseCase,
+    private getUserProjectsUseCase: IGetUserProjectsUseCase,
     @inject(TYPES.UpdateProjectUseCase)
-    private updateProjectUseCase: UpdateProjectUseCase
+    private updateProjectUseCase: IUpdateProjectUseCase
   ) {}
 
   createProject = asyncHandler(async (req: Request, res: Response) => {

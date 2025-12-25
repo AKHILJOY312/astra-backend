@@ -5,9 +5,10 @@ import { Plan } from "../../../../domain/entities/billing/Plan";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
 import { NotFoundError } from "@/application/error/AppError";
+import { IUpdatePlan } from "@/application/ports/use-cases/plan/admin/IUpdatePlanUseCase";
 
 @injectable()
-export class UpdatePlan {
+export class UpdatePlan implements IUpdatePlan {
   constructor(
     @inject(TYPES.PlanRepository) private planRepo: IPlanRepository
   ) {}

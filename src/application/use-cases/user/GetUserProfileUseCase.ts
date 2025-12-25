@@ -3,9 +3,13 @@ import { TYPES } from "@/config/types";
 import { IUserRepository } from "@/application/ports/repositories/IUserRepository";
 import { IUserSubscriptionRepository } from "@/application/ports/repositories/IUserSubscriptionRepository";
 import { NotFoundError } from "@/application/error/AppError";
+import {
+  IGetUserProfileUseCase,
+  UserProfileResponseDTO,
+} from "@/application/ports/use-cases/user/IGetUserProfileUseCase";
 
 @injectable()
-export class GetUserProfileUseCase {
+export class GetUserProfileUseCase implements IGetUserProfileUseCase {
   constructor(
     @inject(TYPES.UserRepository)
     private userRepo: IUserRepository,
@@ -14,7 +18,7 @@ export class GetUserProfileUseCase {
     private subscriptionRepo: IUserSubscriptionRepository
   ) {}
 
-  async execute(userId: string) {
+  async execute(userId: string): Promise<UserProfileResponseDTO> {
     const user = await this.userRepo.findById(userId);
     if (!user) throw new NotFoundError("User");
 

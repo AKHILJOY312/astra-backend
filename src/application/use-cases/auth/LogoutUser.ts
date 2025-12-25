@@ -1,16 +1,11 @@
-// export class LogoutUser {
-//   execute(): { message: string } {
-//     return { message: "Logged out" };
-//   }
-// }
-
 // src/application/use-cases/auth/LogoutUser.ts
 import { inject, injectable } from "inversify";
 import { ITokenBlacklistService } from "../../ports/services/ITokenBlacklistService";
 import { TYPES } from "@/config/types";
+import { ILogoutUser } from "@/application/ports/use-cases/auth/ILogoutUserUseCase";
 
 @injectable()
-export class LogoutUser {
+export class LogoutUser implements ILogoutUser {
   constructor(
     @inject(TYPES.TokenBlacklistService)
     private readonly blacklistService: ITokenBlacklistService

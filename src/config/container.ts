@@ -89,10 +89,59 @@ import { GetUserProfileUseCase } from "@/application/use-cases/user/GetUserProfi
 import { UpdateUserProfileUseCase } from "@/application/use-cases/user/UpdateUserProfileUseCase";
 import { DeleteUserAccountUseCase } from "@/application/use-cases/user/DeleteUserAccountUseCase";
 import { MongoTokenBlacklistService } from "@/infra/services/MongoTokenBlacklistService";
+//IUseCase
+import { ILoginUser } from "@/application/ports/use-cases/auth/ILoginUserUseCase";
+import { IRegisterUser } from "@/application/ports/use-cases/auth/IRegisterUserUseCase";
+import { IVerifyEmail } from "@/application/ports/use-cases/auth/IVerifyEmailUseCase";
+import { IRefreshToken } from "@/application/ports/use-cases/auth/IRefreshTokenUseCase";
+import { ILogoutUser } from "@/application/ports/use-cases/auth/ILogoutUserUseCase";
+import { IGetMe } from "@/application/ports/use-cases/auth/IGetMeUseCase";
+import { IForgotPassword } from "@/application/ports/use-cases/auth/IForgotPasswordUseCase";
+import { IResetPassword } from "@/application/ports/use-cases/auth/IResetPasswordUseCase";
+import { IVerifyResetToken } from "@/application/ports/use-cases/auth/IVerifyResetTokenUseCase";
+import { IGoogleLogin } from "@/application/ports/use-cases/auth/IGoogleLoginUseCase";
+import { IAdminLogin } from "@/application/ports/use-cases/auth/admin/IAdminLoginUseCase";
+import { IAdminForgotPassword } from "@/application/ports/use-cases/auth/admin/IAdminForgotPasswordUseCase";
+import { IAdminResetPassword } from "@/application/ports/use-cases/auth/admin/IAdminResetPasswordUseCase";
+import { IListUsersUseCase } from "@/application/ports/use-cases/user/IListUsersUseCase";
+import { IBlockUserUseCase } from "@/application/ports/use-cases/user/IBlockUserUseCase";
+import { IAssignAdminRoleUseCase } from "@/application/ports/use-cases/user/IAssignAdminRoleUseCase";
+import { IGetUserProfileUseCase } from "@/application/ports/use-cases/user/IGetUserProfileUseCase";
+import { IUpdateUserProfileUseCase } from "@/application/ports/use-cases/user/IUpdateUserProfileUseCase";
+import { IDeleteUserAccountUseCase } from "@/application/ports/use-cases/user/IDeleteUserAccountUseCase";
+import { ICreatePlan } from "@/application/ports/use-cases/plan/admin/ICreatePlanUseCase";
+import { IUpdatePlan } from "@/application/ports/use-cases/plan/admin/IUpdatePlanUseCase";
+import { ISoftDeletePlan } from "@/application/ports/use-cases/plan/admin/ISoftDeletePlanUseCase";
+import { IGetPlansPaginated } from "@/application/ports/use-cases/plan/admin/IGetPlansPaginatedUseCase";
+import { IGetAvailablePlansUseCase } from "@/application/ports/use-cases/plan/user/IGetAvailablePlansUseCase";
+import { ICreateProjectUseCase } from "@/application/ports/use-cases/project/ICreateProjectUseCase";
+import { IUpdateProjectUseCase } from "@/application/ports/use-cases/project/IUpdateProjectUseCase";
+import { IGetUserProjectsUseCase } from "@/application/ports/use-cases/project/IGetUserProjectsUseCase";
+import { IAddMemberToProjectUseCase } from "@/application/ports/use-cases/project/IAddMemberToProjectUseCase";
+import { IRemoveMemberFromProjectUseCase } from "@/application/ports/use-cases/project/IRemoveMemberFromProjectUseCase";
+import { IChangeMemberRoleUseCase } from "@/application/ports/use-cases/project/IChangeMemberRoleUseCase";
+import { IListProjectMembersUseCase } from "@/application/ports/use-cases/project/IListProjectMembersUseCase";
+import { ICreateChannelUseCase } from "@/application/ports/use-cases/channel/ICreateChannelUseCase";
+import { IEditChannelUseCase } from "@/application/ports/use-cases/channel/IEditChannelUseCase";
+import { IListChannelsForUserUseCase } from "@/application/ports/use-cases/channel/IListChannelsForUserUseCase";
+import { IDeleteChannelUseCase } from "@/application/ports/use-cases/channel/IDeleteChannelUseCase";
+import { IGetUserLimitsUseCase } from "@/application/ports/use-cases/upgradetopremium/IGetUserLimitsUseCase";
+import { IUpgradeToPlanUseCase } from "@/application/ports/use-cases/upgradetopremium/IUpgradeToPlanUseCase";
+import { ICapturePaymentUseCase } from "@/application/ports/use-cases/upgradetopremium/ICapturePaymentUseCase";
+import { ISendMessageUseCase } from "@/application/ports/use-cases/message/ISendMessageUseCase";
+import { IListMessagesUseCase } from "@/application/ports/use-cases/message/IListMessagesUseCase";
+import { IUserService } from "@/application/ports/services/IUserService";
+import { IAuthService } from "@/application/ports/services/IAuthService";
+import { IEmailService } from "@/application/ports/services/IEmailService";
+import { IRazorpayService } from "@/application/ports/services/IRazorpayService";
+import { ITokenBlacklistService } from "@/application/ports/services/ITokenBlacklistService";
 
 const container = new Container();
 
+//-------------------------------------------------------
 // --- Repositories (Bind as a Singleton since they are state-less data access layers)
+//-------------------------------------------------------
+
 container
   .bind<UserRepository>(TYPES.UserRepository)
   .to(UserRepository)
@@ -122,31 +171,37 @@ container
   .to(MessageRepository)
   .inSingletonScope();
 
+//-------------------------------------------------------
 // --- Services (Bind as a Singleton)
+//-------------------------------------------------------
+
 container
-  .bind<UserService>(TYPES.UserService)
+  .bind<IUserService>(TYPES.UserService)
   .to(UserService)
   .inSingletonScope();
 container
-  .bind<JwtAuthService>(TYPES.AuthService)
+  .bind<IAuthService>(TYPES.AuthService)
   .to(JwtAuthService)
   .inSingletonScope();
 container
-  .bind<NodemailerEmailService>(TYPES.EmailService)
+  .bind<IEmailService>(TYPES.EmailService)
   .to(NodemailerEmailService)
   .inSingletonScope();
 container
-  .bind<RazorpayService>(TYPES.PaymentService)
+  .bind<IRazorpayService>(TYPES.PaymentService)
   .to(RazorpayService)
   .inSingletonScope();
 container
-  .bind<MongoTokenBlacklistService>(TYPES.TokenBlacklistService)
+  .bind<ITokenBlacklistService>(TYPES.TokenBlacklistService)
   .to(MongoTokenBlacklistService)
   .inSingletonScope();
 
+//-------------------------------------------------------
 // --- Middleware
 // Protect middleware is a factory function, so we bind the result of the function
 // to the SYMBOL, ensuring it has access to the UserRepository via Inversify resolution.
+//-------------------------------------------------------
+
 container
   .bind(TYPES.ProtectMiddleware)
   .toDynamicValue(() => {
@@ -158,115 +213,120 @@ container
   })
   .inSingletonScope();
 
-// --- Use Cases (Bind as Transient by default, or Singleton if state-less and expensive to create)
+//-------------------------------------------------------
+// --- Use Cases
+//-------------------------------------------------------
 
 // Auth/User Use Cases
-container.bind<RegisterUser>(TYPES.RegisterUser).to(RegisterUser);
-container.bind<VerifyEmail>(TYPES.VerifyEmail).to(VerifyEmail);
-container.bind<LoginUser>(TYPES.LoginUser).to(LoginUser);
-container.bind<RefreshToken>(TYPES.RefreshToken).to(RefreshToken);
-container.bind<LogoutUser>(TYPES.LogoutUser).to(LogoutUser);
-container.bind<GetMe>(TYPES.GetMe).to(GetMe);
-container.bind<ForgotPassword>(TYPES.ForgotPassword).to(ForgotPassword);
-container.bind<ResetPassword>(TYPES.ResetPassword).to(ResetPassword);
-container.bind<VerifyResetToken>(TYPES.VerifyResetToken).to(VerifyResetToken);
-container.bind<GoogleLogin>(TYPES.GoogleLogin).to(GoogleLogin);
+container.bind<IRegisterUser>(TYPES.RegisterUser).to(RegisterUser);
+container.bind<IVerifyEmail>(TYPES.VerifyEmail).to(VerifyEmail);
+container.bind<ILoginUser>(TYPES.LoginUser).to(LoginUser);
+container.bind<IRefreshToken>(TYPES.RefreshToken).to(RefreshToken);
+container.bind<ILogoutUser>(TYPES.LogoutUser).to(LogoutUser);
+container.bind<IGetMe>(TYPES.GetMe).to(GetMe);
+container.bind<IForgotPassword>(TYPES.ForgotPassword).to(ForgotPassword);
+container.bind<IResetPassword>(TYPES.ResetPassword).to(ResetPassword);
+container.bind<IVerifyResetToken>(TYPES.VerifyResetToken).to(VerifyResetToken);
+container.bind<IGoogleLogin>(TYPES.GoogleLogin).to(GoogleLogin);
 
 // Admin Auth Use Cases
-container.bind<AdminLogin>(TYPES.AdminLogin).to(AdminLogin);
+container.bind<IAdminLogin>(TYPES.AdminLogin).to(AdminLogin);
 container
-  .bind<AdminForgotPassword>(TYPES.AdminForgotPassword)
+  .bind<IAdminForgotPassword>(TYPES.AdminForgotPassword)
   .to(AdminForgotPassword);
 container
-  .bind<AdminResetPassword>(TYPES.AdminResetPassword)
+  .bind<IAdminResetPassword>(TYPES.AdminResetPassword)
   .to(AdminResetPassword);
 
 // Admin User Use Cases
-container.bind<ListUsersUseCase>(TYPES.ListUsersUseCase).to(ListUsersUseCase);
-container.bind<BlockUserUseCase>(TYPES.BlockUserUseCase).to(BlockUserUseCase);
+container.bind<IListUsersUseCase>(TYPES.ListUsersUseCase).to(ListUsersUseCase);
+container.bind<IBlockUserUseCase>(TYPES.BlockUserUseCase).to(BlockUserUseCase);
 container
-  .bind<AssignAdminRoleUseCase>(TYPES.AssignAdminRoleUseCase)
+  .bind<IAssignAdminRoleUseCase>(TYPES.AssignAdminRoleUseCase)
   .to(AssignAdminRoleUseCase);
 
 //User Use Case
 container
-  .bind<GetUserProfileUseCase>(TYPES.GetUserProfileUseCase)
+  .bind<IGetUserProfileUseCase>(TYPES.GetUserProfileUseCase)
   .to(GetUserProfileUseCase);
 container
-  .bind<UpdateUserProfileUseCase>(TYPES.UpdateUserProfileUseCase)
+  .bind<IUpdateUserProfileUseCase>(TYPES.UpdateUserProfileUseCase)
   .to(UpdateUserProfileUseCase);
 container
-  .bind<DeleteUserAccountUseCase>(TYPES.DeleteUserAccountUseCase)
+  .bind<IDeleteUserAccountUseCase>(TYPES.DeleteUserAccountUseCase)
   .to(DeleteUserAccountUseCase);
 
 // Plan Use Cases
-container.bind<CreatePlan>(TYPES.CreatePlan).to(CreatePlan);
-container.bind<UpdatePlan>(TYPES.UpdatePlan).to(UpdatePlan);
-container.bind<SoftDeletePlan>(TYPES.SoftDeletePlan).to(SoftDeletePlan);
+container.bind<ICreatePlan>(TYPES.CreatePlan).to(CreatePlan);
+container.bind<IUpdatePlan>(TYPES.UpdatePlan).to(UpdatePlan);
+container.bind<ISoftDeletePlan>(TYPES.SoftDeletePlan).to(SoftDeletePlan);
 container
-  .bind<GetPlansPaginated>(TYPES.GetPlansPaginated)
+  .bind<IGetPlansPaginated>(TYPES.GetPlansPaginated)
   .to(GetPlansPaginated);
 container
-  .bind<GetAvailablePlansUseCase>(TYPES.GetAvailablePlansUseCase)
+  .bind<IGetAvailablePlansUseCase>(TYPES.GetAvailablePlansUseCase)
   .to(GetAvailablePlansUseCase);
 
 // Project/Membership Use Cases
 container
-  .bind<CreateProjectUseCase>(TYPES.CreateProjectUseCase)
+  .bind<ICreateProjectUseCase>(TYPES.CreateProjectUseCase)
   .to(CreateProjectUseCase);
 container
-  .bind<UpdateProjectUseCase>(TYPES.UpdateProjectUseCase)
+  .bind<IUpdateProjectUseCase>(TYPES.UpdateProjectUseCase)
   .to(UpdateProjectUseCase);
 container
-  .bind<GetUserProjectsUseCase>(TYPES.GetUserProjectsUseCase)
+  .bind<IGetUserProjectsUseCase>(TYPES.GetUserProjectsUseCase)
   .to(GetUserProjectsUseCase);
 container
-  .bind<AddMemberToProjectUseCase>(TYPES.AddMemberToProjectUseCase)
+  .bind<IAddMemberToProjectUseCase>(TYPES.AddMemberToProjectUseCase)
   .to(AddMemberToProjectUseCase);
 container
-  .bind<RemoveMemberFromProjectUseCase>(TYPES.RemoveMemberFromProjectUseCase)
+  .bind<IRemoveMemberFromProjectUseCase>(TYPES.RemoveMemberFromProjectUseCase)
   .to(RemoveMemberFromProjectUseCase);
 container
-  .bind<ChangeMemberRoleUseCase>(TYPES.ChangeMemberRoleUseCase)
+  .bind<IChangeMemberRoleUseCase>(TYPES.ChangeMemberRoleUseCase)
   .to(ChangeMemberRoleUseCase);
 container
-  .bind<ListProjectMembersUseCase>(TYPES.ListProjectMembers)
+  .bind<IListProjectMembersUseCase>(TYPES.ListProjectMembers)
   .to(ListProjectMembersUseCase);
 
 // Channel Use Cases
 container
-  .bind<CreateChannelUseCase>(TYPES.CreateChannelUseCase)
+  .bind<ICreateChannelUseCase>(TYPES.CreateChannelUseCase)
   .to(CreateChannelUseCase);
 container
-  .bind<EditChannelUseCase>(TYPES.EditChannelUseCase)
+  .bind<IEditChannelUseCase>(TYPES.EditChannelUseCase)
   .to(EditChannelUseCase);
 container
-  .bind<ListChannelsForUserUseCase>(TYPES.ListChannelsForUserUseCase)
+  .bind<IListChannelsForUserUseCase>(TYPES.ListChannelsForUserUseCase)
   .to(ListChannelsForUserUseCase);
 container
-  .bind<DeleteChannelUseCase>(TYPES.DeleteChannelUseCase)
+  .bind<IDeleteChannelUseCase>(TYPES.DeleteChannelUseCase)
   .to(DeleteChannelUseCase);
 
 // Subscription/Payment Use Cases
 container
-  .bind<GetUserLimitsUseCase>(TYPES.GetUserLimitsUseCase)
+  .bind<IGetUserLimitsUseCase>(TYPES.GetUserLimitsUseCase)
   .to(GetUserLimitsUseCase);
 container
-  .bind<UpgradeToPlanUseCase>(TYPES.UpgradeToPlanUseCase)
+  .bind<IUpgradeToPlanUseCase>(TYPES.UpgradeToPlanUseCase)
   .to(UpgradeToPlanUseCase);
 container
-  .bind<CapturePaymentUseCase>(TYPES.CapturePaymentUseCase)
+  .bind<ICapturePaymentUseCase>(TYPES.CapturePaymentUseCase)
   .to(CapturePaymentUseCase);
 
 // Message Use Cases
 container
-  .bind<SendMessageUseCase>(TYPES.SendMessageUseCase)
+  .bind<ISendMessageUseCase>(TYPES.SendMessageUseCase)
   .to(SendMessageUseCase);
 container
-  .bind<ListMessagesUseCase>(TYPES.ListMessagesUseCase)
+  .bind<IListMessagesUseCase>(TYPES.ListMessagesUseCase)
   .to(ListMessagesUseCase);
 
-// --- Controllers (Bind as Transient, since they usually serve a single request)
+//-------------------------------------------------------
+// --- Controllers
+//-------------------------------------------------------
+
 container.bind<AuthController>(TYPES.AuthController).to(AuthController);
 container
   .bind<AdminAuthController>(TYPES.AdminAuthController)

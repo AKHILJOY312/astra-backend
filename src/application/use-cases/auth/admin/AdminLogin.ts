@@ -8,9 +8,10 @@ import {
   UnauthorizedError,
   ValidationError,
 } from "@/application/error/AppError";
+import { IAdminLogin } from "@/application/ports/use-cases/auth/admin/IAdminLoginUseCase";
 
 @injectable()
-export class AdminLogin {
+export class AdminLogin implements IAdminLogin {
   constructor(
     @inject(TYPES.UserRepository) private userRepo: IUserRepository,
     @inject(TYPES.AuthService) private authService: IAuthService

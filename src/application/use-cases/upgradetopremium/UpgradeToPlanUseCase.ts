@@ -6,22 +6,14 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
 import { BadRequestError } from "@/application/error/AppError";
 import { ENV } from "@/config/env.config";
-
-export interface UpgradeToPlanInput {
-  userId: string;
-  planId: string;
-}
-
-export interface UpgradeToPlanOutput {
-  subscription: UserSubscription;
-  razorpayOrderId: string;
-  amount: number;
-  currency: string;
-  keyId: string;
-}
+import {
+  IUpgradeToPlanUseCase,
+  UpgradeToPlanInput,
+  UpgradeToPlanOutput,
+} from "@/application/ports/use-cases/upgradetopremium/IUpgradeToPlanUseCase";
 
 @injectable()
-export class UpgradeToPlanUseCase {
+export class UpgradeToPlanUseCase implements IUpgradeToPlanUseCase {
   constructor(
     @inject(TYPES.UserSubscriptionRepository)
     private subscriptionRepo: IUserSubscriptionRepository,

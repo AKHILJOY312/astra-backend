@@ -4,9 +4,10 @@ import { IUserRepository } from "../../ports/repositories/IUserRepository";
 import { IAuthService } from "../../ports/services/IAuthService";
 import { TYPES } from "@/config/types";
 import { BadRequestError } from "@/application/error/AppError";
+import { IResetPassword } from "@/application/ports/use-cases/auth/IResetPasswordUseCase";
 
 @injectable()
-export class ResetPassword {
+export class ResetPassword implements IResetPassword {
   constructor(
     @inject(TYPES.UserRepository) private userRepo: IUserRepository,
     @inject(TYPES.AuthService) private auth: IAuthService

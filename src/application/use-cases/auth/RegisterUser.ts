@@ -7,9 +7,10 @@ import crypto from "crypto";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
 import { BadRequestError } from "@/application/error/AppError";
+import { IRegisterUser } from "@/application/ports/use-cases/auth/IRegisterUserUseCase";
 
 @injectable()
-export class RegisterUser {
+export class RegisterUser implements IRegisterUser {
   constructor(
     @inject(TYPES.UserRepository) private userRepo: IUserRepository,
     @inject(TYPES.AuthService) private auth: IAuthService,

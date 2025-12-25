@@ -1,9 +1,10 @@
 import { IMessageRepository } from "@/application/ports/repositories/IMessageRepository";
+import { IListMessagesUseCase } from "@/application/ports/use-cases/message/IListMessagesUseCase";
 import { TYPES } from "@/config/types";
 import { inject, injectable } from "inversify";
 
 @injectable()
-export class ListMessagesUseCase {
+export class ListMessagesUseCase implements IListMessagesUseCase {
   constructor(
     @inject(TYPES.MessageRepository) private repo: IMessageRepository
   ) {}

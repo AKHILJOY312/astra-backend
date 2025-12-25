@@ -8,9 +8,10 @@ import {
   UnauthorizedError,
 } from "@/application/error/AppError";
 import { ITokenBlacklistService } from "@/application/ports/services/ITokenBlacklistService";
+import { IRefreshToken } from "@/application/ports/use-cases/auth/IRefreshTokenUseCase";
 
 @injectable()
-export class RefreshToken {
+export class RefreshToken implements IRefreshToken {
   constructor(
     @inject(TYPES.UserRepository) private userRepo: IUserRepository,
     @inject(TYPES.AuthService) private auth: IAuthService,

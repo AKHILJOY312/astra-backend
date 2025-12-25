@@ -6,19 +6,16 @@ import {
   BadRequestError,
   UnauthorizedError,
 } from "@/application/error/AppError";
-
-export interface RemoveMemberDTO {
-  projectId: string;
-  memberId: string; // userId to remove
-  requestedBy: string; // who is removing (must be manager)
-}
-
-export interface RemoveMemberResultDTO {
-  message: string;
-}
+import {
+  IRemoveMemberFromProjectUseCase,
+  RemoveMemberDTO,
+  RemoveMemberResultDTO,
+} from "@/application/ports/use-cases/project/IRemoveMemberFromProjectUseCase";
 
 @injectable()
-export class RemoveMemberFromProjectUseCase {
+export class RemoveMemberFromProjectUseCase
+  implements IRemoveMemberFromProjectUseCase
+{
   constructor(
     @inject(TYPES.ProjectMembershipRepository)
     private membershipRepo: IProjectMembershipRepository

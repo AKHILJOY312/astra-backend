@@ -5,19 +5,13 @@ import { IUserSubscriptionRepository } from "../../ports/repositories/IUserSubsc
 import { IPlanRepository } from "../../ports/repositories/IPlanRepository";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
-
-export interface UserLimitsDTO {
-  currentProjects: number;
-  maxProjects: number;
-  currentMembersInProject?: number; // per project
-  maxMembersPerProject: number;
-  planType: string;
-  canCreateProject: boolean;
-  canAddMember: boolean;
-}
+import {
+  IGetUserLimitsUseCase,
+  UserLimitsDTO,
+} from "@/application/ports/use-cases/upgradetopremium/IGetUserLimitsUseCase";
 
 @injectable()
-export class GetUserLimitsUseCase {
+export class GetUserLimitsUseCase implements IGetUserLimitsUseCase {
   constructor(
     @inject(TYPES.ProjectRepository) private projectRepo: IProjectRepository,
     @inject(TYPES.ProjectMembershipRepository)

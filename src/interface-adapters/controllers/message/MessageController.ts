@@ -1,5 +1,5 @@
-import { ListMessagesUseCase } from "@/application/use-cases/message/ListMessagesUseCase";
-import { SendMessageUseCase } from "@/application/use-cases/message/SendMessageUseCase";
+import { IListMessagesUseCase } from "@/application/ports/use-cases/message/IListMessagesUseCase";
+import { ISendMessageUseCase } from "@/application/ports/use-cases/message/ISendMessageUseCase";
 import { TYPES } from "@/config/types";
 import { asyncHandler } from "@/infra/web/express/handler/asyncHandler";
 import { Request, Response } from "express";
@@ -8,9 +8,10 @@ import { inject, injectable } from "inversify";
 @injectable()
 export class MessageController {
   constructor(
-    @inject(TYPES.SendMessageUseCase) private sendMessageUC: SendMessageUseCase,
+    @inject(TYPES.SendMessageUseCase)
+    private sendMessageUC: ISendMessageUseCase,
     @inject(TYPES.ListMessagesUseCase)
-    private listMessagesUC: ListMessagesUseCase
+    private listMessagesUC: IListMessagesUseCase
   ) {}
 
   listMessagesPerChannel = asyncHandler(async (req: Request, res: Response) => {

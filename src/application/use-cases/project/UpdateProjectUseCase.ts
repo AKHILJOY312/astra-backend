@@ -2,23 +2,16 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
 import { IProjectRepository } from "../../ports/repositories/IProjectRepository";
 import { IProjectMembershipRepository } from "../../ports/repositories/IProjectMembershipRepository";
-import { Project } from "../../../domain/entities/project/Project";
+
 import { NotFoundError, UnauthorizedError } from "@/application/error/AppError";
-
-export interface UpdateProjectDTO {
-  projectId: string;
-  userId: string;
-  projectName?: string;
-  description?: string;
-  imageUrl?: string | null;
-}
-
-export interface UpdateProjectResultDTO {
-  project: Project;
-}
+import {
+  IUpdateProjectUseCase,
+  UpdateProjectDTO,
+  UpdateProjectResultDTO,
+} from "@/application/ports/use-cases/project/IUpdateProjectUseCase";
 
 @injectable()
-export class UpdateProjectUseCase {
+export class UpdateProjectUseCase implements IUpdateProjectUseCase {
   constructor(
     @inject(TYPES.ProjectRepository)
     private projectRepo: IProjectRepository,

@@ -4,9 +4,10 @@ import { DeletePlanDto } from "../../../dto/plan/DeletePlanDto";
 import { Plan } from "../../../../domain/entities/billing/Plan";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
+import { ISoftDeletePlan } from "@/application/ports/use-cases/plan/admin/ISoftDeletePlanUseCase";
 
 @injectable()
-export class SoftDeletePlan {
+export class SoftDeletePlan implements ISoftDeletePlan {
   constructor(
     @inject(TYPES.PlanRepository) private planRepo: IPlanRepository
   ) {}

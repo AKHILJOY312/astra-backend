@@ -3,9 +3,10 @@ import { IPlanRepository } from "../../../ports/repositories/IPlanRepository";
 import { Plan } from "../../../../domain/entities/billing/Plan";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
+import { IGetPlansPaginated } from "@/application/ports/use-cases/plan/admin/IGetPlansPaginatedUseCase";
 
 @injectable()
-export class GetPlansPaginated {
+export class GetPlansPaginated implements IGetPlansPaginated {
   constructor(
     @inject(TYPES.PlanRepository) private planRepo: IPlanRepository
   ) {}

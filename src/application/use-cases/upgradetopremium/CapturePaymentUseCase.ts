@@ -4,20 +4,14 @@ import { UserSubscription } from "@/domain/entities/billing/UserSubscription";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
 import { ENV } from "@/config/env.config";
-
-export interface CapturePaymentInput {
-  razorpayOrderId: string;
-  razorpayPaymentId: string;
-  razorpaySignature: string;
-}
-
-export interface CapturePaymentOutput {
-  success: boolean;
-  message: string;
-}
+import {
+  CapturePaymentInput,
+  CapturePaymentOutput,
+  ICapturePaymentUseCase,
+} from "@/application/ports/use-cases/upgradetopremium/ICapturePaymentUseCase";
 
 @injectable()
-export class CapturePaymentUseCase {
+export class CapturePaymentUseCase implements ICapturePaymentUseCase {
   constructor(
     @inject(TYPES.UserSubscriptionRepository)
     private subscriptionRepo: IUserSubscriptionRepository
@@ -26,7 +20,7 @@ export class CapturePaymentUseCase {
   async execute(input: CapturePaymentInput): Promise<CapturePaymentOutput> {
     const { razorpayOrderId, razorpayPaymentId, razorpaySignature } = input;
 
-    // 1️⃣ Verify Razorpay Signature
+    //  Verify Razorpay Signature
     const expectedSignature = crypto
       .createHmac("sha256", ENV.PAYMENTS.RAZORPAY_SECRET!)
       .update(`${razorpayOrderId}|${razorpayPaymentId}`)

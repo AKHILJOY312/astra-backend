@@ -7,9 +7,10 @@ import {
   UnauthorizedError,
   ValidationError,
 } from "@/application/error/AppError";
+import { IAdminResetPassword } from "@/application/ports/use-cases/auth/admin/IAdminResetPasswordUseCase";
 
 @injectable()
-export class AdminResetPassword {
+export class AdminResetPassword implements IAdminResetPassword {
   constructor(
     @inject(TYPES.UserRepository) private userRepo: IUserRepository,
     @inject(TYPES.AuthService) private authService: IAuthService

@@ -3,14 +3,18 @@ import { inject, injectable } from "inversify";
 import { IUserRepository } from "../../ports/repositories/IUserRepository";
 import { TYPES } from "@/config/types";
 import { NotFoundError } from "@/application/error/AppError";
+import {
+  AdminRoleResponseDTO,
+  IAssignAdminRoleUseCase,
+} from "@/application/ports/use-cases/user/IAssignAdminRoleUseCase";
 
 @injectable()
-export class AssignAdminRoleUseCase {
+export class AssignAdminRoleUseCase implements IAssignAdminRoleUseCase {
   constructor(
     @inject(TYPES.UserRepository) private userRepo: IUserRepository
   ) {}
 
-  async execute(userId: string) {
+  async execute(userId: string): Promise<AdminRoleResponseDTO> {
     const user = await this.userRepo.findById(userId);
 
     if (!user) throw new NotFoundError("User");

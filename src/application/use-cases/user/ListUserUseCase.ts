@@ -6,6 +6,7 @@ import {
 } from "../../dto/user/UserListResponseDTO";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
+import { IListUsersUseCase } from "@/application/ports/use-cases/user/IListUsersUseCase";
 
 export interface ListUsersQuery {
   page: number;
@@ -14,7 +15,7 @@ export interface ListUsersQuery {
 }
 
 @injectable()
-export class ListUsersUseCase {
+export class ListUsersUseCase implements IListUsersUseCase {
   constructor(
     @inject(TYPES.UserRepository) private userRepo: IUserRepository
   ) {}

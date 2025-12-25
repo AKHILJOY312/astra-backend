@@ -1,22 +1,22 @@
 // src/interfaces/controllers/PlanController.ts
 import { Request, Response } from "express";
-import { CreatePlan } from "../../../application/use-cases/plan/admin/CreatePlan";
-import { UpdatePlan } from "../../../application/use-cases/plan/admin/UpdatePlan";
-import { SoftDeletePlan } from "../../../application/use-cases/plan/admin/SoftDeletePlan";
-import { GetPlansPaginated } from "../../../application/use-cases/plan/admin/GetPlansPaginated";
 import { HTTP_STATUS } from "../../http/constants/httpStatus";
 import { PLAN_MESSAGES } from "@/interface-adapters/http/constants/messages";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
+import { ICreatePlan } from "@/application/ports/use-cases/plan/admin/ICreatePlanUseCase";
+import { IUpdatePlan } from "@/application/ports/use-cases/plan/admin/IUpdatePlanUseCase";
+import { ISoftDeletePlan } from "@/application/ports/use-cases/plan/admin/ISoftDeletePlanUseCase";
+import { IGetPlansPaginated } from "@/application/ports/use-cases/plan/admin/IGetPlansPaginatedUseCase";
 
 @injectable()
 export class PlanController {
   constructor(
-    @inject(TYPES.CreatePlan) private createPlan: CreatePlan,
-    @inject(TYPES.UpdatePlan) private updatePlan: UpdatePlan,
-    @inject(TYPES.SoftDeletePlan) private deletePlan: SoftDeletePlan,
+    @inject(TYPES.CreatePlan) private createPlan: ICreatePlan,
+    @inject(TYPES.UpdatePlan) private updatePlan: IUpdatePlan,
+    @inject(TYPES.SoftDeletePlan) private deletePlan: ISoftDeletePlan,
     @inject(TYPES.GetPlansPaginated)
-    private getPlansPaginated: GetPlansPaginated
+    private getPlansPaginated: IGetPlansPaginated
   ) {}
 
   create = async (req: Request, res: Response) => {

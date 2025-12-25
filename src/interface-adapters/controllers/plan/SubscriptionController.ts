@@ -1,9 +1,5 @@
 // src/interfaces/http/controllers/subscription/SubscriptionController.ts
 import { Request, Response } from "express";
-import { UpgradeToPlanUseCase } from "@/application/use-cases/upgradetopremium/UpgradeToPlanUseCase";
-import { GetUserLimitsUseCase } from "@/application/use-cases/upgradetopremium/GetUserLimitsUseCase";
-import { GetAvailablePlansUseCase } from "@/application/use-cases/plan/user/GetAvailablePlansUseCase";
-import { CapturePaymentUseCase } from "@/application/use-cases/upgradetopremium/CapturePaymentUseCase";
 import {
   PLAN_MESSAGES,
   SUB_MESSAGE,
@@ -12,18 +8,22 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
 import { BadRequestError } from "@/application/error/AppError";
 import { asyncHandler } from "@/infra/web/express/handler/asyncHandler";
+import { IUpgradeToPlanUseCase } from "@/application/ports/use-cases/upgradetopremium/IUpgradeToPlanUseCase";
+import { IGetUserLimitsUseCase } from "@/application/ports/use-cases/upgradetopremium/IGetUserLimitsUseCase";
+import { IGetAvailablePlansUseCase } from "@/application/ports/use-cases/plan/user/IGetAvailablePlansUseCase";
+import { ICapturePaymentUseCase } from "@/application/ports/use-cases/upgradetopremium/ICapturePaymentUseCase";
 
 @injectable()
 export class SubscriptionController {
   constructor(
     @inject(TYPES.UpgradeToPlanUseCase)
-    private upgradeUseCase: UpgradeToPlanUseCase,
+    private upgradeUseCase: IUpgradeToPlanUseCase,
     @inject(TYPES.GetUserLimitsUseCase)
-    private getLimitsUseCase: GetUserLimitsUseCase,
+    private getLimitsUseCase: IGetUserLimitsUseCase,
     @inject(TYPES.GetAvailablePlansUseCase)
-    private getAvailablePlans: GetAvailablePlansUseCase,
+    private getAvailablePlans: IGetAvailablePlansUseCase,
     @inject(TYPES.CapturePaymentUseCase)
-    private captureUseCase: CapturePaymentUseCase
+    private captureUseCase: ICapturePaymentUseCase
   ) {}
 
   // GET /api/subscription/plans
