@@ -78,7 +78,7 @@ export class NodemailerEmailService implements IEmailService {
 
   async sendVerification(email: string, token: string): Promise<void> {
     const verificationUrl = `${this.clientUrl}/verify-email?token=${token}`;
-
+    console.log("User verification Url: ", verificationUrl);
     const mailOptions: SendMailOptions = {
       from: `"Your App" <${this.fromEmail}>`,
       to: email,
@@ -103,7 +103,7 @@ export class NodemailerEmailService implements IEmailService {
 
   async sendPasswordReset(email: string, token: string): Promise<void> {
     const resetUrl = `${this.clientUrl}/reset-password?token=${token}`;
-
+    console.log("User reset password url:", resetUrl);
     const mailOptions: SendMailOptions = {
       from: `"Your App" <${this.fromEmail}>`,
       to: email,

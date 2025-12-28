@@ -3,7 +3,11 @@ import { TYPES } from "@/config/types";
 import { IProjectRepository } from "../../ports/repositories/IProjectRepository";
 import { IProjectMembershipRepository } from "../../ports/repositories/IProjectMembershipRepository";
 
-import { NotFoundError, UnauthorizedError } from "@/application/error/AppError";
+import {
+  BadRequestError,
+  NotFoundError,
+  UnauthorizedError,
+} from "@/application/error/AppError";
 import {
   IUpdateProjectUseCase,
   UpdateProjectDTO,
@@ -28,7 +32,15 @@ export class UpdateProjectUseCase implements IUpdateProjectUseCase {
     if (!project) {
       throw new NotFoundError("Project");
     }
-
+    const sameNameExist = await this.projectRepo.existsByNameAndOwnerId(
+      projectName!,
+      userId
+    );
+    if (sameNameExist) {
+      throw new BadRequestError(
+        "Project with this same name exists. Try a another name."
+      );
+    }
     // 2️ Authorization
     if (project.ownerId !== userId) {
       const membership = await this.membershipRepo.findByProjectAndUser(

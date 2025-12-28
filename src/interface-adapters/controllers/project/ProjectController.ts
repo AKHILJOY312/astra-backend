@@ -45,7 +45,7 @@ export class ProjectController {
 
     return res.status(HTTP_STATUS.CREATED).json({
       success: true,
-      data: project.toJSON(),
+      project: project.toJSON(),
     });
   };
   updateProject = async (req: Request, res: Response) => {
