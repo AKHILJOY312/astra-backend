@@ -8,10 +8,8 @@ import {
   UnauthorizedError,
   ValidationError,
 } from "@/application/error/AppError";
-import {
-  AdminLoginResponseDTO,
-  IAdminLogin,
-} from "@/application/ports/use-cases/auth/admin/IAdminLoginUseCase";
+import { IAdminLogin } from "@/application/ports/use-cases/auth/admin/IAdminLoginUseCase";
+import { AdminLoginResponseDTO } from "@/application/dto/auth/authDtos";
 
 @injectable()
 export class AdminLogin implements IAdminLogin {

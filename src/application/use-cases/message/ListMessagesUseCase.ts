@@ -1,3 +1,4 @@
+import { ListMessagesInput } from "@/application/dto/message/messageDtos";
 import { IMessageRepository } from "@/application/ports/repositories/IMessageRepository";
 import { IListMessagesUseCase } from "@/application/ports/use-cases/message/IListMessagesUseCase";
 import { TYPES } from "@/config/types";
@@ -9,7 +10,7 @@ export class ListMessagesUseCase implements IListMessagesUseCase {
     @inject(TYPES.MessageRepository) private repo: IMessageRepository
   ) {}
 
-  async execute(input: { channelId: string; cursor?: string; limit?: number }) {
+  async execute(input: ListMessagesInput) {
     return this.repo.listByChannel(input.channelId, input.cursor, input.limit);
   }
 }

@@ -1,3 +1,4 @@
+import { SendMessageInput } from "@/application/dto/message/messageDtos";
 import { BadRequestError } from "@/application/error/AppError";
 import { IMessageRepository } from "@/application/ports/repositories/IMessageRepository";
 import { IProjectMembershipRepository } from "@/application/ports/repositories/IProjectMembershipRepository";
@@ -17,13 +18,7 @@ export class SendMessageUseCase implements ISendMessageUseCase {
     @inject(TYPES.UserRepository) private userRepo: IUserRepository
   ) {}
 
-  async execute(input: {
-    projectId: string;
-    channelId: string;
-    senderId: string;
-    text: string;
-    attachments?: boolean;
-  }): Promise<Message> {
+  async execute(input: SendMessageInput): Promise<Message> {
     const isMember = await this.membershipRepo.findByProjectAndUser(
       input.projectId,
       input.senderId

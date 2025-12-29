@@ -1,3 +1,25 @@
+export interface AuthUserLogin {
+  id: string;
+  name: string;
+  email: string;
+}
+export interface LoginUserResponseDTO {
+  accessToken: string;
+  refreshToken: string;
+  user: AuthUserLogin;
+}
+
+export interface AdminUserDTO {
+  id: string;
+  email: string;
+  name: string;
+  isAdmin: true;
+}
+export interface AdminLoginResponseDTO {
+  accessToken: string;
+  user: AdminUserDTO;
+}
+
 export interface AuthUserDTO {
   id: string;
   name: string;

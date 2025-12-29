@@ -7,10 +7,8 @@ import {
   ForbiddenError,
   UnauthorizedError,
 } from "@/application/error/AppError";
-import {
-  ILoginUser,
-  LoginUserResponseDTO,
-} from "@/application/ports/use-cases/auth/ILoginUserUseCase";
+import { ILoginUser } from "@/application/ports/use-cases/auth/ILoginUserUseCase";
+import { LoginUserResponseDTO } from "@/application/dto/auth/authDtos";
 
 @injectable()
 export class LoginUser implements ILoginUser {

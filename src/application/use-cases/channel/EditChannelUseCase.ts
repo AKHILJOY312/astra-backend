@@ -8,10 +8,8 @@ import {
   BadRequestError,
   UnauthorizedError,
 } from "@/application/error/AppError";
-import {
-  EditChannelDTO,
-  IEditChannelUseCase,
-} from "@/application/ports/use-cases/channel/IEditChannelUseCase";
+import { IEditChannelUseCase } from "@/application/ports/use-cases/channel/IEditChannelUseCase";
+import { EditChannelDTO } from "@/application/dto/channel/channelDtos";
 
 @injectable()
 export class EditChannelUseCase implements IEditChannelUseCase {
