@@ -21,7 +21,7 @@ export class ChangeMemberRoleUseCase implements IChangeMemberRoleUseCase {
     input: ChangeMemberRoleDTO
   ): Promise<ChangeMemberRoleResultDTO> {
     const { projectId, memberId, newRole, requestedBy } = input;
-
+    console.log(input);
     // 1. Requester must be manager
     const requester = await this.membershipRepo.findByProjectAndUser(
       projectId,
@@ -34,12 +34,9 @@ export class ChangeMemberRoleUseCase implements IChangeMemberRoleUseCase {
     }
 
     // 2. Target must be a member
-    const target = await this.membershipRepo.findByProjectAndUser(
-      projectId,
-      memberId
-    );
+    const target = await this.membershipRepo.findById(memberId);
     if (!target) {
-      throw new NotFoundError("User");
+      throw new NotFoundError("Member");
     }
 
     // 3. Prevent removing last manager
