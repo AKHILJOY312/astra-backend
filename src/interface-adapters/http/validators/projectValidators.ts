@@ -30,6 +30,6 @@ export const UpdateProjectSchema = z.object({
 
 export const PaginationQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(30).default(10),
+  limit: z.coerce.number().int().min(1).max(30).default(8),
   search: z.string().optional(),
 });

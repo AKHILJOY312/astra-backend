@@ -70,7 +70,7 @@ export class ProjectController {
   };
 
   getUserProjects = async (req: Request, res: Response) => {
-    const queryParsed = PaginationQuerySchema.safeParse(req.params);
+    const queryParsed = PaginationQuerySchema.safeParse(req.query);
     if (!queryParsed.success) {
       throw new ValidationError(PROJECT_MESSAGE.INVALID_DATA);
     }
