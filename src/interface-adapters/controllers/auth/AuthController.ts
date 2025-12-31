@@ -11,6 +11,7 @@ import { TYPES } from "@/config/types";
 import {
   BadRequestError,
   UnauthorizedError,
+  ValidationError,
 } from "@/application/error/AppError";
 import {
   clearRefreshTokenCookie,
@@ -28,6 +29,7 @@ import { IForgotPassword } from "@/application/ports/use-cases/auth/IForgotPassw
 import { IResetPassword } from "@/application/ports/use-cases/auth/IResetPasswordUseCase";
 import { IVerifyResetToken } from "@/application/ports/use-cases/auth/IVerifyResetTokenUseCase";
 import { GoogleProfile } from "@/application/dto/auth/authDtos";
+import { registerSchema } from "@/interface-adapters/http/validators/userAuthValidators";
 
 @injectable()
 export class AuthController {
@@ -76,6 +78,10 @@ export class AuthController {
   };
 
   register = async (req: Request, res: Response) => {
+    const validatedData = registerSchema.safeParse(req.body);
+    if (!validatedData.success) {
+      throw new ValidationError(ERROR_MESSAGES.VALIDATION_ERROR);
+    }
     const result = await this.registerUC.execute(req.body);
     res.status(HTTP_STATUS.CREATED).json(result);
   };

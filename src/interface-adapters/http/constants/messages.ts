@@ -23,6 +23,7 @@ export const ERROR_MESSAGES = {
   GOOGLE_ERROR: "Google login failed",
   AUTH_FAILED: "Authentication failed",
   NO_SESSION: "No active session",
+  VALIDATION_ERROR: "Not valid input",
 };
 
 export const CHANNEL_MESSAGES = {
