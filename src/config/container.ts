@@ -135,6 +135,10 @@ import { IAuthService } from "@/application/ports/services/IAuthService";
 import { IEmailService } from "@/application/ports/services/IEmailService";
 import { IRazorpayService } from "@/application/ports/services/IRazorpayService";
 import { ITokenBlacklistService } from "@/application/ports/services/ITokenBlacklistService";
+import { IUploadProfileImageUseCase } from "@/application/ports/use-cases/user/IUploadProfileImageUseCase";
+import { UploadProfileImageUseCase } from "@/application/use-cases/user/UploadProfileImageUseCase";
+import { IFileUploadService } from "@/application/ports/services/IFileUploadService";
+import { S3FileUploadService } from "@/infra/services/S3FileUploadService";
 
 const container = new Container();
 
@@ -195,7 +199,9 @@ container
   .bind<ITokenBlacklistService>(TYPES.TokenBlacklistService)
   .to(MongoTokenBlacklistService)
   .inSingletonScope();
-
+container
+  .bind<IFileUploadService>(TYPES.FileUploadService)
+  .to(S3FileUploadService);
 //-------------------------------------------------------
 // --- Middleware
 // Protect middleware is a factory function, so we bind the result of the function
@@ -266,6 +272,9 @@ container
 container
   .bind<IGetAvailablePlansUseCase>(TYPES.GetAvailablePlansUseCase)
   .to(GetAvailablePlansUseCase);
+container
+  .bind<IUploadProfileImageUseCase>(TYPES.UploadProfileImageUseCase)
+  .to(UploadProfileImageUseCase);
 
 // Project/Membership Use Cases
 container

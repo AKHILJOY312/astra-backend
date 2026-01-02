@@ -23,7 +23,7 @@ router.use(API_ROUTES.ADMIN.AUTH, getAdminAuthRoutes(container));
 router.use(API_ROUTES.ADMIN.PLANS, getAdminPlanRoutes(container));
 router.use(API_ROUTES.ADMIN.USERS, getAdminUserRoutes(container));
 
-router.use(API_ROUTES.USERS.ROOT, getUserRoutes(container));
+router.use(API_ROUTES.USER.ROOT, getUserRoutes(container));
 router.use(API_ROUTES.PROJECTS.ROOT, getProjectRoutes(container));
 router.use(API_ROUTES.PROJECTS.CHANNELS, getChannelRoutes(container));
 router.use(API_ROUTES.SUBSCRIPTION.ROOT, getSubscriptionRoutes(container));

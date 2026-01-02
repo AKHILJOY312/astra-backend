@@ -7,6 +7,7 @@ import {
   IGetUserProfileUseCase,
   UserProfileResponseDTO,
 } from "@/application/ports/use-cases/user/IGetUserProfileUseCase";
+import { IFileUploadService } from "@/application/ports/services/IFileUploadService";
 
 @injectable()
 export class GetUserProfileUseCase implements IGetUserProfileUseCase {
@@ -15,13 +16,20 @@ export class GetUserProfileUseCase implements IGetUserProfileUseCase {
     private userRepo: IUserRepository,
 
     @inject(TYPES.UserSubscriptionRepository)
-    private subscriptionRepo: IUserSubscriptionRepository
+    private subscriptionRepo: IUserSubscriptionRepository,
+    @inject(TYPES.FileUploadService) private fileUploadSvc: IFileUploadService
   ) {}
 
   async execute(userId: string): Promise<UserProfileResponseDTO> {
     const user = await this.userRepo.findById(userId);
     if (!user) throw new NotFoundError("User");
 
+    let profileImageUrl = undefined;
+    if (user.ImageUrl) {
+      profileImageUrl = await this.fileUploadSvc.generateProfileImageViewUrl(
+        user.ImageUrl
+      );
+    }
     const activeSubscription = await this.subscriptionRepo.findActiveByUserId(
       userId
     );
@@ -30,7 +38,7 @@ export class GetUserProfileUseCase implements IGetUserProfileUseCase {
       id: user.id,
       name: user.name,
       email: user.email,
-      imageUrl: user.ImageUrl,
+      imageUrl: profileImageUrl,
       isVerified: user.isVerified,
       createdAt: user.createdAt,
       plan: activeSubscription

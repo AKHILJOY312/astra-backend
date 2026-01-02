@@ -30,9 +30,11 @@ export const API_ROUTES = {
     ROLE: "/:id/role",
   },
 
-  USERS: {
-    ROOT: "/users",
+  USER: {
+    ROOT: "/user",
     ME: "/me",
+    PROFILE_IMAGE_URL: "/profile-image/upload-url",
+    PROFILE_IMAGE: "/profile-image",
   },
 
   PROJECTS: {

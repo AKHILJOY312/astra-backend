@@ -86,6 +86,7 @@ export class UserRepository implements IUserRepository {
       verificationTokenExpires: user.verificationTokenExpires ?? undefined,
       resetPasswordToken: user.resetPasswordToken ?? undefined,
       resetPasswordExpires: user.resetPasswordExpires ?? undefined,
+      avatar_url: user.ImageUrl ?? null,
     };
 
     // Clean up undefined values for $unset if needed

@@ -1,5 +1,3 @@
-// src/common/types.ts (Create this file)
-
 const TYPES = {
   // Repositories
   UserRepository: Symbol.for("UserRepository"),
@@ -16,6 +14,8 @@ const TYPES = {
   EmailService: Symbol.for("EmailService"), // For NodemailerEmailService
   PaymentService: Symbol.for("PaymentService"), // For RazorpayService
   TokenBlacklistService: Symbol.for("TokenBlacklistService"),
+  FileUploadService: Symbol.for("FileUploadService"),
+
   // Middleware
   ProtectMiddleware: Symbol.for("ProtectMiddleware"),
 
@@ -57,7 +57,7 @@ const TYPES = {
   GetUserProfileUseCase: Symbol.for("GetUserProfileUseCase"),
   UpdateUserProfileUseCase: Symbol.for("UpdateUserProfileUseCase"),
   DeleteUserAccountUseCase: Symbol.for("DeleteUserAccountUseCase"),
-
+  UploadProfileImageUseCase: Symbol.for("UploadProfileImageUseCase"),
   // Use Cases (Plan Admin)
   CreatePlan: Symbol.for("CreatePlan"),
   UpdatePlan: Symbol.for("UpdatePlan"),

@@ -16,10 +16,16 @@ export function getUserRoutes(container: Container): Router {
   router.use(protect);
 
   router
-    .route(API_ROUTES.USERS.ME)
+    .route(API_ROUTES.USER.ME)
     .get(asyncHandler(userController.getProfile.bind(userController)))
     .patch(asyncHandler(userController.updateProfile.bind(userController)))
     .delete(asyncHandler(userController.deleteAccount.bind(userController)));
 
+  router
+    .route(API_ROUTES.USER.PROFILE_IMAGE_URL)
+    .post(asyncHandler(userController.getPresignedUrl.bind(userController)));
+  router
+    .route(API_ROUTES.USER.PROFILE_IMAGE)
+    .patch(asyncHandler(userController.saveProfileImage.bind(userController)));
   return router;
 }
