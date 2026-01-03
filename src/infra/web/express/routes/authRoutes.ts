@@ -24,7 +24,10 @@ export function getAuthRoutes(container: Container): Router {
     API_ROUTES.AUTH.VERIFY_EMAIL,
     asyncHandler(authController.verifyEmail.bind(authController))
   );
-  router.post(API_ROUTES.AUTH.LOGIN, authController.login.bind(authController));
+  router.post(
+    API_ROUTES.AUTH.LOGIN,
+    asyncHandler(authController.login.bind(authController))
+  );
   router.post(
     API_ROUTES.AUTH.REFRESH,
     asyncHandler(authController.refreshToken.bind(authController))

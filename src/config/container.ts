@@ -86,7 +86,7 @@ import { ListProjectMembersUseCase } from "@/application/use-cases/project/ListP
 import { UpdateProjectUseCase } from "@/application/use-cases/project/UpdateProjectUseCase";
 import { UserController } from "@/interface-adapters/controllers/user/UserController";
 import { GetUserProfileUseCase } from "@/application/use-cases/user/GetUserProfileUseCase";
-import { UpdateUserProfileUseCase } from "@/application/use-cases/user/UpdateUserProfileUseCase";
+import { UpdateUserProfileUseCase } from "@/application/use-cases/user/UpdateUserNameUseCase";
 import { DeleteUserAccountUseCase } from "@/application/use-cases/user/DeleteUserAccountUseCase";
 import { MongoTokenBlacklistService } from "@/infra/services/MongoTokenBlacklistService";
 //IUseCase
@@ -139,6 +139,8 @@ import { IUploadProfileImageUseCase } from "@/application/ports/use-cases/user/I
 import { UploadProfileImageUseCase } from "@/application/use-cases/user/UploadProfileImageUseCase";
 import { IFileUploadService } from "@/application/ports/services/IFileUploadService";
 import { S3FileUploadService } from "@/infra/services/S3FileUploadService";
+import { IChangePasswordUseCase } from "@/application/ports/use-cases/user/IChangePasswordUseCase";
+import { ChangePasswordUseCase } from "@/application/use-cases/user/ChangePasswordUseCase";
 
 const container = new Container();
 
@@ -256,11 +258,14 @@ container
   .bind<IGetUserProfileUseCase>(TYPES.GetUserProfileUseCase)
   .to(GetUserProfileUseCase);
 container
-  .bind<IUpdateUserProfileUseCase>(TYPES.UpdateUserProfileUseCase)
+  .bind<IUpdateUserProfileUseCase>(TYPES.UpdateUserNameUseCase)
   .to(UpdateUserProfileUseCase);
 container
   .bind<IDeleteUserAccountUseCase>(TYPES.DeleteUserAccountUseCase)
   .to(DeleteUserAccountUseCase);
+container
+  .bind<IChangePasswordUseCase>(TYPES.ChangePasswordUseCase)
+  .to(ChangePasswordUseCase);
 
 // Plan Use Cases
 container.bind<ICreatePlan>(TYPES.CreatePlan).to(CreatePlan);

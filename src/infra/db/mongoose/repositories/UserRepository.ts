@@ -129,7 +129,10 @@ export class UserRepository implements IUserRepository {
       totalPages: Math.ceil(total / limit),
     };
   }
-
+  async findByIdWithPassword(id: string): Promise<User | null> {
+    const doc = await UserModel.findById(id).select("+password").exec();
+    return doc ? this.toDomain(doc) : null;
+  }
   async updateStatus(userId: string): Promise<void> {
     // Mongoose update pipelines require cast as any or specific casting
     await UserModel.updateOne({ _id: userId }, [

@@ -55,9 +55,11 @@ const TYPES = {
 
   // Use Cases ( User)
   GetUserProfileUseCase: Symbol.for("GetUserProfileUseCase"),
-  UpdateUserProfileUseCase: Symbol.for("UpdateUserProfileUseCase"),
+  UpdateUserNameUseCase: Symbol.for("UpdateUserNameUseCase"),
   DeleteUserAccountUseCase: Symbol.for("DeleteUserAccountUseCase"),
   UploadProfileImageUseCase: Symbol.for("UploadProfileImageUseCase"),
+  ChangePasswordUseCase: Symbol.for("ChangePasswordUseCase"),
+
   // Use Cases (Plan Admin)
   CreatePlan: Symbol.for("CreatePlan"),
   UpdatePlan: Symbol.for("UpdatePlan"),

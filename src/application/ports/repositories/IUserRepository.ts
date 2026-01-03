@@ -20,6 +20,7 @@ export interface IUserRepository {
   findByVerificationToken(token: string): Promise<User | null>;
   findByResetToken(token: string): Promise<User | null>;
   findUsersWithPagination(query: ListUsersQuery): Promise<PaginationResult>;
+  findByIdWithPassword(id: string): Promise<User | null>;
 
   countAdmins(): Promise<number>;
   // Optional: Specific methods for direct updates (alternative to using generic save)

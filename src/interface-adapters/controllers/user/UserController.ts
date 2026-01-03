@@ -7,18 +7,22 @@ import { IUpdateUserProfileUseCase } from "@/application/ports/use-cases/user/IU
 import { IDeleteUserAccountUseCase } from "@/application/ports/use-cases/user/IDeleteUserAccountUseCase";
 import { IUploadProfileImageUseCase } from "@/application/ports/use-cases/user/IUploadProfileImageUseCase";
 import { BadRequestError } from "@/application/error/AppError";
+import { IChangePasswordUseCase } from "@/application/ports/use-cases/user/IChangePasswordUseCase";
+import { changePasswordSchema } from "@/interface-adapters/http/validators/userValidators";
 
 @injectable()
 export class UserController {
   constructor(
     @inject(TYPES.GetUserProfileUseCase)
     private getProfileUC: IGetUserProfileUseCase,
-    @inject(TYPES.UpdateUserProfileUseCase)
+    @inject(TYPES.UpdateUserNameUseCase)
     private updateProfileUC: IUpdateUserProfileUseCase,
     @inject(TYPES.DeleteUserAccountUseCase)
     private deleteAccountUC: IDeleteUserAccountUseCase,
     @inject(TYPES.UploadProfileImageUseCase)
-    private uploadProfileImageUC: IUploadProfileImageUseCase
+    private uploadProfileImageUC: IUploadProfileImageUseCase,
+    @inject(TYPES.ChangePasswordUseCase)
+    private changePasswordUC: IChangePasswordUseCase
   ) {}
 
   getProfile = async (req: Request, res: Response) => {
@@ -27,7 +31,7 @@ export class UserController {
     res.status(200).json(data);
   };
 
-  updateProfile = async (req: Request, res: Response) => {
+  updateName = async (req: Request, res: Response) => {
     const userId = req.user!.id;
     const { name, email } = req.body;
 
@@ -81,5 +85,19 @@ export class UserController {
       message: "Profile image updated successfully",
       imageUrl,
     });
+  };
+
+  changePassword = async (req: Request, res: Response) => {
+    //validating the incoming request with Zod schema
+    const validatedData = changePasswordSchema.parse(req.body);
+
+    const userId = req.user!.id;
+
+    const result = await this.changePasswordUC.execute(
+      userId,
+      validatedData.oldPassword,
+      validatedData.newPassword
+    );
+    res.json(result);
   };
 }

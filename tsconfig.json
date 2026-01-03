@@ -13,5 +13,14 @@
     },
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
-  }
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test",
+    "**/*.test.ts",
+    "jest.config.ts",
+    "eslint.config.mts"
+  ]
 }

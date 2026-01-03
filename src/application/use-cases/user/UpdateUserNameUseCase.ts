@@ -20,14 +20,6 @@ export class UpdateUserProfileUseCase implements IUpdateUserProfileUseCase {
 
     if (dto.name) user.setName(dto.name);
 
-    if (dto.email && dto.email !== user.email) {
-      const existing = await this.userRepo.findByEmail(dto.email);
-      if (existing) throw new Error("Email already in use");
-
-      user.setEmail(dto.email);
-      // (user as any)._props.isVerified = true;
-    }
-
     await this.userRepo.update(user);
 
     return {

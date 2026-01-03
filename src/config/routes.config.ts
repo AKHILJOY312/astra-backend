@@ -35,6 +35,7 @@ export const API_ROUTES = {
     ME: "/me",
     PROFILE_IMAGE_URL: "/profile-image/upload-url",
     PROFILE_IMAGE: "/profile-image",
+    CHANGE_PASSWORD: "/change-password",
   },
 
   PROJECTS: {

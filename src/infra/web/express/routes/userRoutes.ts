@@ -17,15 +17,19 @@ export function getUserRoutes(container: Container): Router {
 
   router
     .route(API_ROUTES.USER.ME)
-    .get(asyncHandler(userController.getProfile.bind(userController)))
-    .patch(asyncHandler(userController.updateProfile.bind(userController)))
-    .delete(asyncHandler(userController.deleteAccount.bind(userController)));
+    .get(asyncHandler(userController.getProfile))
+    .patch(asyncHandler(userController.updateName))
+    .delete(asyncHandler(userController.deleteAccount));
 
   router
     .route(API_ROUTES.USER.PROFILE_IMAGE_URL)
-    .post(asyncHandler(userController.getPresignedUrl.bind(userController)));
+    .post(asyncHandler(userController.getPresignedUrl));
   router
     .route(API_ROUTES.USER.PROFILE_IMAGE)
-    .patch(asyncHandler(userController.saveProfileImage.bind(userController)));
+    .patch(asyncHandler(userController.saveProfileImage));
+
+  router
+    .route(API_ROUTES.USER.CHANGE_PASSWORD)
+    .patch(asyncHandler(userController.changePassword));
   return router;
 }

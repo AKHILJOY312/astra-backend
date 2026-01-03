@@ -2,6 +2,7 @@
 import { ErrorRequestHandler } from "express";
 import { AppError } from "@/application/error/AppError";
 import { HTTP_STATUS } from "@/interface-adapters/http/constants/httpStatus";
+import { z, ZodError } from "zod";
 
 export const globalErrorHandler: ErrorRequestHandler = (
   err,
@@ -9,6 +10,17 @@ export const globalErrorHandler: ErrorRequestHandler = (
   res,
   next
 ) => {
+  if (err instanceof ZodError) {
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({
+      message: "Validation failed",
+      errors: err.issues.map((issue: z.ZodIssue) => ({
+        // Use z.ZodIssue
+        path: issue.path.join("."),
+        message: issue.message,
+      })),
+    });
+  }
+
   // Special handling for plan limit errors
   if (err.name === "PlanLimitError") {
     return res.status(HTTP_STATUS.FORBIDDEN).json({
