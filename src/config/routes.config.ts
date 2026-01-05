@@ -48,6 +48,7 @@ export const API_ROUTES = {
     BY_MEMBER_ID: "/:projectId/members/:memberId",
     MEMBER_ROLE: "/:projectId/members/:memberId/role",
     CHANNELS: "/projects/:projectId/channels",
+    INVITATION_ACCEPT: "/invitations/accept",
   },
 
   CHANNELS: {

@@ -92,12 +92,57 @@ export class NodemailerEmailService implements IEmailService {
     </div>
   `;
   }
+  private getProjectInvitationHtml(
+    projectName: string,
+    inviterName: string,
+    invitationLink: string,
+    registrationLink: string
+  ): string {
+    return `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background: #ffffff;">
+      <h2 style="color: #1a73e8; text-align: center;">You've Been Invited to Join a Project!</h2>
+      
+      <p><strong>${inviterName}</strong> has invited you to collaborate on the project:</p>
+      
+      <h3 style="color: #333; text-align: center; background: #f0f8ff; padding: 15px; border-radius: 8px;">
+        ${projectName}
+      </h3>
 
+      <p><strong>Step 1:</strong> Create an account using this link:  
+        <a href="${registrationLink}" style="color: #1a73e8; text-decoration: underline;">Register here</a>
+      </p>
+      <p><strong>Step 2:</strong> After registering and logging in, accept the invitation below.</p>
+
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="${invitationLink}"
+           style="display: inline-block; background-color: #1a73e8; color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
+          Accept Invitation
+        </a>
+      </div>
+
+      <p>Or copy and paste this link into your browser:</p>
+      <p style="word-break: break-all; color: #555; background: #f5f5f5; padding: 10px; border-radius: 6px; font-size: 14px;">
+        ${invitationLink}
+      </p>
+
+      <p><small>This invitation expires in 7 days.</small></p>
+
+      <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;" />
+      
+      <p style="color: #666; font-size: 14px; text-align: center;">
+        If you weren’t expecting this invitation, you can safely ignore this email.
+      </p>
+      <p style="font-size: 12px; color: #888; text-align: center;">
+        For security, always verify the sender before clicking links.
+      </p>
+    </div>
+  `;
+  }
   async sendVerification(email: string, token: string): Promise<void> {
     const verificationUrl = `${this.clientUrl}/verify-email?token=${token}`;
     console.log("User verification Url: ", verificationUrl);
     const mailOptions: SendMailOptions = {
-      from: `"Your App" <${this.fromEmail}>`,
+      from: `"Astra" <${this.fromEmail}>`,
       to: email,
       subject: "Verify Your Email Address",
       html: this.getVerificationHtml(verificationUrl),
@@ -122,7 +167,7 @@ export class NodemailerEmailService implements IEmailService {
     const resetUrl = `${this.clientUrl}/reset-password?token=${token}`;
     console.log("User reset password url:", resetUrl);
     const mailOptions: SendMailOptions = {
-      from: `"Your App" <${this.fromEmail}>`,
+      from: `"Astra" <${this.fromEmail}>`,
       to: email,
       subject: "Reset Your Password",
       html: this.getPasswordResetHtml(resetUrl),
@@ -144,7 +189,7 @@ export class NodemailerEmailService implements IEmailService {
   }
   async sendEmailChangeOtp(email: string, otp: string): Promise<void> {
     const mailOptions: SendMailOptions = {
-      from: `"Your App" <${this.fromEmail}>`,
+      from: `"Astra" <${this.fromEmail}>`,
       to: email,
       subject: "Verify Your Email Change -OTP Inside",
       html: this.getEmailChangeOtpHtml(email, otp),
@@ -157,6 +202,39 @@ export class NodemailerEmailService implements IEmailService {
       const err = error as Error;
       console.log("failed to send email change OTP:", err.message);
       throw new Error("Failed to send OTP. Please try again.");
+    }
+  }
+  async sendProjectInvitation(
+    email: string,
+    projectName: string,
+    inviterName: string,
+    invitationLink: string,
+    registrationLink: string
+  ): Promise<void> {
+    const mailOptions: SendMailOptions = {
+      from: `"Astra Team" <${this.fromEmail}>`,
+      to: email,
+      subject: `Invitation to join "${projectName}" on Astra`,
+      html: this.getProjectInvitationHtml(
+        projectName,
+        inviterName,
+        invitationLink,
+        registrationLink
+      ),
+    };
+
+    try {
+      const info = await this.transporter.sendMail(mailOptions);
+      console.log("Project invitation sent:", info.messageId, "to:", email);
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error("Failed to send project invitation:", {
+        to: email,
+        message: err.message,
+      });
+      throw new Error(
+        "Failed to send invitation email. Please try again later."
+      );
     }
   }
 }

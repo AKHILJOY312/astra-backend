@@ -8,6 +8,7 @@ const TYPES = {
   UserSubscriptionRepository: Symbol.for("UserSubscriptionRepository"),
   MessageRepository: Symbol.for("MessageRepository"),
   EmailChangeOtpRepository: Symbol.for("EmailChangeOtpRepository"),
+  InvitationRepository: Symbol.for("InvitationRepository"),
 
   // Services
   UserService: Symbol.for("UserService"),
@@ -75,6 +76,7 @@ const TYPES = {
   UpdateProjectUseCase: Symbol.for("UpdateProjectUseCase"),
   GetUserProjectsUseCase: Symbol.for("GetUserProjectsUseCase"),
   InviteMemberToProjectUseCase: Symbol.for("InviteMemberToProjectUseCase"),
+  AcceptInvitationUseCase: Symbol.for("AcceptInvitationUseCase"),
   RemoveMemberFromProjectUseCase: Symbol.for("RemoveMemberFromProjectUseCase"),
   ChangeMemberRoleUseCase: Symbol.for("ChangeMemberRoleUseCase"),
   ListProjectMembers: Symbol.for("ListProjectMembers"),

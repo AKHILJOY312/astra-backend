@@ -10,4 +10,11 @@ export interface IEmailService {
     resetUrl: string
   ): Promise<void>;
   sendEmailChangeOtp(email: string, otp: string): Promise<void>;
+  sendProjectInvitation(
+    email: string,
+    projectName: string,
+    inviterName: string,
+    invitationLink: string,
+    registrationLink: string
+  ): Promise<void>;
 }

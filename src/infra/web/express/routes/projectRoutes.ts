@@ -37,10 +37,17 @@ export function getProjectRoutes(container: Container): Router {
     .post(asyncHandler(memberController.addMember.bind(memberController)))
     .get(asyncHandler(memberController.listMembers.bind(memberController)));
 
+  router
+    .route(API_ROUTES.PROJECTS.INVITATION_ACCEPT)
+    .post(
+      asyncHandler(memberController.acceptInvitation.bind(memberController))
+    );
+
   router.delete(
     API_ROUTES.PROJECTS.BY_MEMBER_ID,
     asyncHandler(memberController.removeMember.bind(memberController))
   );
+
   router.patch(
     API_ROUTES.PROJECTS.MEMBER_ROLE,
     asyncHandler(memberController.changeRole.bind(memberController))

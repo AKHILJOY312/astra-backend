@@ -154,6 +154,10 @@ import { IProjectMembershipRepository } from "@/application/ports/repositories/I
 import { IProjectRepository } from "@/application/ports/repositories/IProjectRepository";
 import { IPlanRepository } from "@/application/ports/repositories/IPlanRepository";
 import { IUserRepository } from "@/application/ports/repositories/IUserRepository";
+import { IInvitationRepository } from "@/application/ports/repositories/IInvitationRepository";
+import { InvitationRepository } from "@/infra/db/mongoose/repositories/InvitationRepository";
+import { IAcceptInvitationUseCase } from "@/application/ports/use-cases/project/IAcceptInvitationUseCase";
+import { AcceptInvitationUseCase } from "@/application/use-cases/project/AcceptInvitationUseCase";
 
 const container = new Container();
 
@@ -192,6 +196,10 @@ container
 container
   .bind<IEmailChangeOtpRepository>(TYPES.EmailChangeOtpRepository)
   .to(EmailChangeOtpRepository)
+  .inSingletonScope();
+container
+  .bind<IInvitationRepository>(TYPES.InvitationRepository)
+  .to(InvitationRepository)
   .inSingletonScope();
 //-------------------------------------------------------
 // --- Services (Bind as a Singleton)
@@ -316,6 +324,9 @@ container
 container
   .bind<IInviteMemberToProjectUseCase>(TYPES.InviteMemberToProjectUseCase)
   .to(InviteMemberToProjectUseCase);
+container
+  .bind<IAcceptInvitationUseCase>(TYPES.AcceptInvitationUseCase)
+  .to(AcceptInvitationUseCase);
 container
   .bind<IRemoveMemberFromProjectUseCase>(TYPES.RemoveMemberFromProjectUseCase)
   .to(RemoveMemberFromProjectUseCase);
