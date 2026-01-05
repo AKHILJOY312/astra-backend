@@ -1,4 +1,3 @@
-// src/core/use-cases/project/AddMemberToProjectUseCase.ts
 import { inject, injectable } from "inversify";
 
 import { IProjectMembershipRepository } from "../../ports/repositories/IProjectMembershipRepository";

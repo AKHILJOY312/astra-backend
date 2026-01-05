@@ -9,7 +9,7 @@ import {
   AddMemberSchema,
   ChangeRoleSchema,
 } from "@/interface-adapters/http/validators/memberValidators";
-import { IAddMemberToProjectUseCase } from "@/application/ports/use-cases/project/IAddMemberToProjectUseCase";
+import { IInviteMemberToProjectUseCase } from "@/application/ports/use-cases/project/IInviteMemberToProjectUseCase";
 import { IRemoveMemberFromProjectUseCase } from "@/application/ports/use-cases/project/IRemoveMemberFromProjectUseCase";
 import { IChangeMemberRoleUseCase } from "@/application/ports/use-cases/project/IChangeMemberRoleUseCase";
 import { IUserService } from "@/application/ports/services/IUserService";
@@ -18,8 +18,8 @@ import { IListProjectMembersUseCase } from "@/application/ports/use-cases/projec
 @injectable()
 export class MemberController {
   constructor(
-    @inject(TYPES.AddMemberToProjectUseCase)
-    private addMemberUseCase: IAddMemberToProjectUseCase,
+    @inject(TYPES.InviteMemberToProjectUseCase)
+    private addMemberUseCase: IInviteMemberToProjectUseCase,
     @inject(TYPES.RemoveMemberFromProjectUseCase)
     private removeMemberUseCase: IRemoveMemberFromProjectUseCase,
     @inject(TYPES.ChangeMemberRoleUseCase)

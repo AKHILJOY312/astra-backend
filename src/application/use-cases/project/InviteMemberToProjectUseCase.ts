@@ -1,4 +1,3 @@
-// src/core/use-cases/project/AddMemberToProjectUseCase.ts
 import { ProjectMembership } from "../../../domain/entities/project/ProjectMembership";
 import { IProjectRepository } from "../../ports/repositories/IProjectRepository";
 import { IProjectMembershipRepository } from "../../ports/repositories/IProjectMembershipRepository";
@@ -14,11 +13,13 @@ import {
 import {
   AddMemberDTO,
   AddMemberResultDTO,
-  IAddMemberToProjectUseCase,
-} from "@/application/ports/use-cases/project/IAddMemberToProjectUseCase";
+  IInviteMemberToProjectUseCase,
+} from "@/application/ports/use-cases/project/IInviteMemberToProjectUseCase";
 
 @injectable()
-export class AddMemberToProjectUseCase implements IAddMemberToProjectUseCase {
+export class InviteMemberToProjectUseCase
+  implements IInviteMemberToProjectUseCase
+{
   constructor(
     @inject(TYPES.ProjectMembershipRepository)
     private membershipRepo: IProjectMembershipRepository,

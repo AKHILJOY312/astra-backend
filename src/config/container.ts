@@ -50,7 +50,7 @@ import { GetAvailablePlansUseCase } from "../application/use-cases/plan/user/Get
 // Use Cases (Project/Membership)
 import { CreateProjectUseCase } from "../application/use-cases/project/CreateProjectUseCase";
 import { GetUserProjectsUseCase } from "../application/use-cases/project/GetUserProjectsUseCase";
-import { AddMemberToProjectUseCase } from "../application/use-cases/project/AddMemberToProjectUseCase";
+import { InviteMemberToProjectUseCase } from "../application/use-cases/project/InviteMemberToProjectUseCase";
 import { RemoveMemberFromProjectUseCase } from "../application/use-cases/project/RemoveMemberFromProjectUseCase";
 import { ChangeMemberRoleUseCase } from "../application/use-cases/project/ChangeMemberRoleUseCase";
 
@@ -117,7 +117,7 @@ import { IGetAvailablePlansUseCase } from "@/application/ports/use-cases/plan/us
 import { ICreateProjectUseCase } from "@/application/ports/use-cases/project/ICreateProjectUseCase";
 import { IUpdateProjectUseCase } from "@/application/ports/use-cases/project/IUpdateProjectUseCase";
 import { IGetUserProjectsUseCase } from "@/application/ports/use-cases/project/IGetUserProjectsUseCase";
-import { IAddMemberToProjectUseCase } from "@/application/ports/use-cases/project/IAddMemberToProjectUseCase";
+import { IInviteMemberToProjectUseCase } from "@/application/ports/use-cases/project/IInviteMemberToProjectUseCase";
 import { IRemoveMemberFromProjectUseCase } from "@/application/ports/use-cases/project/IRemoveMemberFromProjectUseCase";
 import { IChangeMemberRoleUseCase } from "@/application/ports/use-cases/project/IChangeMemberRoleUseCase";
 import { IListProjectMembersUseCase } from "@/application/ports/use-cases/project/IListProjectMembersUseCase";
@@ -314,8 +314,8 @@ container
   .bind<IGetUserProjectsUseCase>(TYPES.GetUserProjectsUseCase)
   .to(GetUserProjectsUseCase);
 container
-  .bind<IAddMemberToProjectUseCase>(TYPES.AddMemberToProjectUseCase)
-  .to(AddMemberToProjectUseCase);
+  .bind<IInviteMemberToProjectUseCase>(TYPES.InviteMemberToProjectUseCase)
+  .to(InviteMemberToProjectUseCase);
 container
   .bind<IRemoveMemberFromProjectUseCase>(TYPES.RemoveMemberFromProjectUseCase)
   .to(RemoveMemberFromProjectUseCase);

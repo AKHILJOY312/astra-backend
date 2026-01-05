@@ -14,6 +14,6 @@ export interface AddMemberResultDTO {
   membership: ProjectMembership;
 }
 
-export interface IAddMemberToProjectUseCase {
+export interface IInviteMemberToProjectUseCase {
   execute(input: AddMemberDTO): Promise<AddMemberResultDTO>;
 }
