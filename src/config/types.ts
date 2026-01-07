@@ -9,6 +9,7 @@ const TYPES = {
   MessageRepository: Symbol.for("MessageRepository"),
   EmailChangeOtpRepository: Symbol.for("EmailChangeOtpRepository"),
   InvitationRepository: Symbol.for("InvitationRepository"),
+  PaymentRepository: Symbol.for("PaymentRepository"),
 
   // Services
   UserService: Symbol.for("UserService"),

@@ -158,6 +158,8 @@ import { IInvitationRepository } from "@/application/ports/repositories/IInvitat
 import { InvitationRepository } from "@/infra/db/mongoose/repositories/InvitationRepository";
 import { IAcceptInvitationUseCase } from "@/application/ports/use-cases/project/IAcceptInvitationUseCase";
 import { AcceptInvitationUseCase } from "@/application/use-cases/project/AcceptInvitationUseCase";
+import { IPaymentRepository } from "@/application/ports/repositories/IPaymentRepository";
+import { PaymentRepository } from "@/infra/db/mongoose/repositories/PaymentRepository";
 
 const container = new Container();
 
@@ -200,6 +202,10 @@ container
 container
   .bind<IInvitationRepository>(TYPES.InvitationRepository)
   .to(InvitationRepository)
+  .inSingletonScope();
+container
+  .bind<IPaymentRepository>(TYPES.PaymentRepository)
+  .to(PaymentRepository)
   .inSingletonScope();
 //-------------------------------------------------------
 // --- Services (Bind as a Singleton)
