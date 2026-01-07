@@ -30,7 +30,16 @@ export class PaymentRepository implements IPaymentRepository {
     payment.setId(doc._id.toString());
     return payment;
   }
-
+  async update(payment: Payment): Promise<void> {
+    await PaymentModel.findOneAndUpdate(
+      { razorpayOrderId: payment.razorpayOrderId },
+      {
+        status: payment.status,
+        razorpayPaymentId: payment.razorpayPaymentId,
+        invoiceNumber: payment.invoiceNumber,
+      }
+    );
+  }
   async updateStatus(
     orderId: string,
     status: string,
@@ -84,5 +93,13 @@ export class PaymentRepository implements IPaymentRepository {
       total,
       totalRevenue: stats[0]?.totalRevenue || 0,
     };
+  }
+  async findByRazorpayOrderId(id: string): Promise<Payment | null> {
+    console.log("findByRazorpayOrderId: ", id);
+    const doc = await PaymentModel.findOne({
+      razorpayOrderId: id,
+    });
+    console.log(doc);
+    return doc ? this.toEntity(doc) : null;
   }
 }

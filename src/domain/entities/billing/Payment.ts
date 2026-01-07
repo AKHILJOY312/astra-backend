@@ -1,4 +1,5 @@
 export type PaymentStatus = "pending" | "captured" | "failed";
+export type PaymentMethod = "razorpay" | "upi" | "card" | "netbanking";
 
 export interface BillingSnapshot {
   userName: string;
@@ -15,8 +16,8 @@ export interface PaymentProps {
   method: string;
   razorpayOrderId: string;
   razorpayPaymentId?: string;
-  invoiceNumber: string;
-  billingSnapshot: BillingSnapshot; // The "Golden Record"
+  invoiceNumber?: string;
+  billingSnapshot: BillingSnapshot;
   createdAt?: Date;
 }
 
@@ -132,11 +133,18 @@ export class Payment {
 
   // ======= BUSINESS ACTIONS (optional but recommended) =======
 
-  capture() {
+  capture(invoiceNumber: string) {
+    if (this._props.status !== "pending") {
+      throw new Error("Only pending payments can be captured");
+    }
     this._props.status = "captured";
+    this._props.invoiceNumber = invoiceNumber;
   }
 
   fail() {
+    if (this._props.status !== "pending") {
+      throw new Error("Only pending payments can be failed");
+    }
     this._props.status = "failed";
   }
 

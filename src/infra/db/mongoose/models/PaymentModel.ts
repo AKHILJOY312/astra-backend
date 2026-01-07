@@ -31,7 +31,7 @@ const paymentSchema = new Schema<PaymentDoc>(
     method: { type: String, required: true },
     razorpayOrderId: { type: String, required: true, unique: true },
     razorpayPaymentId: { type: String },
-    invoiceNumber: { type: String, required: true, unique: true },
+    invoiceNumber: { type: String, unique: true, sparse: true },
     billingSnapshot: {
       userName: { type: String, required: true },
       userEmail: { type: String, required: true },

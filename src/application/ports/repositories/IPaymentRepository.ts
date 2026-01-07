@@ -2,6 +2,7 @@ import { Payment } from "../../../domain/entities/billing/Payment";
 
 export interface IPaymentRepository {
   create(payment: Payment): Promise<Payment>;
+  update(payment: Payment): Promise<Payment | void>;
   updateStatus(
     orderId: string,
     status: string,
@@ -20,6 +21,6 @@ export interface IPaymentRepository {
     total: number;
     totalRevenue: number;
   }>;
-
+  findByRazorpayOrderId(orderId: string): Promise<Payment | null>;
   countAll(): Promise<number>; // Used for Invoice numbering
 }

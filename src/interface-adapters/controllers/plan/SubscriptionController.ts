@@ -55,7 +55,7 @@ export class SubscriptionController {
       success: true,
       message: SUB_MESSAGE.ORDER_CREATED,
       data: {
-        subscription: result.subscription.toJSON(),
+        // subscription: result.subscription.toJSON(),
         razorpayOrderId: result.razorpayOrderId,
         amount: result.amount,
         currency: result.currency,

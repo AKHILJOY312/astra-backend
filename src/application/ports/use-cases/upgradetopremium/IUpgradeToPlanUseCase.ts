@@ -1,4 +1,4 @@
-import { UserSubscription } from "@/domain/entities/billing/UserSubscription";
+// import { UserSubscription } from "@/domain/entities/billing/UserSubscription";
 
 export interface UpgradeToPlanInput {
   userId: string;
@@ -6,7 +6,7 @@ export interface UpgradeToPlanInput {
 }
 
 export interface UpgradeToPlanOutput {
-  subscription: UserSubscription;
+  // subscription: UserSubscription;
   razorpayOrderId: string;
   amount: number;
   currency: string;

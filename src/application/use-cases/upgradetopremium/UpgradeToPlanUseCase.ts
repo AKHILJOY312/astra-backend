@@ -4,13 +4,18 @@ import { IPlanRepository } from "@/application/ports/repositories/IPlanRepositor
 import { IRazorpayService } from "@/application/ports/services/IRazorpayService";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/types";
-import { BadRequestError } from "@/application/error/AppError";
+import { BadRequestError, NotFoundError } from "@/application/error/AppError";
 import { ENV } from "@/config/env.config";
 import {
   IUpgradeToPlanUseCase,
   UpgradeToPlanInput,
   UpgradeToPlanOutput,
 } from "@/application/ports/use-cases/upgradetopremium/IUpgradeToPlanUseCase";
+import { Plan } from "@/domain/entities/billing/Plan";
+import { IPaymentRepository } from "@/application/ports/repositories/IPaymentRepository";
+import { Payment } from "@/domain/entities/billing/Payment";
+import { IUserRepository } from "@/application/ports/repositories/IUserRepository";
+import { User } from "@/domain/entities/user/User";
 
 @injectable()
 export class UpgradeToPlanUseCase implements IUpgradeToPlanUseCase {
@@ -18,6 +23,8 @@ export class UpgradeToPlanUseCase implements IUpgradeToPlanUseCase {
     @inject(TYPES.UserSubscriptionRepository)
     private subscriptionRepo: IUserSubscriptionRepository,
     @inject(TYPES.PlanRepository) private planRepo: IPlanRepository,
+    @inject(TYPES.PaymentRepository) private paymentRepo: IPaymentRepository,
+    @inject(TYPES.UserRepository) private userRepo: IUserRepository,
     @inject(TYPES.PaymentService) private razorpayService: IRazorpayService
   ) {}
 
@@ -28,67 +35,86 @@ export class UpgradeToPlanUseCase implements IUpgradeToPlanUseCase {
     if (!plan || !plan.isActive) {
       throw new BadRequestError("Invalid or inactive plan");
     }
+
     if (plan.finalAmount <= 0) {
-      throw new BadRequestError("This is a free plan");
+      throw new BadRequestError("Free plan cannot be purchased");
     }
+
+    const user = await this.userRepo.findById(userId);
+    if (!user) throw new BadRequestError("User not found");
+
     const existingSubscription = await this.subscriptionRepo.findByUserId(
       userId
     );
 
-    if (existingSubscription) {
-      const now = new Date();
-
-      const isActive =
-        existingSubscription.status === "active" &&
-        existingSubscription.endDate &&
-        existingSubscription.endDate > now;
-
-      if (isActive) {
-        throw new BadRequestError(
-          "You already have an active plan. Please wait until it expires."
-        );
+    // =========================
+    //  ACTIVE SUBSCRIPTION → UPGRADE
+    // =========================
+    if (
+      existingSubscription &&
+      existingSubscription.status === "active" &&
+      existingSubscription.endDate &&
+      existingSubscription.endDate > new Date()
+    ) {
+      const currentPlan = await this.planRepo.findById(
+        existingSubscription.planType
+      );
+      if (!currentPlan) {
+        throw new BadRequestError("Current plan not found");
       }
+
+      if (!this.isUpgrade(currentPlan, plan)) {
+        throw new BadRequestError("You can only upgrade to a higher plan");
+      }
+
+      return this.createUpgradePayment(
+        existingSubscription,
+        currentPlan,
+        plan,
+        user
+      );
     }
 
-    const orderObject = {
+    // =========================
+    //  NEW SUBSCRIPTION
+    // =========================
+    return this.createNewSubscriptionPayment(plan, user);
+  }
+
+  // =========================
+  //  NEW SUBSCRIPTION FLOW
+  // =========================
+  private async createNewSubscriptionPayment(
+    plan: Plan,
+    user: User
+  ): Promise<UpgradeToPlanOutput> {
+    if (!user) {
+      throw new NotFoundError("User");
+    }
+    const order = await this.razorpayService.createOrder({
       amount: plan.finalAmount * 100,
       currency: plan.currency,
-      receipt: `up_${userId.slice(0, 6)}_${planId.slice(0, 6)}`,
-      notes: { userId, planId, planName: plan.name },
-    };
+      receipt: `sub_${user.id!.slice(0, 6)}`,
+      notes: { userId: user.id as string, planId: plan.id as string },
+    });
 
-    const order = await this.razorpayService.createOrder(orderObject);
+    const payment = new Payment({
+      userId: user.id as string,
+      planId: plan.id as string,
+      amount: plan.finalAmount,
+      currency: plan.currency,
+      status: "pending",
+      method: "Razorpay Online",
+      razorpayOrderId: order.id,
+      billingSnapshot: {
+        userName: user.name,
+        userEmail: user.email,
+      },
+    });
 
-    let subscription = await this.subscriptionRepo.findByUserId(userId);
-
-    const now = new Date();
-    const endDate = this.getNextBillingDate(plan.billingCycle);
-
-    if (subscription) {
-      subscription.setPlan(planId, plan.finalAmount, plan.currency);
-      subscription.setStatus("pending");
-      subscription.setOrderId(order.id);
-      subscription.setStartDate(now);
-      subscription.setEndDate(endDate);
-      subscription.setUpdatedAt(now);
-      console.log("subscriptioin: ", subscription);
-      await this.subscriptionRepo.update(subscription);
-    } else {
-      subscription = new UserSubscription({
-        userId,
-        planType: planId,
-        amount: plan.finalAmount,
-        currency: plan.currency,
-        startDate: now,
-        endDate,
-        status: "pending",
-        razorPayOrderId: order.id,
-      });
-      subscription = await this.subscriptionRepo.create(subscription);
-    }
+    await this.paymentRepo.create(payment);
 
     return {
-      subscription,
       razorpayOrderId: order.id,
       amount: order.amount,
       currency: order.currency,
@@ -96,10 +122,76 @@ export class UpgradeToPlanUseCase implements IUpgradeToPlanUseCase {
     };
   }
 
-  private getNextBillingDate(cycle: string): Date {
-    const date = new Date();
-    if (cycle === "yearly") date.setFullYear(date.getFullYear() + 1);
-    else date.setMonth(date.getMonth() + 1);
-    return date;
+  // =========================
+  //  UPGRADE FLOW (FIXED)
+  // =========================
+  private async createUpgradePayment(
+    subscription: UserSubscription,
+    currentPlan: Plan,
+    newPlan: Plan,
+    user: User
+  ): Promise<UpgradeToPlanOutput> {
+    if (!subscription.startDate || !subscription.endDate) {
+      throw new BadRequestError("Invalid subscription period");
+    }
+
+    const now = new Date();
+    const remainingMs = subscription.endDate.getTime() - now.getTime();
+    const totalMs =
+      subscription.endDate.getTime() - subscription.startDate.getTime();
+
+    const unusedAmount = (remainingMs / totalMs) * subscription.amount;
+
+    const payableAmount = Math.max(newPlan.finalAmount - unusedAmount, 0);
+
+    if (payableAmount <= 0) {
+      throw new BadRequestError("Upgrade not required");
+    }
+
+    const order = await this.razorpayService.createOrder({
+      amount: Math.round(payableAmount * 100),
+      currency: newPlan.currency,
+      receipt: `upgrade_${subscription.userId.slice(0, 6)}`,
+      notes: {
+        type: "plan_upgrade",
+        fromPlan: currentPlan.name,
+        toPlan: newPlan.name,
+      },
+    });
+
+    //  FIX: PAYMENT IS CREATED (PENDING)
+    const payment = new Payment({
+      userId: subscription.userId,
+      planId: newPlan.id as string,
+      amount: payableAmount,
+      currency: newPlan.currency,
+      status: "pending",
+      method: "Razorpay Online",
+      razorpayOrderId: order.id,
+      billingSnapshot: {
+        userName: user.name,
+        userEmail: user.email,
+      },
+    });
+
+    await this.paymentRepo.create(payment);
+
+    return {
+      razorpayOrderId: order.id,
+      amount: order.amount,
+      currency: order.currency,
+      keyId: ENV.PAYMENTS.RAZORPAY_ID!,
+    };
+  }
+
+  // =========================
+  // UPGRADE CHECK
+  // =========================
+  private isUpgrade(currentPlan: Plan, newPlan: Plan): boolean {
+    return (
+      newPlan.finalAmount > currentPlan.finalAmount ||
+      newPlan.maxProjects > currentPlan.maxProjects ||
+      newPlan.maxMembersPerProject > currentPlan.maxMembersPerProject
+    );
   }
 }

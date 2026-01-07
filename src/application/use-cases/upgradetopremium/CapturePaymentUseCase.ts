@@ -12,7 +12,8 @@ import {
 import { IPaymentRepository } from "@/application/ports/repositories/IPaymentRepository";
 import { IUserRepository } from "@/application/ports/repositories/IUserRepository";
 import { NotFoundError } from "@/application/error/AppError";
-import { Payment } from "@/domain/entities/billing/Payment";
+import { IPlanRepository } from "@/application/ports/repositories/IPlanRepository";
+// import { Payment } from "@/domain/entities/billing/Payment";
 
 @injectable()
 export class CapturePaymentUseCase implements ICapturePaymentUseCase {
@@ -20,7 +21,8 @@ export class CapturePaymentUseCase implements ICapturePaymentUseCase {
     @inject(TYPES.UserSubscriptionRepository)
     private subscriptionRepo: IUserSubscriptionRepository,
     @inject(TYPES.PaymentRepository) private paymentRepo: IPaymentRepository,
-    @inject(TYPES.UserRepository) private userRepo: IUserRepository
+    @inject(TYPES.UserRepository) private userRepo: IUserRepository,
+    @inject(TYPES.PlanRepository) private planRepo: IPlanRepository
   ) {}
 
   async execute(input: CapturePaymentInput): Promise<CapturePaymentOutput> {
@@ -40,55 +42,71 @@ export class CapturePaymentUseCase implements ICapturePaymentUseCase {
     }
 
     // Find subscription by razorPayOrderId
-    const subscription = await this.subscriptionRepo.findByRazorpayOrderId(
+    const payment = await this.paymentRepo.findByRazorpayOrderId(
       razorpayOrderId
     );
-    console.log("subscription: ", subscription);
-    if (!subscription || subscription.status !== "pending") {
+    if (!payment) {
+      throw new NotFoundError("Payment");
+    }
+
+    //  Idempotency
+    if (payment.status === "captured") {
       return {
-        success: false,
-        message: "Invalid or already processed order",
+        success: true,
+        message: "Payment already captured",
       };
     }
-    //Getting the user for snapshot
-    const user = await this.userRepo.findById(subscription.userId);
-    if (!user) throw new NotFoundError("User");
 
     const invoiceNumber = await this.generateInvoiceNumber();
 
-    const payment = new Payment({
-      userId: subscription.userId,
-      planId: subscription.planType,
-      amount: subscription.amount,
-      currency: subscription.currency,
-      status: "captured",
-      method: "Razorpay Online",
-      razorpayOrderId,
-      razorpayPaymentId,
-      invoiceNumber,
-      billingSnapshot: {
-        userName: user.name,
-        userEmail: user.email,
-      },
-    });
+    payment.setRazorpayPaymentId(razorpayPaymentId);
+    payment.capture(invoiceNumber);
 
-    await this.paymentRepo.create(payment);
+    await this.paymentRepo.update(payment);
+    //Getting the user for snapshot
+    const user = await this.userRepo.findById(payment.userId);
+    if (!user) throw new NotFoundError("User");
+    const plan = await this.planRepo.findById(payment.planId);
+    if (!plan) {
+      throw new NotFoundError("Plan");
+    }
+    let existingSubscription = await this.subscriptionRepo.findByUserId(
+      payment.userId
+    );
 
-    //  Activate the subscription instantly
-    const activated = new UserSubscription({
-      ...subscription.toJSON(),
-      status: "active",
-      razorpayPaymentId: razorpayPaymentId,
-      updatedAt: new Date(),
-    });
+    const now = new Date();
+    const endDate = this.getNextBillingDate(plan.billingCycle);
 
-    activated.setId(subscription.id!);
+    if (existingSubscription) {
+      existingSubscription.setPlan(
+        payment.planId,
+        payment.amount,
+        payment.currency
+      );
+      existingSubscription.setStatus("active");
+      existingSubscription.setOrderId(payment.razorpayOrderId);
+      existingSubscription.setStartDate(now);
+      existingSubscription.setEndDate(endDate);
+      existingSubscription.setUpdatedAt(now);
 
-    await this.subscriptionRepo.update(activated);
+      await this.subscriptionRepo.update(existingSubscription);
+    } else {
+      existingSubscription = new UserSubscription({
+        userId: payment.userId,
+        planType: payment.planId,
+        amount: payment.amount,
+        currency: payment.currency,
+        startDate: now,
+        endDate,
+        status: "active",
+        razorPayOrderId: payment.razorpayOrderId,
+      });
+      await this.subscriptionRepo.create(existingSubscription);
+    }
 
     return {
       success: true,
-      message: "Payment successful! Subscription activated.",
+      message: "Payment captured and subscription activated",
     };
   }
   private async generateInvoiceNumber(): Promise<string> {
@@ -96,5 +114,12 @@ export class CapturePaymentUseCase implements ICapturePaymentUseCase {
     const count = await this.paymentRepo.countAll();
     const sequence = (count + 1).toString().padStart(4, "0");
     return `INV-${year}-${sequence}`;
+  }
+
+  private getNextBillingDate(cycle: string): Date {
+    const date = new Date();
+    if (cycle === "yearly") date.setFullYear(date.getFullYear() + 1);
+    else date.setMonth(date.getMonth() + 1);
+    return date;
   }
 }
