@@ -102,4 +102,33 @@ export class PaymentRepository implements IPaymentRepository {
     console.log(doc);
     return doc ? this.toEntity(doc) : null;
   }
+  async findByUserIdPaginated(
+    userId: string,
+    page: number,
+    limit: number,
+    search?: string
+  ): Promise<{ data: Payment[]; total: number }> {
+    const filter: FilterQuery<PaymentDoc> = { userId };
+
+    if (search) {
+      filter.$or = [
+        {
+          invoiceNumber: { $regex: search, $options: "i" },
+        },
+        { planName: { $regex: search, $option: "i" } },
+      ];
+    }
+    const [docs, total] = await Promise.all([
+      PaymentModel.find(filter)
+        .sort({ createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit),
+      PaymentModel.countDocuments(filter),
+    ]);
+
+    return {
+      data: docs.map(this.toEntity),
+      total,
+    };
+  }
 }

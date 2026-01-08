@@ -10,6 +10,15 @@ export interface IPaymentRepository {
   ): Promise<void>;
   findByUserId(userId: string): Promise<Payment[]>;
   findById(id: string): Promise<Payment | null>;
+  findByUserIdPaginated(
+    userId: string,
+    page: number,
+    limit: number,
+    search?: string
+  ): Promise<{
+    data: Payment[];
+    total: number;
+  }>;
 
   // For Admin Financial Health & List
   getAllPaginated(

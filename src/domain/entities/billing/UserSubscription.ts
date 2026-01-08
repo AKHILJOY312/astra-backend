@@ -1,4 +1,4 @@
-export type SubscriptionStatus = "active" | "canceled" | "expired" | "pending";
+export type SubscriptionStatus = "active" | "cancelled" | "expired" | "pending";
 
 export interface UserSubscriptionProps {
   id?: string;
@@ -74,7 +74,7 @@ export class UserSubscription {
   }
 
   cancel() {
-    this._props.status = "canceled";
+    this._props.status = "cancelled";
   }
 
   expire() {
