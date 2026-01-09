@@ -13,6 +13,7 @@ import { IPaymentRepository } from "@/application/ports/repositories/IPaymentRep
 import { IUserRepository } from "@/application/ports/repositories/IUserRepository";
 import { NotFoundError } from "@/application/error/AppError";
 import { IPlanRepository } from "@/application/ports/repositories/IPlanRepository";
+import { ICounterRepository } from "@/application/ports/repositories/ICounterRepository";
 // import { Payment } from "@/domain/entities/billing/Payment";
 
 @injectable()
@@ -22,7 +23,8 @@ export class CapturePaymentUseCase implements ICapturePaymentUseCase {
     private subscriptionRepo: IUserSubscriptionRepository,
     @inject(TYPES.PaymentRepository) private paymentRepo: IPaymentRepository,
     @inject(TYPES.UserRepository) private userRepo: IUserRepository,
-    @inject(TYPES.PlanRepository) private planRepo: IPlanRepository
+    @inject(TYPES.PlanRepository) private planRepo: IPlanRepository,
+    @inject(TYPES.CounterRepository) private counterRepo: ICounterRepository
   ) {}
 
   async execute(input: CapturePaymentInput): Promise<CapturePaymentOutput> {
@@ -111,8 +113,8 @@ export class CapturePaymentUseCase implements ICapturePaymentUseCase {
   }
   private async generateInvoiceNumber(): Promise<string> {
     const year = new Date().getFullYear();
-    const count = await this.paymentRepo.countAll();
-    const sequence = (count + 1).toString().padStart(4, "0");
+    const sequence = await this.counterRepo.getNext(`invoice-${year}`);
+
     return `INV-${year}-${sequence}`;
   }
 

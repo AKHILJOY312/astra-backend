@@ -12,7 +12,7 @@ import { MessageRepository } from "@/infra/db/mongoose/repositories/MessageRepos
 import { EmailChangeOtpRepository } from "@/infra/db/mongoose/repositories/EmailChangeOtpRepository";
 import { InvitationRepository } from "@/infra/db/mongoose/repositories/InvitationRepository";
 import { PaymentRepository } from "@/infra/db/mongoose/repositories/PaymentRepository";
-
+import { CounterRepository } from "@/infra/db/mongoose/repositories/CounterRepository";
 // Services
 import { JwtAuthService } from "@/infra/auth/JwtAuthService";
 import { NodemailerEmailService } from "@/infra/email/NodemailerEmailService";
@@ -39,6 +39,7 @@ import { IEmailService } from "@/application/ports/services/IEmailService";
 import { IRazorpayService } from "@/application/ports/services/IRazorpayService";
 import { ITokenBlacklistService } from "@/application/ports/services/ITokenBlacklistService";
 import { IFileUploadService } from "@/application/ports/services/IFileUploadService";
+import { ICounterRepository } from "@/application/ports/repositories/ICounterRepository";
 
 export const coreModule = new ContainerModule((options) => {
   // Repositories (singletons)
@@ -81,6 +82,10 @@ export const coreModule = new ContainerModule((options) => {
   options
     .bind<IPaymentRepository>(TYPES.PaymentRepository)
     .to(PaymentRepository)
+    .inSingletonScope();
+  options
+    .bind<ICounterRepository>(TYPES.CounterRepository)
+    .to(CounterRepository)
     .inSingletonScope();
 
   // Services (singletons)

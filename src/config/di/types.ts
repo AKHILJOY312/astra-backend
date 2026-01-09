@@ -10,6 +10,7 @@ const TYPES = {
   EmailChangeOtpRepository: Symbol.for("EmailChangeOtpRepository"),
   InvitationRepository: Symbol.for("InvitationRepository"),
   PaymentRepository: Symbol.for("PaymentRepository"),
+  CounterRepository: Symbol.for("CounterRepository"),
 
   // Services
   UserService: Symbol.for("UserService"),
