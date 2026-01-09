@@ -19,9 +19,10 @@ export class GetUserBillingUseCase implements IGetUserBillingHistoryUseCase {
   async execute(
     userId: string,
     page = 1,
-    limit = 10,
+    limit = 5,
     search?: string
   ): Promise<UserBillingHistoryOutput> {
+    console.log(userId, page, limit, search);
     const { data, total } = await this.paymentRepo.findByUserIdPaginated(
       userId,
       page,
@@ -44,7 +45,7 @@ export class GetUserBillingUseCase implements IGetUserBillingHistoryUseCase {
 
       payments: data.map((p) => ({
         invoiceNumber: p.invoiceNumber,
-        planName: p.planId,
+        planName: p.planName,
         amount: p.amount,
         currency: p.currency,
         status: p.status,

@@ -92,7 +92,7 @@ const TYPES = {
   GetUserLimitsUseCase: Symbol.for("GetUserLimitsUseCase"),
   UpgradeToPlanUseCase: Symbol.for("UpgradeToPlanUseCase"),
   CapturePaymentUseCase: Symbol.for("CapturePaymentUseCase"),
-
+  GetUserBillingUseCase: Symbol.for("GetUserBillingUseCase"),
   // Use Cases (Message)
   SendMessageUseCase: Symbol.for("SendMessageUseCase"),
   ListMessagesUseCase: Symbol.for("ListMessagesUseCase"),

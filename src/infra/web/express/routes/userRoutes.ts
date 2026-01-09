@@ -23,9 +23,7 @@ export function getUserRoutes(container: Container): Router {
 
   router
     .route(API_ROUTES.USER.PROFILE_IMAGE_URL)
-    .post(asyncHandler(userController.getPresignedUrl));
-  router
-    .route(API_ROUTES.USER.PROFILE_IMAGE)
+    .post(asyncHandler(userController.getPresignedUrl))
     .patch(asyncHandler(userController.saveProfileImage));
 
   router

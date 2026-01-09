@@ -11,6 +11,7 @@ export class PaymentRepository implements IPaymentRepository {
       id: doc._id.toString(),
       userId: doc.userId.toString(),
       planId: doc.planId,
+      planName: doc.planName,
       amount: doc.amount,
       currency: doc.currency,
       status: doc.status as PaymentStatus,
@@ -115,7 +116,7 @@ export class PaymentRepository implements IPaymentRepository {
         {
           invoiceNumber: { $regex: search, $options: "i" },
         },
-        { planName: { $regex: search, $option: "i" } },
+        { planName: { $regex: search, $options: "i" } },
       ];
     }
     const [docs, total] = await Promise.all([

@@ -17,24 +17,26 @@ export function getSubscriptionRoutes(container: Container): Router {
   );
 
   router.use(protect);
-  router.get(
-    API_ROUTES.SUBSCRIPTION.PLANS,
-    asyncHandler(
-      subscriptionController.getPlansToSubscribe.bind(subscriptionController)
-    )
-  );
-  router.get(
-    API_ROUTES.SUBSCRIPTION.LIMITS,
-    asyncHandler(subscriptionController.getLimits.bind(subscriptionController))
-  );
-  router.post(
-    API_ROUTES.SUBSCRIPTION.RAZORPAY.ORDER,
-    asyncHandler(subscriptionController.upgrade.bind(subscriptionController))
-  );
-  router.post(
-    API_ROUTES.SUBSCRIPTION.RAZORPAY.CAPTURE,
-    asyncHandler(subscriptionController.capture.bind(subscriptionController))
-  );
+
+  router
+    .route(API_ROUTES.SUBSCRIPTION.PLANS)
+    .get(asyncHandler(subscriptionController.getPlansToSubscribe));
+
+  router
+    .route(API_ROUTES.SUBSCRIPTION.LIMITS)
+    .get(asyncHandler(subscriptionController.getLimits));
+
+  router
+    .route(API_ROUTES.SUBSCRIPTION.RAZORPAY.ORDER)
+    .post(asyncHandler(subscriptionController.upgrade));
+
+  router
+    .route(API_ROUTES.SUBSCRIPTION.RAZORPAY.CAPTURE)
+    .post(asyncHandler(subscriptionController.capture));
+
+  router
+    .route(API_ROUTES.SUBSCRIPTION.PAYMENT_HISTORY)
+    .get(asyncHandler(subscriptionController.paymentHistory));
 
   return router;
 }

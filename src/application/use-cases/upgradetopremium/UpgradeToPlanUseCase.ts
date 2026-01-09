@@ -101,6 +101,7 @@ export class UpgradeToPlanUseCase implements IUpgradeToPlanUseCase {
     const payment = new Payment({
       userId: user.id as string,
       planId: plan.id as string,
+      planName: plan.name,
       amount: plan.finalAmount,
       currency: plan.currency,
       status: "pending",
@@ -163,6 +164,7 @@ export class UpgradeToPlanUseCase implements IUpgradeToPlanUseCase {
     const payment = new Payment({
       userId: subscription.userId,
       planId: newPlan.id as string,
+      planName: newPlan.name,
       amount: payableAmount,
       currency: newPlan.currency,
       status: "pending",

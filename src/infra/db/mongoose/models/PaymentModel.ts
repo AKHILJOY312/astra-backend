@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface PaymentDoc extends Document {
   userId: mongoose.Types.ObjectId;
   planId: string;
+  planName: string;
   amount: number;
   currency: string;
   status: string;
@@ -21,6 +22,7 @@ const paymentSchema = new Schema<PaymentDoc>(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     planId: { type: String, required: true },
+    planName: { type: String, required: true },
     amount: { type: Number, required: true },
     currency: { type: String, default: "INR" },
     status: {

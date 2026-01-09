@@ -33,8 +33,7 @@ export const API_ROUTES = {
   USER: {
     ROOT: "/user",
     ME: "/me",
-    PROFILE_IMAGE_URL: "/profile-image/upload-url",
-    PROFILE_IMAGE: "/profile-image",
+    PROFILE_IMAGE_URL: "/profile-image",
     CHANGE_PASSWORD: "/change-password",
     REQUEST_EMAIL_OTP: "/change-email/request",
     VERIFY_EMAIL_OTP: "/change-email/verify",
@@ -65,5 +64,6 @@ export const API_ROUTES = {
       ORDER: "/razorpay/order",
       CAPTURE: "/razorpay/capture",
     },
+    PAYMENT_HISTORY: "/history",
   },
 } as const;

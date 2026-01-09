@@ -10,6 +10,7 @@ export interface PaymentProps {
   id?: string;
   userId: string;
   planId: string;
+  planName: string;
   amount: number;
   currency: string;
   status: PaymentStatus;
@@ -44,7 +45,9 @@ export class Payment {
   get planId() {
     return this._props.planId;
   }
-
+  get planName() {
+    return this._props.planName;
+  }
   get amount() {
     return this._props.amount;
   }
@@ -94,7 +97,9 @@ export class Payment {
   setPlanId(planId: string) {
     this._props.planId = planId;
   }
-
+  setPlanName(planName: string) {
+    this._props.planName = planName;
+  }
   setAmount(amount: number) {
     this._props.amount = amount;
   }
