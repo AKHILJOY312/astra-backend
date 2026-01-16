@@ -54,6 +54,7 @@ export const API_ROUTES = {
     ROOT: "/",
     BY_ID: "/:channelId",
     MESSAGES: "/:channelId/messages",
+    ATTACHMENT_UPLOAD_URL: "/:channelId/upload-url",
   },
 
   SUBSCRIPTION: {

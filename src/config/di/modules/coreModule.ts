@@ -42,6 +42,8 @@ import { IFileUploadService } from "@/application/ports/services/IFileUploadServ
 import { ICounterRepository } from "@/application/ports/repositories/ICounterRepository";
 import { IPdfInvoiceService } from "@/application/ports/services/IPdfInvoiceService";
 import { PdfKitInvoiceGenerator } from "@/infra/services/PdfKitInvoiceGenerator";
+import { IAttachmentRepository } from "@/application/ports/repositories/IAttachmentRepository";
+import { AttachmentRepository } from "@/infra/db/mongoose/repositories/AttachmentRepository";
 
 export const coreModule = new ContainerModule((options) => {
   // Repositories (singletons)
@@ -89,7 +91,10 @@ export const coreModule = new ContainerModule((options) => {
     .bind<ICounterRepository>(TYPES.CounterRepository)
     .to(CounterRepository)
     .inSingletonScope();
-
+  options
+    .bind<IAttachmentRepository>(TYPES.AttachmentRepository)
+    .to(AttachmentRepository)
+    .inSingletonScope();
   // Services (singletons)
   options
     .bind<IUserService>(TYPES.UserService)

@@ -130,13 +130,14 @@ import { Server as HttpServer } from "http";
 import jwt from "jsonwebtoken";
 import { Container } from "inversify";
 
-import { SendMessageUseCase } from "@/application/use-cases/message/SendMessageUseCase";
+// import { SendMessageUseCase } from "@/application/use-cases/message/SendMessageUseCase";
 import { TYPES } from "@/config/di/types";
 import { AuthenticatedSocket } from "./handlers/BaseSocketHandler";
 import { MessageHandler } from "./handlers/MessageHandler";
 import { ChannelHandler } from "./handlers/ChannelHandler";
 import { JwtPayload } from "./types/type";
 import { ENV } from "@/config/env.config";
+import { ISendMessageUseCase } from "@/application/ports/use-cases/message/ISendMessageUseCase";
 
 const authenticateSocket = (socket: Socket, next: (err?: Error) => void) => {
   const token = socket.handshake.auth?.token as string | undefined;
@@ -172,7 +173,7 @@ export function createSocketServer(
     console.log(`User connected: ${userId} | Socket: ${socket.id}`);
 
     // Resolve use cases once per connection
-    const sendMessageUC = container.get<SendMessageUseCase>(
+    const sendMessageUC = container.get<ISendMessageUseCase>(
       TYPES.SendMessageUseCase
     );
 

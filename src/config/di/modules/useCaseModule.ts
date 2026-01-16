@@ -108,6 +108,8 @@ import { IGetUserBillingHistoryUseCase } from "@/application/ports/use-cases/upg
 import { GetUserBillingUseCase } from "@/application/use-cases/upgradetopremium/GetUserBillingHistoryUseCase";
 import { IDownloadInvoiceUseCase } from "@/application/ports/use-cases/upgradetopremium/IDownloadInvoiceOutput";
 import { DownloadInvoiceUseCase } from "@/application/use-cases/upgradetopremium/DownloadInvoiceUseCase ";
+import { GenerateUploadUrlUseCase } from "@/application/use-cases/message/GenerateUploadUrlUseCase";
+import { IGenerateUploadUrlUseCase } from "@/application/ports/use-cases/message/IGenerateUploadUrlUseCase";
 
 export const useCaseModule = new ContainerModule((options) => {
   // Regular Auth Use Cases
@@ -235,4 +237,7 @@ export const useCaseModule = new ContainerModule((options) => {
   options
     .bind<IListMessagesUseCase>(TYPES.ListMessagesUseCase)
     .to(ListMessagesUseCase);
+  options
+    .bind<IGenerateUploadUrlUseCase>(TYPES.GenerateUploadUrlUseCase)
+    .to(GenerateUploadUrlUseCase);
 });

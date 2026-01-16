@@ -22,5 +22,13 @@ export interface SendMessageInput {
   channelId: string;
   senderId: string;
   text: string;
-  attachments?: boolean;
+  attachments?: AttachmentInput[];
+}
+export interface AttachmentInput {
+  fileName: string;
+  fileType: string; // mime type
+  fileSize: number;
+  fileUrl: string; // permanent public/signed URL
+  key: string; // s3 key for future management
+  thumbnailUrl?: string; // optional
 }

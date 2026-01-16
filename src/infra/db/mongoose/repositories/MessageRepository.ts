@@ -16,7 +16,7 @@ export class MessageRepository implements IMessageRepository {
       senderName: msg.senderName,
       hasAttachments: msg.hasAttachments,
     });
-    console.log("Created Message Document:", doc);
+    // console.log("Created Message Document:", doc);
     return toMessageEntity(doc);
   }
   async listByChannel(

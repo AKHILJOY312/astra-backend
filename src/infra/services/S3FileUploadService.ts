@@ -53,4 +53,28 @@ export class S3FileUploadService implements IFileUploadService {
       expiresIn: 60 * 5, // 5 minutes
     });
   }
+  // infrastructure/services/S3FileUploadService.ts
+  async generateChatFileUploadUrl({
+    key,
+    contentType,
+    metadata,
+  }: {
+    key: string;
+    contentType: string;
+    metadata?: Record<string, string>;
+  }): Promise<{ uploadUrl: string }> {
+    const command = new PutObjectCommand({
+      Bucket: ENV.AWS.S3_BUCKET!,
+      Key: key,
+      ContentType: contentType,
+      Metadata: metadata,
+      // ACL: 'private' // recommended
+    });
+
+    const uploadUrl = await getSignedUrl(this._s3Client, command, {
+      expiresIn: 15 * 60, // 15 minutes
+    });
+
+    return { uploadUrl };
+  }
 }

@@ -38,12 +38,16 @@ export function getChannelRoutes(container: Container): Router {
       asyncHandler(channelController.deleteChannel.bind(channelController))
     );
 
-  router.get(
-    API_ROUTES.CHANNELS.MESSAGES,
-    asyncHandler(
-      messageController.listMessagesPerChannel.bind(messageController)
-    )
-  );
+  router
+    .route(API_ROUTES.CHANNELS.MESSAGES)
+    .get(
+      asyncHandler(
+        messageController.listMessagesPerChannel.bind(messageController)
+      )
+    );
+  router
+    .route(API_ROUTES.CHANNELS.ATTACHMENT_UPLOAD_URL)
+    .post(asyncHandler(messageController.generateUploadUrl));
 
   return router;
 }

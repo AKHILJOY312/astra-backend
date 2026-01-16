@@ -11,7 +11,7 @@ const TYPES = {
   InvitationRepository: Symbol.for("InvitationRepository"),
   PaymentRepository: Symbol.for("PaymentRepository"),
   CounterRepository: Symbol.for("CounterRepository"),
-
+  AttachmentRepository: Symbol.for("AttachmentRepository"),
   // Services
   UserService: Symbol.for("UserService"),
   AuthService: Symbol.for("AuthService"), // For JwtAuthService
@@ -100,6 +100,7 @@ const TYPES = {
   // Use Cases (Message)
   SendMessageUseCase: Symbol.for("SendMessageUseCase"),
   ListMessagesUseCase: Symbol.for("ListMessagesUseCase"),
+  GenerateUploadUrlUseCase: Symbol.for("GenerateUploadUrlUseCase"),
 };
 
 export { TYPES };

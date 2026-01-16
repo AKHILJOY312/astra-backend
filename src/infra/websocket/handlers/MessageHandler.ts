@@ -1,19 +1,21 @@
 // src/infra/web/socket/handlers/MessageHandler.ts
 import { AuthenticatedSocket, BaseSocketHandler } from "./BaseSocketHandler";
-import { SendMessageUseCase } from "@/application/use-cases/message/SendMessageUseCase";
 import { BadRequestError } from "@/application/error/AppError";
 import { Server } from "socket.io";
+import { ISendMessageUseCase } from "@/application/ports/use-cases/message/ISendMessageUseCase";
+import { AttachmentInput } from "@/application/dto/message/messageDtos";
 
 interface SendMessagePayload {
   channelId: string;
   projectId: string;
   text: string;
+  attachments?: AttachmentInput[];
 }
 
 export class MessageHandler extends BaseSocketHandler {
   constructor(
     socket: AuthenticatedSocket,
-    private sendMessageUC: SendMessageUseCase,
+    private sendMessageUC: ISendMessageUseCase,
     private io: Server
   ) {
     super(socket);
@@ -22,7 +24,6 @@ export class MessageHandler extends BaseSocketHandler {
   handle(): void {
     this.socket.on("message:send", async (payload: SendMessagePayload) => {
       const userId = this.socket.data.user.id;
-
       if (!payload?.channelId || !payload?.projectId || !payload.text?.trim()) {
         this.socket.emit("message:error", "Invalid message payload");
         return;
@@ -34,6 +35,7 @@ export class MessageHandler extends BaseSocketHandler {
           projectId: payload.projectId,
           text: payload.text.trim(),
           senderId: userId,
+          attachments: payload.attachments,
         });
 
         // Broadcast to room
