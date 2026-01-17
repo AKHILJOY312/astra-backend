@@ -101,6 +101,9 @@ const TYPES = {
   SendMessageUseCase: Symbol.for("SendMessageUseCase"),
   ListMessagesUseCase: Symbol.for("ListMessagesUseCase"),
   GenerateUploadUrlUseCase: Symbol.for("GenerateUploadUrlUseCase"),
+  GetAttachmentDownloadUrlUseCase: Symbol.for(
+    "GetAttachmentDownloadUrlUseCase"
+  ),
 };
 
 export { TYPES };

@@ -45,6 +45,7 @@ export function getChannelRoutes(container: Container): Router {
         messageController.listMessagesPerChannel.bind(messageController)
       )
     );
+
   router
     .route(API_ROUTES.CHANNELS.ATTACHMENT_UPLOAD_URL)
     .post(asyncHandler(messageController.generateUploadUrl));

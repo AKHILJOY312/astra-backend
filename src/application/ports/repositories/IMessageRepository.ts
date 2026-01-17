@@ -7,4 +7,5 @@ export interface IMessageRepository {
     cursor?: string,
     limit?: number
   ): Promise<Message[]>;
+  findById(id: string): Promise<Message | null>;
 }

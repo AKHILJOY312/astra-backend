@@ -1,5 +1,6 @@
 import { BadRequestError } from "@/application/error/AppError";
 import { IGenerateUploadUrlUseCase } from "@/application/ports/use-cases/message/IGenerateUploadUrlUseCase";
+import { IGetAttachmentDownloadUrlUseCase } from "@/application/ports/use-cases/message/IGetAttachmentDownloadUrlUseCase";
 import { IListMessagesUseCase } from "@/application/ports/use-cases/message/IListMessagesUseCase";
 import { ISendMessageUseCase } from "@/application/ports/use-cases/message/ISendMessageUseCase";
 import { TYPES } from "@/config/di/types";
@@ -15,7 +16,9 @@ export class MessageController {
     @inject(TYPES.ListMessagesUseCase)
     private listMessagesUC: IListMessagesUseCase,
     @inject(TYPES.GenerateUploadUrlUseCase)
-    private generateUploadUrlUC: IGenerateUploadUrlUseCase
+    private generateUploadUrlUC: IGenerateUploadUrlUseCase,
+    @inject(TYPES.GetAttachmentDownloadUrlUseCase)
+    private getAttachmentDownloadUrlUC: IGetAttachmentDownloadUrlUseCase
   ) {}
 
   listMessagesPerChannel = async (req: Request, res: Response) => {
@@ -77,7 +80,27 @@ export class MessageController {
       mimeType,
     });
 
-    return res.status(200).json({
+    return res.json({
+      success: true,
+      data: result,
+    });
+  };
+
+  getAttachmentsAccessUrl = async (req: Request, res: Response) => {
+    const attachmentId = req.params.attachmentId;
+    const userId = req.user!.id;
+    const disposition =
+      req.query.disposition === "download" ? "download" : "view";
+
+    if (!attachmentId) {
+      throw new BadRequestError("attachmentId is required");
+    }
+    const result = await this.getAttachmentDownloadUrlUC.execute({
+      attachmentId,
+      userId,
+      disposition,
+    });
+    return res.json({
       success: true,
       data: result,
     });

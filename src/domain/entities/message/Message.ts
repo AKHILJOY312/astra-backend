@@ -1,3 +1,5 @@
+import { Attachment } from "./Attachment";
+
 export interface MessageProps {
   id: string;
   channelId: string;
@@ -8,6 +10,17 @@ export interface MessageProps {
   hasReplies: boolean;
   createdAt: string;
   updatedAt: string;
+  attachments?: Array<{
+    id: string;
+    messageId: string;
+    uploadedBy: string;
+    fileName: string;
+    fileType: string;
+    fileSize: number;
+    fileUrl: string;
+    thumbnailUrl?: string;
+    uploadedAt: string;
+  }>;
 }
 
 export class Message {
@@ -53,12 +66,21 @@ export class Message {
   get updatedAt(): Date {
     return new Date(this.props.updatedAt);
   }
-
+  get attachments() {
+    return this.props.attachments || [];
+  }
   public isTextEmpty(): boolean {
     return this.props.text.trim().length === 0;
   }
 
   public toJSON(): MessageProps {
     return { ...this.props };
+  }
+  public withAttachments(attachments: Attachment[]): Message {
+    return new Message({
+      ...this.props,
+      hasAttachments: attachments.length > 0,
+      attachments: attachments.map((a) => a.toJSON()),
+    });
   }
 }

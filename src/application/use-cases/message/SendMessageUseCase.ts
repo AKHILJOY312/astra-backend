@@ -8,7 +8,6 @@ import { ISendMessageUseCase } from "@/application/ports/use-cases/message/ISend
 import { TYPES } from "@/config/di/types";
 import { Attachment } from "@/domain/entities/message/Attachment";
 import { Message } from "@/domain/entities/message/Message";
-import { logger } from "@/infra/logger/logger";
 import { inject, injectable } from "inversify";
 
 @injectable()
@@ -19,14 +18,13 @@ export class SendMessageUseCase implements ISendMessageUseCase {
     private membershipRepo: IProjectMembershipRepository,
     @inject(TYPES.UserRepository) private userRepo: IUserRepository,
     @inject(TYPES.AttachmentRepository)
-    private attachmentRepo: IAttachmentRepository
+    private attachmentRepo: IAttachmentRepository,
   ) {}
 
   async execute(input: SendMessageInput): Promise<Message> {
-    logger.debug("input from the send message", input);
     const isMember = await this.membershipRepo.findByProjectAndUser(
       input.projectId,
-      input.senderId
+      input.senderId,
     );
     if (!isMember) {
       throw new BadRequestError("User is not a member of the project");
@@ -50,12 +48,13 @@ export class SendMessageUseCase implements ISendMessageUseCase {
     };
     const message = new Message(messageProps);
     const savedMessage = await this.messageRepo.create(message);
-    console.log("savedMessage", savedMessage);
-    if (input.attachments) {
+    let finalMessage = message;
+
+    if (input.attachments?.length) {
       const attachmentEntities = input.attachments.map(
         (att) =>
           new Attachment({
-            id: "", // or let mongoose generate _id
+            id: "",
             messageId: savedMessage.id,
             uploadedBy: input.senderId,
             fileName: att.fileName,
@@ -64,11 +63,15 @@ export class SendMessageUseCase implements ISendMessageUseCase {
             fileUrl: att.fileUrl,
             thumbnailUrl: att.thumbnailUrl,
             uploadedAt: now,
-          })
+          }),
       );
-      console.log("attachmentEntities", attachmentEntities);
-      await this.attachmentRepo.createMany(attachmentEntities);
+
+      const savedAttachments =
+        await this.attachmentRepo.createMany(attachmentEntities);
+
+      finalMessage = message.withAttachments(savedAttachments);
     }
-    return message;
+
+    return finalMessage;
   }
 }

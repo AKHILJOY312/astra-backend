@@ -4,6 +4,7 @@ import {
   Message,
   MessageProps,
 } from "../../../../domain/entities/message/Message"; // Adjust path as needed
+import { AttachmentDoc } from "./AttachmentModel";
 
 // 1. Mongoose Document Interface
 
@@ -62,14 +63,26 @@ const messageSchema = new Schema<MessageDoc>(
 
 // Compound index for efficient message retrieval within a channel, sorted by time.
 messageSchema.index({ channelId: 1, createdAt: -1 });
+messageSchema.virtual("attachments", {
+  ref: "Attachment",
+  localField: "_id",
+  foreignField: "messageId",
+  justOne: false,
+});
 
+messageSchema.set("toObject", { virtuals: true });
+messageSchema.set("toJSON", { virtuals: true });
 // 3. Mongoose Model
 export const MessageModel = mongoose.model<MessageDoc>(
   "Message",
   messageSchema
 );
 
-export const toMessageEntity = (doc: MessageDoc): Message => {
+export type MessageDocWithAttachments = MessageDoc & {
+  attachments?: AttachmentDoc[];
+};
+
+export const toMessageEntity = (doc: MessageDocWithAttachments): Message => {
   const props: MessageProps = {
     id: doc._id.toString(),
     channelId: doc.channelId.toString(),
@@ -80,10 +93,18 @@ export const toMessageEntity = (doc: MessageDoc): Message => {
     hasReplies: doc.hasReplies,
     createdAt: doc.createdAt.toISOString(),
     updatedAt: doc.updatedAt.toISOString(),
+    attachments: doc.attachments?.map((att) => ({
+      id: att._id.toString(),
+      messageId: att.messageId.toString(),
+      uploadedBy: att.uploadedBy.toString(),
+      fileName: att.fileName,
+      fileType: att.fileType,
+      fileSize: att.fileSize,
+      fileUrl: att.fileUrl,
+      thumbnailUrl: att.thumbnailUrl,
+      uploadedAt: att.uploadedAt.toISOString(),
+    })),
   };
 
-  const message = new Message(props);
-  // Note: If your Message entity has an `setId` method like the Channel example,
-  // you would call it here. Assuming for now the ID is passed through props.
-  return message;
+  return new Message(props);
 };

@@ -77,4 +77,26 @@ export class S3FileUploadService implements IFileUploadService {
 
     return { uploadUrl };
   }
+  async generateChatFileAccessUrl(input: {
+    key: string;
+    contentType: string;
+    disposition?: "view" | "download";
+  }): Promise<{ url: string; expiresAt: string }> {
+    const responseDisposition =
+      input.disposition === "download" ? "attachment" : "inline";
+
+    const command = new GetObjectCommand({
+      Bucket: ENV.AWS.S3_BUCKET!,
+      Key: input.key,
+      ResponseContentType: input.contentType,
+      ResponseContentDisposition: responseDisposition,
+    });
+
+    const expiresIn = 60 * 5;
+    const url = await getSignedUrl(this._s3Client, command, { expiresIn });
+    return {
+      url,
+      expiresAt: new Date(Date.now() + expiresIn * 1000).toISOString(),
+    };
+  }
 }

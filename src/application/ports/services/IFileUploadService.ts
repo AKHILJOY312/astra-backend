@@ -9,4 +9,9 @@ export interface IFileUploadService {
     contentType: string;
     metadata?: Record<string, string>;
   }): Promise<{ uploadUrl: string }>;
+  generateChatFileAccessUrl(input: {
+    key: string;
+    contentType: string;
+    disposition?: "view" | "download";
+  }): Promise<{ url: string; expiresAt: string }>;
 }
