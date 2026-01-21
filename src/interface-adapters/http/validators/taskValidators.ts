@@ -22,6 +22,7 @@ export const CreateTaskSchema = z.object({
       z.object({
         fileName: z.string().min(1),
         fileType: z.string().min(1),
+        fileUrl: z.string().min(5),
         fileSize: z.number().positive(),
       }),
     )

@@ -7,11 +7,13 @@ import {
   UnauthorizedError,
 } from "@/application/error/AppError";
 import { IProjectMembershipRepository } from "@/application/ports/repositories/IProjectMembershipRepository";
+import { ITaskAttachmentRepository } from "@/application/ports/repositories/ITaskAttachmentRepository";
 import { ITaskRepository } from "@/application/ports/repositories/ITaskRepository";
 import { IUserRepository } from "@/application/ports/repositories/IUserRepository";
 import { ICreateTaskUseCase } from "@/application/ports/use-cases/task/interfaces";
 import { TYPES } from "@/config/di/types";
 import { Task } from "@/domain/entities/task/Task";
+import { TasksAttachment } from "@/domain/entities/task/TaskAttachment";
 import { inject, injectable } from "inversify";
 
 @injectable()
@@ -22,13 +24,24 @@ export class CreateTaskUseCase implements ICreateTaskUseCase {
     @inject(TYPES.ProjectMembershipRepository)
     private membershipRepo: IProjectMembershipRepository,
     @inject(TYPES.UserRepository) private userRepo: IUserRepository,
+    @inject(TYPES.TaskAttachmentRepository)
+    private TaskAttachmentRepo: ITaskAttachmentRepository,
   ) {}
   async execute(
     input: CreateTaskRequestDTO,
     managerId: string,
   ): Promise<TaskResponseDTO> {
-    const { projectId, assignedTo, title, description, priority, dueDate } =
-      input;
+    const {
+      projectId,
+      assignedTo,
+      title,
+      description,
+      priority,
+      dueDate,
+      attachments,
+    } = input;
+    console.log("input for this create Task Repues Dto: ", input);
+
     //1.Manger check
     const managerMembership = await this.membershipRepo.findByProjectAndUser(
       projectId,
@@ -46,6 +59,7 @@ export class CreateTaskUseCase implements ICreateTaskUseCase {
     if (!assigneeMembership) {
       throw new BadRequestError("Assigned user is not a project member");
     }
+    const hasAttachments = (attachments?.length ?? 0) > 0;
     //3.Create Task entity
     const task = new Task({
       projectId,
@@ -54,15 +68,30 @@ export class CreateTaskUseCase implements ICreateTaskUseCase {
       title: title.trim(),
       description,
       status: "todo",
+      hasAttachments: hasAttachments,
       priority,
       dueDate: dueDate ? new Date(dueDate) : null,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
 
-    const saved = await this.taskRepo.create(task);
+    const savedTask = await this.taskRepo.create(task);
 
-    return this.mapToResponse(saved);
+    if (attachments && attachments.length > 0) {
+      const attachmentPromise = attachments.map((att) => {
+        const taskAttachment = new TasksAttachment({
+          taskId: savedTask.id!,
+          fileName: att.fileName,
+          fileType: att.fileName,
+          fileSize: att.fileSize,
+          fileUrl: att.fileUrl,
+        });
+        return this.TaskAttachmentRepo.create(taskAttachment);
+      });
+      await Promise.all(attachmentPromise);
+    }
+
+    return this.mapToResponse(savedTask);
   }
   private async mapToResponse(task: Task): Promise<TaskResponseDTO> {
     const user = await this.userRepo.findById(task.assignedTo);

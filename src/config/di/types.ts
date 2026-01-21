@@ -14,6 +14,7 @@ const TYPES = {
   AttachmentRepository: Symbol.for("AttachmentRepository"),
   TaskRepository: Symbol.for("TaskRepository"),
   MemberRepository: Symbol.for("MemberRepository"),
+  TaskAttachmentRepository: Symbol.for("TaskAttachmentRepository"),
   // Services
   UserService: Symbol.for("UserService"),
   AuthService: Symbol.for("AuthService"), // For JwtAuthService

@@ -12,6 +12,7 @@ export interface CreateTaskRequestDTO {
     fileName: string;
     fileType: string;
     fileSize: number;
+    fileUrl: string;
   }[];
 }
 

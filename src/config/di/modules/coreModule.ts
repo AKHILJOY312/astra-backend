@@ -48,6 +48,8 @@ import { ITaskRepository } from "@/application/ports/repositories/ITaskRepositor
 import { TaskRepository } from "@/infra/db/mongoose/repositories/TaskRepository";
 import { IMemberRepository } from "@/application/ports/repositories/IMemberRepository ";
 import { MemberRepository } from "@/infra/db/mongoose/repositories/MemberRepository";
+import { ITaskAttachmentRepository } from "@/application/ports/repositories/ITaskAttachmentRepository";
+import { TaskAttachmentRepository } from "@/infra/db/mongoose/repositories/TaskAttachmentRepository";
 
 export const coreModule = new ContainerModule((options) => {
   // Repositories (singletons)
@@ -101,6 +103,9 @@ export const coreModule = new ContainerModule((options) => {
     .inSingletonScope();
   options.bind<ITaskRepository>(TYPES.TaskRepository).to(TaskRepository);
   options.bind<IMemberRepository>(TYPES.MemberRepository).to(MemberRepository);
+  options
+    .bind<ITaskAttachmentRepository>(TYPES.TaskAttachmentRepository)
+    .to(TaskAttachmentRepository);
 
   // Services (singletons)
   options
