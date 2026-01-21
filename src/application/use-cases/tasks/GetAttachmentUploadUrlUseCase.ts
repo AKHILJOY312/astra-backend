@@ -7,6 +7,7 @@ import { randomUUID } from "crypto";
 import { IGetAttachmentUploadUrlUseCase } from "@/application/ports/use-cases/task/interfaces";
 import { IProjectMembershipRepository } from "@/application/ports/repositories/IProjectMembershipRepository";
 import { IFileUploadService } from "@/application/ports/services/IFileUploadService";
+import { ENV } from "@/config/env.config";
 
 @injectable()
 export class GetAttachmentUploadUrlUseCase implements IGetAttachmentUploadUrlUseCase {
@@ -47,10 +48,11 @@ export class GetAttachmentUploadUrlUseCase implements IGetAttachmentUploadUrlUse
         context: "task-attachment",
       },
     });
+    const permanentUrl = `https://${ENV.AWS.S3_BUCKET}.s3.${ENV.AWS.REGION}.amazonaws.com/${fileKey}`;
 
     return {
       uploadUrl,
-      fileKey,
+      fileKey: permanentUrl,
     };
   }
 }

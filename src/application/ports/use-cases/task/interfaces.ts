@@ -6,6 +6,7 @@ import {
   PresignedUrlResponseDTO,
   SearchMembersRequestDTO,
   MemberSearchResponseDTO,
+  GetTaskAttachmentDownloadUrlOutput,
 } from "@/application/dto/task/taskDto";
 
 /* ─────────────────────────────
@@ -70,7 +71,9 @@ export interface IGetAttachmentUploadUrlUseCase {
     requesterId: string,
   ): Promise<PresignedUrlResponseDTO>;
 }
-
+export interface IGetTaskAttachmentDownloadUrlUseCase {
+  execute(attachmentId: string): Promise<GetTaskAttachmentDownloadUrlOutput>;
+}
 /* ─────────────────────────────
    Search (Independent Use Case)
    ───────────────────────────── */

@@ -52,8 +52,8 @@ export class TaskAttachmentRepository implements ITaskAttachmentRepository {
     return doc ? this.toDomain(doc) : null;
   }
 
-  async findByFileKey(fileKey: string): Promise<TasksAttachment | null> {
-    const doc = await TasksAttachmentModel.findOne({ fileUrl: fileKey });
-    return doc ? this.toDomain(doc) : null;
+  async findByTaskId(taskId: string): Promise<TasksAttachment[]> {
+    const docs = await TasksAttachmentModel.find({ taskId });
+    return docs.map((doc) => this.toDomain(doc));
   }
 }

@@ -11,6 +11,8 @@ import {
 import { ITaskRepository } from "@/application/ports/repositories/ITaskRepository";
 import { IProjectMembershipRepository } from "@/application/ports/repositories/IProjectMembershipRepository";
 import { IUserRepository } from "@/application/ports/repositories/IUserRepository";
+import { ITaskAttachmentRepository } from "@/application/ports/repositories/ITaskAttachmentRepository";
+import { TasksAttachment } from "@/domain/entities/task/TaskAttachment";
 
 @injectable()
 export class GetProjectTasksUseCase implements IGetProjectTasksUseCase {
@@ -21,6 +23,8 @@ export class GetProjectTasksUseCase implements IGetProjectTasksUseCase {
     @inject(TYPES.ProjectMembershipRepository)
     private membershipRepo: IProjectMembershipRepository,
     @inject(TYPES.UserRepository) private userRepo: IUserRepository,
+    @inject(TYPES.TaskAttachmentRepository)
+    private taskAttachmentRepo: ITaskAttachmentRepository,
   ) {}
 
   async execute(
@@ -51,13 +55,19 @@ export class GetProjectTasksUseCase implements IGetProjectTasksUseCase {
   }
 
   private async mapToResponse(task: Task): Promise<TaskResponseDTO> {
-    const user = await this.userRepo.findById(task.assignedTo);
+    const [user, attachments] = await Promise.all([
+      this.userRepo.findById(task.assignedTo),
+      task.hasAttachments
+        ? this.taskAttachmentRepo.findByTaskId(task.id!)
+        : Promise.resolve([] as TasksAttachment[]),
+    ]);
+
     return {
       id: task.id!,
       projectId: task.projectId,
       assignedTo: {
         id: task.assignedTo.toString(),
-        name: user?.name || user?.name || "Unknown User",
+        name: user?.name || "Unknown User",
         email: user?.email,
         avatarUrl: user?.ImageUrl,
       },
@@ -67,6 +77,15 @@ export class GetProjectTasksUseCase implements IGetProjectTasksUseCase {
       priority: task.priority,
       dueDate: task.dueDate?.toISOString() ?? null,
       hasAttachments: task.hasAttachments ?? false,
+      attachments: (attachments || []).map((att: TasksAttachment) => ({
+        id: att.id!,
+        fileName: att.fileName,
+        fileType: att.fileType,
+        fileSize: att.fileSize,
+        fileUrl: att.fileUrl,
+        thumbnailUrl: att.thumbnailUrl ?? null,
+      })),
+
       createdAt: task.createdAt.toISOString(),
     };
   }

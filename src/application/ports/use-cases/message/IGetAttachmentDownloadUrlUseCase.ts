@@ -11,6 +11,6 @@ export interface GetAttachmentDownloadUrlOutput {
 
 export interface IGetAttachmentDownloadUrlUseCase {
   execute(
-    input: GetAttachmentsDownloadUrlInput
+    input: GetAttachmentsDownloadUrlInput,
   ): Promise<GetAttachmentDownloadUrlOutput>;
 }

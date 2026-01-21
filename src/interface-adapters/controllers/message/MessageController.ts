@@ -3,6 +3,7 @@ import { IGenerateUploadUrlUseCase } from "@/application/ports/use-cases/message
 import { IGetAttachmentDownloadUrlUseCase } from "@/application/ports/use-cases/message/IGetAttachmentDownloadUrlUseCase";
 import { IListMessagesUseCase } from "@/application/ports/use-cases/message/IListMessagesUseCase";
 import { ISendMessageUseCase } from "@/application/ports/use-cases/message/ISendMessageUseCase";
+import { IGetTaskAttachmentDownloadUrlUseCase } from "@/application/ports/use-cases/task/interfaces";
 import { TYPES } from "@/config/di/types";
 import { HTTP_STATUS } from "@/interface-adapters/http/constants/httpStatus";
 import { Request, Response } from "express";
@@ -18,7 +19,9 @@ export class MessageController {
     @inject(TYPES.GenerateUploadUrlUseCase)
     private generateUploadUrlUC: IGenerateUploadUrlUseCase,
     @inject(TYPES.GetAttachmentDownloadUrlUseCase)
-    private getAttachmentDownloadUrlUC: IGetAttachmentDownloadUrlUseCase
+    private getAttachmentDownloadUrlUC: IGetAttachmentDownloadUrlUseCase,
+    @inject(TYPES.GetTaskAttachmentDownloadUrlUseCase)
+    private getTaskAttachmentDownloadUrlUC: IGetTaskAttachmentDownloadUrlUseCase,
   ) {}
 
   listMessagesPerChannel = async (req: Request, res: Response) => {
@@ -63,7 +66,7 @@ export class MessageController {
 
     if (!fileName || !fileSize || !mimeType) {
       throw new BadRequestError(
-        "fileName, fileSize, and mimeType are required"
+        "fileName, fileSize, and mimeType are required",
       );
     }
 
@@ -95,11 +98,15 @@ export class MessageController {
     if (!attachmentId) {
       throw new BadRequestError("attachmentId is required");
     }
-    const result = await this.getAttachmentDownloadUrlUC.execute({
-      attachmentId,
-      userId,
-      disposition,
-    });
+    const result =
+      req.query.disposition === "task"
+        ? await this.getTaskAttachmentDownloadUrlUC.execute(attachmentId)
+        : await this.getAttachmentDownloadUrlUC.execute({
+            attachmentId,
+            userId,
+            disposition,
+          });
+
     return res.json({
       success: true,
       data: result,

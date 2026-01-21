@@ -16,9 +16,7 @@ import { TYPES } from "@/config/di/types";
 import { inject, injectable } from "inversify";
 
 @injectable()
-export class GetAttachmentDownloadUrlUseCase
-  implements IGetAttachmentDownloadUrlUseCase
-{
+export class GetAttachmentDownloadUrlUseCase implements IGetAttachmentDownloadUrlUseCase {
   constructor(
     @inject(TYPES.ChannelRepository) private channelRepo: IChannelRepository,
     @inject(TYPES.AttachmentRepository)
@@ -26,11 +24,11 @@ export class GetAttachmentDownloadUrlUseCase
     @inject(TYPES.MessageRepository) private messageRepo: IMessageRepository,
     @inject(TYPES.ProjectMembershipRepository)
     private memberRepo: IProjectMembershipRepository,
-    @inject(TYPES.FileUploadService) private fileUploadSrv: IFileUploadService
+    @inject(TYPES.FileUploadService) private fileUploadSrv: IFileUploadService,
   ) {}
 
   async execute(
-    input: GetAttachmentsDownloadUrlInput
+    input: GetAttachmentsDownloadUrlInput,
   ): Promise<GetAttachmentDownloadUrlOutput> {
     const attachment = await this.attachmentRepo.findById(input.attachmentId);
     if (!attachment) {
@@ -49,7 +47,7 @@ export class GetAttachmentDownloadUrlUseCase
 
     const membership = await this.memberRepo.findByProjectAndUser(
       channel.projectId,
-      input.userId
+      input.userId,
     );
 
     if (!membership) {

@@ -94,13 +94,20 @@ export class CreateTaskUseCase implements ICreateTaskUseCase {
     return this.mapToResponse(savedTask);
   }
   private async mapToResponse(task: Task): Promise<TaskResponseDTO> {
-    const user = await this.userRepo.findById(task.assignedTo);
+    // Fetch user and attachments concurrently
+    const [user, attachments] = await Promise.all([
+      this.userRepo.findById(task.assignedTo),
+      task.hasAttachments
+        ? this.TaskAttachmentRepo.findByTaskId(task.id!)
+        : Promise.resolve([]),
+    ]);
+
     return {
       id: task.id!,
       projectId: task.projectId,
       assignedTo: {
         id: task.assignedTo.toString(),
-        name: user?.name || user?.name || "Unknown User",
+        name: user?.name || "Unknown User",
         email: user?.email,
         avatarUrl: user?.ImageUrl,
       },
@@ -110,6 +117,17 @@ export class CreateTaskUseCase implements ICreateTaskUseCase {
       priority: task.priority,
       dueDate: task.dueDate?.toISOString() ?? null,
       hasAttachments: task.hasAttachments ?? false,
+
+      // Map the domain entities to the DTO format
+      attachments: attachments.map((att) => ({
+        id: att.id!,
+        fileName: att.fileName,
+        fileType: att.fileType,
+        fileSize: att.fileSize,
+        fileUrl: att.fileUrl,
+        thumbnailUrl: att.thumbnailUrl ?? null,
+      })),
+
       createdAt: task.createdAt.toISOString(),
     };
   }

@@ -41,7 +41,14 @@ export interface AssignTaskDTO {
 /**
  * OUTPUT DTOs (Response Payloads)
  */
-
+export interface AttachmentResponseDTO {
+  id: string;
+  fileName: string;
+  fileType: string;
+  fileSize: number;
+  fileUrl: string;
+  thumbnailUrl?: string | null;
+}
 export interface TaskResponseDTO {
   id: string;
   projectId: string;
@@ -57,6 +64,7 @@ export interface TaskResponseDTO {
   priority: TaskPriority;
   dueDate: string | null;
   hasAttachments: boolean;
+  attachments: AttachmentResponseDTO[];
   createdAt: string;
 }
 
@@ -78,4 +86,8 @@ export interface AssignableMemberDTO {
   name: string;
   email: string;
   avatarUrl?: string;
+}
+export interface GetTaskAttachmentDownloadUrlOutput {
+  url: string;
+  expiresAt: string;
 }
