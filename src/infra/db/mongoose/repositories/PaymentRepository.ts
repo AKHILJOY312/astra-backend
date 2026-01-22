@@ -38,17 +38,17 @@ export class PaymentRepository implements IPaymentRepository {
         status: payment.status,
         razorpayPaymentId: payment.razorpayPaymentId,
         invoiceNumber: payment.invoiceNumber,
-      }
+      },
     );
   }
   async updateStatus(
     orderId: string,
     status: string,
-    paymentId?: string
+    paymentId?: string,
   ): Promise<void> {
     await PaymentModel.findOneAndUpdate(
       { razorpayOrderId: orderId },
-      { status, razorpayPaymentId: paymentId }
+      { status, razorpayPaymentId: paymentId },
     );
   }
 
@@ -99,18 +99,17 @@ export class PaymentRepository implements IPaymentRepository {
     };
   }
   async findByRazorpayOrderId(id: string): Promise<Payment | null> {
-    console.log("findByRazorpayOrderId: ", id);
     const doc = await PaymentModel.findOne({
       razorpayOrderId: id,
     });
-    console.log(doc);
+
     return doc ? this.toEntity(doc) : null;
   }
   async findByUserIdPaginated(
     userId: string,
     page: number,
     limit: number,
-    search?: string
+    search?: string,
   ): Promise<{ data: Payment[]; total: number }> {
     const filter: FilterQuery<PaymentDoc> = { userId };
 

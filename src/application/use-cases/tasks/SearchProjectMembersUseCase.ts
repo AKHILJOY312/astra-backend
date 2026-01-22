@@ -32,12 +32,12 @@ export class SearchProjectMembersUseCase implements ISearchProjectMembersUseCase
     if (!membership || membership.role !== "manager") {
       throw new UnauthorizedError("Only managers can search members");
     }
-    console.log("Data which is goung in for the qureey: ", input);
+
     const members = await this.memberRepo.searchMembersByProject(
       input.projectId,
       input.query,
     );
-    console.log("searched members: ", members);
+
     return { members };
   }
 }

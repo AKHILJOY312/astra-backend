@@ -16,7 +16,7 @@ export class EditChannelUseCase implements IEditChannelUseCase {
   constructor(
     @inject(TYPES.ChannelRepository) private channelRepo: IChannelRepository,
     @inject(TYPES.ProjectMembershipRepository)
-    private membershipRepo: IProjectMembershipRepository
+    private membershipRepo: IProjectMembershipRepository,
   ) {}
 
   async execute(input: EditChannelDTO) {
@@ -34,9 +34,9 @@ export class EditChannelUseCase implements IEditChannelUseCase {
 
     const membership = await this.membershipRepo.findByProjectAndUser(
       channel.projectId,
-      userId
+      userId,
     );
-    console.log(membership);
+
     if (!membership || membership.role !== "manager") {
       throw new UnauthorizedError("Only project admins can edit channels");
     }
@@ -44,11 +44,11 @@ export class EditChannelUseCase implements IEditChannelUseCase {
     if (channelName && channel.channelName !== channelName) {
       const sameNameExist = await this.channelRepo.findByProjectAndName(
         channel.projectId,
-        channelName!
+        channelName!,
       );
       if (sameNameExist) {
         throw new BadRequestError(
-          "Channel with this same name exists. Try a another name."
+          "Channel with this same name exists. Try a another name.",
         );
       }
     }

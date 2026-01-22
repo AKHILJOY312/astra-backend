@@ -16,7 +16,6 @@ export class GetTaskAttachmentDownloadUrlUseCase implements IGetTaskAttachmentDo
   ) {}
 
   async execute(attachmentId: string): Promise<GetAttachmentDownloadUrlOutput> {
-    console.log("attachment id: ", attachmentId);
     const attachment = await this.attachmentRepo.findById(attachmentId);
     if (!attachment) {
       throw new BadRequestError("Attachment not found");

@@ -19,7 +19,7 @@ export class DownloadInvoiceUseCase implements IDownloadInvoiceUseCase {
     private paymentRepository: IPaymentRepository,
 
     @inject(TYPES.PdfInvoiceService)
-    private invoicePdfGenerator: IPdfInvoiceService
+    private invoicePdfGenerator: IPdfInvoiceService,
   ) {}
 
   async execute(input: DownloadInvoiceInput): Promise<DownloadInvoiceOutput> {
@@ -40,7 +40,7 @@ export class DownloadInvoiceUseCase implements IDownloadInvoiceUseCase {
     }
 
     const pdfBuffer = await this.invoicePdfGenerator.generate(payment);
-    console.log("Length of the pdf is: ", pdfBuffer.length);
+
     return {
       fileName: `invoice-${payment.invoiceNumber}.pdf`,
       pdfBuffer,

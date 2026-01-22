@@ -13,22 +13,22 @@ import {
 export class ChangeMemberRoleUseCase implements IChangeMemberRoleUseCase {
   constructor(
     @inject(TYPES.ProjectMembershipRepository)
-    private membershipRepo: IProjectMembershipRepository
+    private membershipRepo: IProjectMembershipRepository,
   ) {}
 
   async execute(
-    input: ChangeMemberRoleDTO
+    input: ChangeMemberRoleDTO,
   ): Promise<ChangeMemberRoleResultDTO> {
     const { projectId, memberId, newRole, requestedBy } = input;
-    console.log(input);
+
     // 1. Requester must be manager
     const requester = await this.membershipRepo.findByProjectAndUser(
       projectId,
-      requestedBy
+      requestedBy,
     );
     if (!requester || requester.role !== "manager") {
       throw new UnauthorizedError(
-        "Only project managers can change member roles"
+        "Only project managers can change member roles",
       );
     }
 
@@ -40,12 +40,11 @@ export class ChangeMemberRoleUseCase implements IChangeMemberRoleUseCase {
 
     // 3. Prevent removing last manager
     if (target.role === "manager" && newRole !== "manager") {
-      const managerCount = await this.membershipRepo.countManagersInProject(
-        projectId
-      );
+      const managerCount =
+        await this.membershipRepo.countManagersInProject(projectId);
       if (managerCount <= 1) {
         throw new UnauthorizedError(
-          "Cannot demote the last manager — transfer ownership first"
+          "Cannot demote the last manager — transfer ownership first",
         );
       }
     }

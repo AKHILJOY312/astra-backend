@@ -33,7 +33,6 @@ export class UpdateTaskUseCase implements IUpdateTaskUseCase {
     input: UpdateTaskRequestDTO,
     managerId: string,
   ): Promise<TaskResponseDTO> {
-    console.log("Update task use case inout: ", input);
     const task = await this.taskRepo.findById(taskId);
     if (!task) throw new NotFoundError("Task");
     //1.Manger authorization

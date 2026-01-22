@@ -19,7 +19,7 @@ export class RequestEmailChangeUseCase implements IRequestEmailChangeUseCase {
     @inject(TYPES.EmailChangeOtpRepository)
     private otpRepo: IEmailChangeOtpRepository,
     @inject(TYPES.AuthService) private auth: IAuthService,
-    @inject(TYPES.EmailService) private emailService: IEmailService
+    @inject(TYPES.EmailService) private emailService: IEmailService,
   ) {}
   async execute(userId: string, newEmail: string) {
     //Validate email done by the controller
@@ -34,7 +34,7 @@ export class RequestEmailChangeUseCase implements IRequestEmailChangeUseCase {
     //Rate limiting: max 3 Request per hour
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
     const recent = await this.otpRepo.countRecentByUserId(userId, oneHourAgo);
-    console.log("Recent: ", recent);
+
     if (recent >= 3) {
       throw new TooManyRequestError("Too many Request. Try again in 1 hour.");
     }

@@ -40,7 +40,6 @@ export class CreateTaskUseCase implements ICreateTaskUseCase {
       dueDate,
       attachments,
     } = input;
-    console.log("input for this create Task Repues Dto: ", input);
 
     //1.Manger check
     const managerMembership = await this.membershipRepo.findByProjectAndUser(
