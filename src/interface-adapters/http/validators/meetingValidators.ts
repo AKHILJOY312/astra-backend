@@ -10,6 +10,6 @@ export const JoinMeetingSchema = z.object({
 });
 
 export const LeaveMeetingSchema = z.object({
-  code: z.string().length(8),
+  meetingId: z.string(),
   socketId: z.string().min(1),
 });

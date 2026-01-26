@@ -6,7 +6,7 @@ import { TYPES } from "@/config/di/types";
 import { HTTP_STATUS } from "@/interface-adapters/http/constants/httpStatus";
 import {
   CreateMeetingSchema,
-  JoinMeetingSchema,
+  // JoinMeetingSchema,
   LeaveMeetingSchema,
 } from "@/interface-adapters/http/validators/meetingValidators";
 import { BadRequestError, ValidationError } from "@/application/error/AppError";

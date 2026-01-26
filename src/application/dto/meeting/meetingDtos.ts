@@ -43,7 +43,7 @@ export interface JoinMeetingResultDTO {
 //=================================================
 
 export interface LeaveMeetingDTO {
-  code: string;
+  meetingId: string;
   socketId: string;
 }
 

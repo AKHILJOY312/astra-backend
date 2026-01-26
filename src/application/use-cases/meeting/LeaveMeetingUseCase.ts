@@ -18,7 +18,7 @@ export class LeaveMeetingUseCase implements ILeaveMeetingUseCase {
   ) {}
 
   async execute(input: LeaveMeetingDTO): Promise<LeaveMeetingResultDTO> {
-    const meeting = await this.meetingRepo.findActiveByCode(input.code);
+    const meeting = await this.meetingRepo.findActiveByCode(input.meetingId);
 
     if (!meeting) {
       throw new BadRequestError("Meeting not found or already ended");
