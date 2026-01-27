@@ -46,8 +46,9 @@ export class TaskRepository implements ITaskRepository {
   }
 
   async softDelete(taskId: string): Promise<void> {
+    console.log("taskId for sofrDetal", taskId);
     await TaskModel.updateOne(
-      { id: taskId, isDeleted: false },
+      { _id: taskId, isDeleted: false },
       {
         $set: {
           isDeleted: true,
@@ -101,7 +102,7 @@ export class TaskRepository implements ITaskRepository {
       query.createdAt = { $lt: cursor };
     }
     const docs = await TaskModel.find(query)
-      .sort({ createdAt: 1 })
+      .sort({ createdAt: -1 })
       .limit(limit + 1);
     const hasMore = docs.length > limit;
     const sliced = hasMore ? docs.slice(0, limit) : docs;
