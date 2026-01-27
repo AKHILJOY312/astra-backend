@@ -16,7 +16,7 @@ export class MessageHandler extends BaseSocketHandler {
   constructor(
     socket: AuthenticatedSocket,
     private sendMessageUC: ISendMessageUseCase,
-    private io: Server
+    private io: Server,
   ) {
     super(socket);
   }
@@ -24,7 +24,7 @@ export class MessageHandler extends BaseSocketHandler {
   handle(): void {
     this.socket.on("message:send", async (payload: SendMessagePayload) => {
       const userId = this.socket.data.user.id;
-      if (!payload?.channelId || !payload?.projectId || !payload.text?.trim()) {
+      if (!payload?.channelId || !payload?.projectId) {
         this.socket.emit("message:error", "Invalid message payload");
         return;
       }

@@ -38,7 +38,7 @@ const messageSchema = new Schema<MessageDoc>(
     },
     text: {
       type: String,
-      required: true,
+
       maxlength: 2000, // A common limit for message length
     },
     hasAttachments: {
