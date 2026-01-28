@@ -113,6 +113,7 @@ import { IGenerateUploadUrlUseCase } from "@/application/ports/use-cases/message
 import { IGetAttachmentDownloadUrlUseCase } from "@/application/ports/use-cases/message/IGetAttachmentDownloadUrlUseCase";
 import { GetAttachmentDownloadUrlUseCase } from "@/application/use-cases/message/GetAttachmentDownloadUrlUseCase";
 import {
+  IAddCommentUseCase,
   ICreateTaskUseCase,
   IDeleteTaskUseCase,
   IGetAttachmentUploadUrlUseCase,
@@ -138,6 +139,7 @@ import {
 import { CreateMeetingUseCase } from "@/application/use-cases/meeting/CreateMeetingUseCase";
 import { JoinMeetingUseCase } from "@/application/use-cases/meeting/JoinMeetingUseCase";
 import { LeaveMeetingUseCase } from "@/application/use-cases/meeting/LeaveMeetingUseCase";
+import { AddCommentUseCase } from "@/application/use-cases/tasks/AddCommandUseCase";
 
 export const useCaseModule = new ContainerModule((options) => {
   // Regular Auth Use Cases
@@ -298,6 +300,9 @@ export const useCaseModule = new ContainerModule((options) => {
   options
     .bind<IUpdateTaskUseCase>(TYPES.UpdateTaskUseCase)
     .to(UpdateTaskUseCase);
+  options
+    .bind<IAddCommentUseCase>(TYPES.AddCommentUseCase)
+    .to(AddCommentUseCase);
 
   //search
   options

@@ -53,6 +53,7 @@ export const API_ROUTES = {
       ROOT: "/:projectId/tasks",
       BY_ID: "/tasks/:taskId",
       STATUS: "/tasks/:taskId/status",
+      COMMENT: "/:projectId/tasks/:taskId/comment",
       ATTACHMENT_UPLOAD: "/:projectId/tasks/attachments/upload-url",
       MEMBERS_SEARCH: "/:projectId/tasks/members/search",
     },

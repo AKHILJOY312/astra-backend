@@ -1,4 +1,8 @@
 import {
+  AddCommentRequestDTO,
+  CommentResponseDTO,
+} from "@/application/dto/task/commentDto";
+import {
   CreateTaskRequestDTO,
   UpdateTaskRequestDTO,
   UpdateTaskStatusRequestDTO,
@@ -85,4 +89,11 @@ export interface ISearchProjectMembersUseCase {
     input: SearchMembersRequestDTO,
     managerId: string,
   ): Promise<MemberSearchResponseDTO>;
+}
+
+export interface IAddCommentUseCase {
+  execute(
+    input: AddCommentRequestDTO,
+    userId: string,
+  ): Promise<CommentResponseDTO>;
 }

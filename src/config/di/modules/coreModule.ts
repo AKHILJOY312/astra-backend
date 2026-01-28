@@ -52,6 +52,8 @@ import { ITaskAttachmentRepository } from "@/application/ports/repositories/ITas
 import { TaskAttachmentRepository } from "@/infra/db/mongoose/repositories/TaskAttachmentRepository";
 import { IMeetingRepository } from "@/application/ports/repositories/IMeetingRepository";
 import { MeetingRepository } from "@/infra/db/mongoose/repositories/MeetingRepository";
+import { ICommentRepository } from "@/application/ports/repositories/ICommentRepository";
+import { CommentRepository } from "@/infra/db/mongoose/repositories/CommandRepository";
 
 export const coreModule = new ContainerModule((options) => {
   //=================================================
@@ -120,6 +122,10 @@ export const coreModule = new ContainerModule((options) => {
   options
     .bind<IMeetingRepository>(TYPES.MeetingRepository)
     .to(MeetingRepository)
+    .inSingletonScope();
+  options
+    .bind<ICommentRepository>(TYPES.CommentRepository)
+    .to(CommentRepository)
     .inSingletonScope();
 
   //=================================================

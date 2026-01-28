@@ -71,3 +71,7 @@ export const AttachmentUploadSchema = z.object({
 export const SearchMembersSchema = z.object({
   query: z.string().min(1, "Search query is required"),
 });
+
+export const AddCommentSchema = z.object({
+  message: z.string().min(1, "Content is required"),
+});

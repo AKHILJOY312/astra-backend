@@ -16,6 +16,7 @@ const TYPES = {
   MemberRepository: Symbol.for("MemberRepository"),
   TaskAttachmentRepository: Symbol.for("TaskAttachmentRepository"),
   MeetingRepository: Symbol.for("MeetingRepository"),
+  CommentRepository: Symbol.for("CommentRepository"),
 
   // Services
   UserService: Symbol.for("UserService"),
@@ -123,6 +124,7 @@ const TYPES = {
     "GetTaskAttachmentDownloadUrlUseCase",
   ),
   UpdateTaskUseCase: Symbol.for("UpdateTaskUseCase"),
+  AddCommentUseCase: Symbol.for("AddCommentUseCase"),
 
   //Search the user with the project
   SearchProjectMembersUseCase: Symbol.for("SearchProjectMembersUseCase"),

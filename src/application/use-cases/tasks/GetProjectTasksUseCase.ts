@@ -16,6 +16,7 @@ import { IProjectMembershipRepository } from "@/application/ports/repositories/I
 import { IUserRepository } from "@/application/ports/repositories/IUserRepository";
 import { ITaskAttachmentRepository } from "@/application/ports/repositories/ITaskAttachmentRepository";
 import { TasksAttachment } from "@/domain/entities/task/TaskAttachment";
+import { ICommentRepository } from "@/application/ports/repositories/ICommentRepository";
 
 @injectable()
 export class GetProjectTasksUseCase implements IGetProjectTasksUseCase {
@@ -28,6 +29,7 @@ export class GetProjectTasksUseCase implements IGetProjectTasksUseCase {
     @inject(TYPES.UserRepository) private userRepo: IUserRepository,
     @inject(TYPES.TaskAttachmentRepository)
     private taskAttachmentRepo: ITaskAttachmentRepository,
+    @inject(TYPES.CommentRepository) private commentRepo: ICommentRepository,
   ) {}
 
   async execute({
@@ -73,12 +75,33 @@ export class GetProjectTasksUseCase implements IGetProjectTasksUseCase {
   }
 
   private async mapToResponse(task: Task): Promise<TaskResponseDTO> {
-    const [user, attachments] = await Promise.all([
+    const [user, attachments, rawComments] = await Promise.all([
       this.userRepo.findById(task.assignedTo),
       task.hasAttachments
         ? this.taskAttachmentRepo.findByTaskId(task.id!)
         : Promise.resolve([] as TasksAttachment[]),
+      this.commentRepo.listByTask(task.id!),
     ]);
+
+    const commentsWithAuthors = await Promise.all(
+      rawComments.map(async (cmd) => {
+        const author = await this.userRepo.findById(cmd.authorId);
+        return {
+          id: cmd.id!,
+          taskId: cmd.taskId,
+          projectId: cmd.projectId,
+          author: {
+            id: cmd.authorId,
+            name: author?.name || "Unknown User",
+            email: author?.email,
+            avatarUrl: author?.ImageUrl,
+          },
+          message: cmd.message,
+          createdAt: cmd.createdAt.toISOString(),
+          updatedAt: cmd.updatedAt.toISOString(),
+        };
+      }),
+    );
 
     return {
       id: task.id!,
@@ -103,7 +126,7 @@ export class GetProjectTasksUseCase implements IGetProjectTasksUseCase {
         fileUrl: att.fileUrl,
         thumbnailUrl: att.thumbnailUrl ?? null,
       })),
-
+      comments: commentsWithAuthors,
       createdAt: task.createdAt.toISOString(),
     };
   }
