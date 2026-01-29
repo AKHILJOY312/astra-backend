@@ -113,6 +113,7 @@ import { IGenerateUploadUrlUseCase } from "@/application/ports/use-cases/message
 import { IGetAttachmentDownloadUrlUseCase } from "@/application/ports/use-cases/message/IGetAttachmentDownloadUrlUseCase";
 import { GetAttachmentDownloadUrlUseCase } from "@/application/use-cases/message/GetAttachmentDownloadUrlUseCase";
 import {
+  IAddCommentUseCase,
   ICreateTaskUseCase,
   IDeleteTaskUseCase,
   IGetAttachmentUploadUrlUseCase,
@@ -130,6 +131,17 @@ import { GetAttachmentUploadUrlUseCase } from "@/application/use-cases/tasks/Get
 import { SearchProjectMembersUseCase } from "@/application/use-cases/tasks/SearchProjectMembersUseCase";
 import { GetTaskAttachmentDownloadUrlUseCase } from "@/application/use-cases/tasks/GetTaskAttachmentsDownloadUrlInput";
 import { UpdateTaskUseCase } from "@/application/use-cases/tasks/UpdatingTaskUseCase";
+import {
+  ICreateMeetingUseCase,
+  IGetMeetingTokenUseCase,
+  IJoinMeetingUseCase,
+  ILeaveMeetingUseCase,
+} from "@/application/ports/use-cases/meeting";
+import { CreateMeetingUseCase } from "@/application/use-cases/meeting/CreateMeetingUseCase";
+import { JoinMeetingUseCase } from "@/application/use-cases/meeting/JoinMeetingUseCase";
+import { LeaveMeetingUseCase } from "@/application/use-cases/meeting/LeaveMeetingUseCase";
+import { AddCommentUseCase } from "@/application/use-cases/tasks/AddCommandUseCase";
+import { GetMeetingTokenUseCase } from "@/application/use-cases/meeting/GetMeetingTokenUseCase";
 
 export const useCaseModule = new ContainerModule((options) => {
   // Regular Auth Use Cases
@@ -290,9 +302,26 @@ export const useCaseModule = new ContainerModule((options) => {
   options
     .bind<IUpdateTaskUseCase>(TYPES.UpdateTaskUseCase)
     .to(UpdateTaskUseCase);
+  options
+    .bind<IAddCommentUseCase>(TYPES.AddCommentUseCase)
+    .to(AddCommentUseCase);
 
   //search
   options
     .bind<ISearchProjectMembersUseCase>(TYPES.SearchProjectMembersUseCase)
     .to(SearchProjectMembersUseCase);
+
+  //Meeting
+  options
+    .bind<ICreateMeetingUseCase>(TYPES.CreateMeetingUseCase)
+    .to(CreateMeetingUseCase);
+  options
+    .bind<IJoinMeetingUseCase>(TYPES.JoinMeetingUseCase)
+    .to(JoinMeetingUseCase);
+  options
+    .bind<ILeaveMeetingUseCase>(TYPES.LeaveMeetingUseCase)
+    .to(LeaveMeetingUseCase);
+  options
+    .bind<IGetMeetingTokenUseCase>(TYPES.GetMeetingTokenUseCase)
+    .to(GetMeetingTokenUseCase);
 });

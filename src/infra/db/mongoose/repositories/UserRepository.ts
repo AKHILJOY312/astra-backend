@@ -1,10 +1,10 @@
 import { FilterQuery, UpdateQuery } from "mongoose";
-import UserModel, { IUserDocument } from "../models/UserModal";
-import { User, UserProps } from "../../../../domain/entities/user/User";
+import UserModel, { IUserDocument } from "@/infra/db/mongoose/models/UserModel";
+import { User, UserProps } from "@/domain/entities/user/User";
 import {
   IUserRepository,
   PaginationResult,
-} from "../../../../application/ports/repositories/IUserRepository";
+} from "@/application/ports/repositories/IUserRepository";
 import { ListUsersQuery } from "@/application/use-cases/user/ListUserUseCase";
 
 export class UserRepository implements IUserRepository {

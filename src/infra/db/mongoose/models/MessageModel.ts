@@ -1,9 +1,6 @@
 // src/infrastructure/persistence/mongoose/models/MessageModel.ts
 import mongoose, { Schema, Document, Types } from "mongoose";
-import {
-  Message,
-  MessageProps,
-} from "../../../../domain/entities/message/Message"; // Adjust path as needed
+import { Message, MessageProps } from "@/domain/entities/message/Message"; // Adjust path as needed
 import { AttachmentDoc } from "./AttachmentModel";
 
 // 1. Mongoose Document Interface
@@ -41,7 +38,7 @@ const messageSchema = new Schema<MessageDoc>(
     },
     text: {
       type: String,
-      required: true,
+
       maxlength: 2000, // A common limit for message length
     },
     hasAttachments: {
@@ -58,7 +55,7 @@ const messageSchema = new Schema<MessageDoc>(
   {
     timestamps: true, // Auto-adds createdAt and updatedAt fields
     collection: "messages", // Explicitly define collection name
-  }
+  },
 );
 
 // Compound index for efficient message retrieval within a channel, sorted by time.
@@ -75,7 +72,7 @@ messageSchema.set("toJSON", { virtuals: true });
 // 3. Mongoose Model
 export const MessageModel = mongoose.model<MessageDoc>(
   "Message",
-  messageSchema
+  messageSchema,
 );
 
 export type MessageDocWithAttachments = MessageDoc & {

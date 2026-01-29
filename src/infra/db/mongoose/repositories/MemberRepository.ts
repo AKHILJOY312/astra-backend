@@ -1,7 +1,7 @@
 import { AssignableMemberDTO } from "@/application/dto/task/taskDto";
 import { IMemberRepository } from "@/application/ports/repositories/IMemberRepository ";
 import { Types } from "mongoose";
-import { ProjectMembershipModel } from "../models/ProjectMembershipModal";
+import { ProjectMembershipModel } from "@/infra/db/mongoose/models/ProjectMembershipModel";
 
 export interface UserDoc {
   _id: string;

@@ -25,10 +25,14 @@ export interface ITaskRepository extends IBaseRepository<Task> {
    * Returns tasks by project and status.
    * Critical for Kanban column loading.
    */
-  findByProjectAndStatus(
+  findByProjectAndStatusPaginated(
     projectId: string,
+
+    limit: number,
     status: TaskStatus,
-  ): Promise<Task[]>;
+    cursor?: Date,
+    assignedTo?: string,
+  ): Promise<{ tasks: Task[]; hasMore: boolean }>;
 
   /**
    * Soft delete:

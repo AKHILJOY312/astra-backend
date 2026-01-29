@@ -80,5 +80,8 @@ export function getProjectRoutes(container: Container): Router {
   router
     .route(API_ROUTES.PROJECTS.TASKS.STATUS)
     .patch(asyncHandler(taskController.updateTaskStatus));
+  router
+    .route(API_ROUTES.PROJECTS.TASKS.COMMENT)
+    .post(asyncHandler(taskController.addCommentToTask));
   return router;
 }

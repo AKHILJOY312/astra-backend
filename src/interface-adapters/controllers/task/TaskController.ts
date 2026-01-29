@@ -4,6 +4,7 @@ import { TYPES } from "@/config/di/types";
 import { HTTP_STATUS } from "@/interface-adapters/http/constants/httpStatus";
 import { ValidationError } from "@/application/error/AppError";
 import {
+  IAddCommentUseCase,
   ICreateTaskUseCase,
   IDeleteTaskUseCase,
   IGetAttachmentUploadUrlUseCase,
@@ -17,6 +18,7 @@ import {
   ListTasksQuerySchema,
   AttachmentUploadSchema,
   UpdateTaskSchema,
+  AddCommentSchema,
 } from "@/interface-adapters/http/validators/taskValidators";
 
 @injectable()
@@ -38,6 +40,7 @@ export class TaskController {
     private attachmentUploadUC: IGetAttachmentUploadUrlUseCase,
 
     @inject(TYPES.UpdateTaskUseCase) private updateTaskUC: IUpdateTaskUseCase,
+    @inject(TYPES.AddCommentUseCase) private addCommentUC: IAddCommentUseCase,
   ) {}
 
   // POST /projects/:projectId/tasks
@@ -86,6 +89,7 @@ export class TaskController {
 
   // GET /projects/:projectId/tasks
   listTasks = async (req: Request, res: Response) => {
+    console.log("req. for the list task details ", req.query);
     const parsedQuery = ListTasksQuerySchema.safeParse(req.query);
     if (!parsedQuery.success) {
       throw new ValidationError("Invalid query parameters");
@@ -93,8 +97,14 @@ export class TaskController {
 
     const { projectId } = req.params;
     const requesterId = req.user!.id;
-
-    const result = await this.listTasksUC.execute(projectId, requesterId);
+    const { status, cursor, limit } = parsedQuery.data;
+    const result = await this.listTasksUC.execute({
+      projectId,
+      requesterId,
+      status,
+      cursor,
+      limit,
+    });
 
     return res.status(HTTP_STATUS.OK).json({
       success: true,
@@ -155,6 +165,27 @@ export class TaskController {
     );
 
     return res.status(HTTP_STATUS.OK).json({
+      success: true,
+      data: result,
+    });
+  };
+
+  addCommentToTask = async (req: Request, res: Response) => {
+    const parsed = AddCommentSchema.safeParse(req.body);
+    if (!parsed.success) {
+      throw new ValidationError("Invalid attachment data");
+    }
+
+    const { projectId, taskId } = req.params;
+    const requesterId = req.user!.id;
+    const { message } = parsed.data;
+    const input = {
+      taskId,
+      projectId,
+      message,
+    };
+    const result = await this.addCommentUC.execute(input, requesterId);
+    return res.status(HTTP_STATUS.CREATED).json({
       success: true,
       data: result,
     });

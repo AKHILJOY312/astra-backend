@@ -1,11 +1,11 @@
 // src/infrastructure/persistence/mongoose/repositories/ProjectMembershipRepository.ts
 import { ProjectMemberView } from "@/application/dto/project/ProjectMemberView";
-import { IProjectMembershipRepository } from "../../../../application/ports/repositories/IProjectMembershipRepository";
-import { ProjectMembership } from "../../../../domain/entities/project/ProjectMembership";
+import { IProjectMembershipRepository } from "@/application/ports/repositories/IProjectMembershipRepository";
+import { ProjectMembership } from "@/domain/entities/project/ProjectMembership";
 import {
   ProjectMembershipModel,
   toProjectMembershipEntity,
-} from "../models/ProjectMembershipModal";
+} from "@/infra/db/mongoose/models/ProjectMembershipModel";
 import mongoose from "mongoose";
 
 export class ProjectMembershipRepository implements IProjectMembershipRepository {

@@ -4,7 +4,7 @@ import {
   UserSubscription,
   UserSubscriptionProps,
   SubscriptionStatus,
-} from "../../../../domain/entities/billing/UserSubscription";
+} from "@/domain/entities/billing/UserSubscription";
 
 interface SubscriptionDoc extends Document {
   userId: mongoose.Types.ObjectId;
@@ -44,17 +44,17 @@ const subscriptionSchema = new Schema<SubscriptionDoc>(
     razorPayOrderId: { type: String, required: true },
     razorpayPaymentId: { type: String },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const UserSubscriptionModel = mongoose.model<SubscriptionDoc>(
   "UserSubscription",
-  subscriptionSchema
+  subscriptionSchema,
 );
 
 // Mapper
 export const toUserSubscriptionEntity = (
-  doc: SubscriptionDoc
+  doc: SubscriptionDoc,
 ): UserSubscription => {
   const props: UserSubscriptionProps = {
     id: doc._id.toString(),

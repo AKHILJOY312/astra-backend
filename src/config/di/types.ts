@@ -15,6 +15,9 @@ const TYPES = {
   TaskRepository: Symbol.for("TaskRepository"),
   MemberRepository: Symbol.for("MemberRepository"),
   TaskAttachmentRepository: Symbol.for("TaskAttachmentRepository"),
+  MeetingRepository: Symbol.for("MeetingRepository"),
+  CommentRepository: Symbol.for("CommentRepository"),
+
   // Services
   UserService: Symbol.for("UserService"),
   AuthService: Symbol.for("AuthService"), // For JwtAuthService
@@ -23,6 +26,7 @@ const TYPES = {
   TokenBlacklistService: Symbol.for("TokenBlacklistService"),
   FileUploadService: Symbol.for("FileUploadService"),
   PdfInvoiceService: Symbol.for("PdfInvoiceService"),
+  MeetingService: Symbol.for("MeetingService"),
 
   // Middleware
   ProtectMiddleware: Symbol.for("ProtectMiddleware"),
@@ -40,6 +44,7 @@ const TYPES = {
   UserController: Symbol.for("UserController"),
   TaskController: Symbol.for("TaskController"),
   MemberSearchController: Symbol.for("MemberSearchController"),
+  MeetingController: Symbol.for("MeetingController"),
 
   // Use Cases (User/Auth)
   RegisterUser: Symbol.for("RegisterUser"),
@@ -120,9 +125,16 @@ const TYPES = {
     "GetTaskAttachmentDownloadUrlUseCase",
   ),
   UpdateTaskUseCase: Symbol.for("UpdateTaskUseCase"),
+  AddCommentUseCase: Symbol.for("AddCommentUseCase"),
 
   //Search the user with the project
   SearchProjectMembersUseCase: Symbol.for("SearchProjectMembersUseCase"),
+
+  //Meetings
+  CreateMeetingUseCase: Symbol.for("CreateMeetingUseCase"),
+  JoinMeetingUseCase: Symbol.for("JoinMeetingUseCase"),
+  LeaveMeetingUseCase: Symbol.for("LeaveMeetingUseCase"),
+  GetMeetingTokenUseCase: Symbol.for("GetMeetingTokenUseCase"),
 };
 
 export { TYPES };

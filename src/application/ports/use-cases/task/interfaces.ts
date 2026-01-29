@@ -1,4 +1,8 @@
 import {
+  AddCommentRequestDTO,
+  CommentResponseDTO,
+} from "@/application/dto/task/commentDto";
+import {
   CreateTaskRequestDTO,
   UpdateTaskRequestDTO,
   UpdateTaskStatusRequestDTO,
@@ -7,6 +11,7 @@ import {
   SearchMembersRequestDTO,
   MemberSearchResponseDTO,
   GetTaskAttachmentDownloadUrlOutput,
+  GetTaskRequestDTO,
 } from "@/application/dto/task/taskDto";
 
 /* ─────────────────────────────
@@ -35,12 +40,13 @@ export interface IDeleteTaskUseCase {
 export interface ProjectTasksResponse {
   tasks: TaskResponseDTO[];
   isManager: boolean;
+  pageInfo: {
+    hasMore: boolean;
+    nextCursor: string | null;
+  };
 }
 export interface IGetProjectTasksUseCase {
-  execute(
-    projectId: string,
-    requesterId: string,
-  ): Promise<ProjectTasksResponse>;
+  execute(input: GetTaskRequestDTO): Promise<ProjectTasksResponse>;
 }
 
 /* ─────────────────────────────
@@ -83,4 +89,11 @@ export interface ISearchProjectMembersUseCase {
     input: SearchMembersRequestDTO,
     managerId: string,
   ): Promise<MemberSearchResponseDTO>;
+}
+
+export interface IAddCommentUseCase {
+  execute(
+    input: AddCommentRequestDTO,
+    userId: string,
+  ): Promise<CommentResponseDTO>;
 }

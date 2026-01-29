@@ -39,6 +39,11 @@ export const ENV = {
     S3_BUCKET: process.env.AWS_S3_BUCKET,
     S3_BASE_URL: process.env.AWS_S3_BASE_URL,
   },
+  LIVEKIT: {
+    URL: process.env.LIVEKIT_URL,
+    API_KEY: process.env.LIVEKIT_API_KEY,
+    API_SECRET: process.env.LIVEKIT_API_SECRET,
+  },
 };
 
 // Simple validation to ensure critical keys are present

@@ -5,7 +5,7 @@ import {
   TasksAttachmentDoc,
   TasksAttachmentModel,
   toTaskAttachmentEntity,
-} from "../models/TaskAttachmentModel";
+} from "@/infra/db/mongoose/models/TaskAttachmentModel";
 
 @injectable()
 export class TaskAttachmentRepository implements ITaskAttachmentRepository {

@@ -1,4 +1,4 @@
-import { CounterModel } from "../models/CounterModel";
+import { CounterModel } from "@/infra/db/mongoose/models/CounterModel";
 import { ICounterRepository } from "@/application/ports/repositories/ICounterRepository";
 
 export class CounterRepository implements ICounterRepository {
@@ -6,7 +6,7 @@ export class CounterRepository implements ICounterRepository {
     const counter = await CounterModel.findOneAndUpdate(
       { key },
       { $inc: { seq: 1 } },
-      { new: true, upsert: true } // ← critical
+      { new: true, upsert: true }, // ← critical
     );
 
     return counter!.seq;

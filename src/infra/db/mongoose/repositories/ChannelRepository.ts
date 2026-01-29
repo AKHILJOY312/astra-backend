@@ -1,7 +1,10 @@
 // src/infrastructure/persistence/mongoose/repositories/ChannelRepository.ts
 import { IChannelRepository } from "@/application/ports/repositories/IChannelRepository";
-import { Channel } from "../../../../domain/entities/channel/Channel";
-import { ChannelModel, toChannelEntity } from "../models/ChannelModal";
+import { Channel } from "@/domain/entities/channel/Channel";
+import {
+  ChannelModel,
+  toChannelEntity,
+} from "@/infra/db/mongoose/models/ChannelModel";
 
 export class ChannelRepository implements IChannelRepository {
   async create(channel: Channel): Promise<Channel> {
@@ -29,7 +32,7 @@ export class ChannelRepository implements IChannelRepository {
         visibleToRoles: channel.visibleToRoles,
         permissionsByRole: channel.permissionsByRole,
       },
-      { new: true }
+      { new: true },
     );
     if (!saved) throw new Error("Channel not found for update");
 
@@ -53,7 +56,7 @@ export class ChannelRepository implements IChannelRepository {
 
   async findByProjectAndName(
     projectId: string,
-    channelName: string
+    channelName: string,
   ): Promise<Channel | null> {
     const doc = await ChannelModel.findOne({ projectId, channelName });
     return doc ? toChannelEntity(doc) : null;

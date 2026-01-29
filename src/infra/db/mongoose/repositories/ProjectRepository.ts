@@ -1,12 +1,12 @@
 import { FilterQuery, HydratedDocument, Types } from "mongoose";
-import { IProjectRepository } from "../../../../application/ports/repositories/IProjectRepository";
-import { Project } from "../../../../domain/entities/project/Project";
-import { ProjectMembershipModel } from "../models/ProjectMembershipModal";
+import { IProjectRepository } from "@/application/ports/repositories/IProjectRepository";
+import { Project } from "@/domain/entities/project/Project";
+import { ProjectMembershipModel } from "@/infra/db/mongoose/models/ProjectMembershipModel";
 import {
   ProjectModel,
   toProjectEntity,
   ProjectDoc,
-} from "../models/ProjectModal";
+} from "@/infra/db/mongoose/models/ProjectModel";
 
 type LeanMembership = { projectId: Types.ObjectId };
 
@@ -30,7 +30,7 @@ export class ProjectRepository implements IProjectRepository {
         imageUrl: project.imageUrl,
         description: project.description,
       },
-      { new: true }
+      { new: true },
     ).exec();
   }
 
@@ -49,7 +49,7 @@ export class ProjectRepository implements IProjectRepository {
       ownerId: new Types.ObjectId(ownerId),
     }).exec();
     return docs.map((doc) =>
-      toProjectEntity(doc as HydratedDocument<ProjectDoc>)
+      toProjectEntity(doc as HydratedDocument<ProjectDoc>),
     );
   }
 
@@ -62,7 +62,7 @@ export class ProjectRepository implements IProjectRepository {
     // Get project IDs where user is a member
     const membershipDocs = await ProjectMembershipModel.find(
       { userId: userObjectId },
-      { projectId: 1, _id: 0 }
+      { projectId: 1, _id: 0 },
     )
       .lean<LeanMembership[]>()
       .exec();
@@ -78,11 +78,11 @@ export class ProjectRepository implements IProjectRepository {
     const all = [...owned, ...memberProjects];
     const unique = all.filter(
       (p, i, a) =>
-        a.findIndex((t) => t._id.toString() === p._id.toString()) === i
+        a.findIndex((t) => t._id.toString() === p._id.toString()) === i,
     );
 
     return unique.map((doc) =>
-      toProjectEntity(doc as HydratedDocument<ProjectDoc>)
+      toProjectEntity(doc as HydratedDocument<ProjectDoc>),
     );
   }
 
@@ -103,7 +103,7 @@ export class ProjectRepository implements IProjectRepository {
     // Get member project IDs
     const memberships = await ProjectMembershipModel.find(
       { userId: userObjectId },
-      { projectId: 1, _id: 0 }
+      { projectId: 1, _id: 0 },
     )
       .lean<LeanMembership[]>()
       .exec();
@@ -130,7 +130,7 @@ export class ProjectRepository implements IProjectRepository {
 
     return {
       projects: docs.map((doc) =>
-        toProjectEntity(doc as HydratedDocument<ProjectDoc>)
+        toProjectEntity(doc as HydratedDocument<ProjectDoc>),
       ),
       page,
       limit,
@@ -154,7 +154,7 @@ export class ProjectRepository implements IProjectRepository {
   }
   async existsByNameAndOwnerId(
     projectName: string,
-    ownerId: string
+    ownerId: string,
   ): Promise<boolean> {
     const count = await ProjectModel.countDocuments({ projectName, ownerId });
     return count > 0;

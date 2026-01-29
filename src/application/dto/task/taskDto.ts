@@ -1,4 +1,5 @@
 import { TaskPriority, TaskStatus } from "@/domain/entities/task/Task";
+import { CommentResponseDTO } from "./commentDto";
 
 /** Create */
 export interface CreateTaskRequestDTO {
@@ -16,6 +17,13 @@ export interface CreateTaskRequestDTO {
   }[];
 }
 
+export interface GetTaskRequestDTO {
+  projectId: string;
+  requesterId: string;
+  status: TaskStatus;
+  cursor?: string;
+  limit: number;
+}
 /** Update */
 export interface UpdateTaskRequestDTO {
   title?: string;
@@ -66,6 +74,7 @@ export interface TaskResponseDTO {
   hasAttachments: boolean;
   attachments: AttachmentResponseDTO[];
   createdAt: string;
+  comments?: CommentResponseDTO[];
 }
 
 export interface PresignedUrlResponseDTO {

@@ -1,9 +1,6 @@
 // src/infrastructure/persistence/mongoose/models/ProjectModel.ts
 import mongoose, { Schema, Document } from "mongoose";
-import {
-  Project,
-  ProjectProps,
-} from "../../../../domain/entities/project/Project";
+import { Project, ProjectProps } from "@/domain/entities/project/Project";
 
 export interface ProjectDoc extends Document {
   _id: mongoose.Types.ObjectId;
@@ -27,7 +24,7 @@ const projectSchema = new Schema<ProjectDoc>(
       index: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 projectSchema.index({ projectName: 1 });
 projectSchema.index({ createdAt: -1 });
@@ -35,7 +32,7 @@ projectSchema.index({ ownerId: 1, createdAt: -1 });
 
 export const ProjectModel = mongoose.model<ProjectDoc>(
   "Project",
-  projectSchema
+  projectSchema,
 );
 
 // Mapper: DB → Domain Entity

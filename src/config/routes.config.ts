@@ -1,6 +1,7 @@
 // src/config/routes.ts
 
 export const API_ROUTES = {
+  BASE: "/",
   AUTH: {
     ROOT: "/auth",
     REGISTER: "/register",
@@ -52,6 +53,7 @@ export const API_ROUTES = {
       ROOT: "/:projectId/tasks",
       BY_ID: "/tasks/:taskId",
       STATUS: "/tasks/:taskId/status",
+      COMMENT: "/:projectId/tasks/:taskId/comment",
       ATTACHMENT_UPLOAD: "/:projectId/tasks/attachments/upload-url",
       MEMBERS_SEARCH: "/:projectId/tasks/members/search",
     },
@@ -78,5 +80,11 @@ export const API_ROUTES = {
     },
     PAYMENT_HISTORY: "/history",
     INVOICES: "/invoice/:paymentId",
+  },
+  MEETING: {
+    ROOT: "/meetings",
+    CODE: "/:code",
+    LEAVE: "/leave",
+    TOKEN: "/:code/token",
   },
 } as const;

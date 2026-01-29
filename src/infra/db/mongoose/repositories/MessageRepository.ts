@@ -5,9 +5,9 @@ import {
   MessageDocWithAttachments,
   MessageModel,
   toMessageEntity,
-} from "../models/MessageModel";
+} from "@/infra/db/mongoose/models/MessageModel";
 import { FilterQuery, Types } from "mongoose";
-import { AttachmentDoc } from "../models/AttachmentModel";
+import { AttachmentDoc } from "@/infra/db/mongoose/models/AttachmentModel";
 
 export class MessageRepository implements IMessageRepository {
   async create(msg: Message): Promise<Message> {
@@ -24,7 +24,7 @@ export class MessageRepository implements IMessageRepository {
   async listByChannel(
     channelId: string,
     cursor?: string,
-    limit: number = 20
+    limit: number = 20,
   ): Promise<Message[]> {
     const query: FilterQuery<MessageDoc> = {
       channelId: new Types.ObjectId(channelId),

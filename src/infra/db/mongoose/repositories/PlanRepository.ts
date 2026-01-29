@@ -1,7 +1,7 @@
 // infrastructure/repositories/PlanRepository.ts
-import { PlanDoc, PlanModel, toPlanEntity } from "../models/PlanModal";
-import { Plan } from "../../../../domain/entities/billing/Plan";
-import { IPlanRepository } from "../../../../application/ports/repositories/IPlanRepository";
+import { PlanDoc, PlanModel, toPlanEntity } from "../models/PlanModel";
+import { Plan } from "@/domain/entities/billing/Plan";
+import { IPlanRepository } from "@/application/ports/repositories/IPlanRepository";
 import { HydratedDocument } from "mongoose";
 
 export class PlanRepository implements IPlanRepository {
@@ -50,7 +50,7 @@ export class PlanRepository implements IPlanRepository {
           updatedAt: new Date(),
         },
       },
-      { new: true }
+      { new: true },
     );
     return doc ? this.toDomain(doc) : null;
   }

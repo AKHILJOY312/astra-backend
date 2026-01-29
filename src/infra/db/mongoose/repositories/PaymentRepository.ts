@@ -1,6 +1,9 @@
 import { IPaymentRepository } from "@/application/ports/repositories/IPaymentRepository";
 import { Payment, PaymentStatus } from "@/domain/entities/billing/Payment";
-import { PaymentModel, PaymentDoc } from "../models/PaymentModel";
+import {
+  PaymentModel,
+  PaymentDoc,
+} from "@/infra/db/mongoose/models/PaymentModel";
 import { injectable } from "inversify";
 import { FilterQuery } from "mongoose";
 

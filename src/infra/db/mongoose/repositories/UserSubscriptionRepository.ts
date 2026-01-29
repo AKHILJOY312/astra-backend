@@ -1,10 +1,10 @@
 // src/infrastructure/persistence/mongoose/repositories/UserSubscriptionRepository.ts
-import { IUserSubscriptionRepository } from "../../../../application/ports/repositories/IUserSubscriptionRepository";
-import { UserSubscription } from "../../../../domain/entities/billing/UserSubscription";
+import { IUserSubscriptionRepository } from "@/application/ports/repositories/IUserSubscriptionRepository";
+import { UserSubscription } from "@/domain/entities/billing/UserSubscription";
 import {
   UserSubscriptionModel,
   toUserSubscriptionEntity,
-} from "../models/UserSubscriptionModel";
+} from "@/infra/db/mongoose/models/UserSubscriptionModel";
 
 export class UserSubscriptionRepository implements IUserSubscriptionRepository {
   async create(subscription: UserSubscription): Promise<UserSubscription> {

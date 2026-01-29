@@ -1,6 +1,6 @@
 // src/infra/services/MongoTokenBlacklistService.ts
 import { injectable } from "inversify";
-import { BlacklistedTokenModel } from "@/infra/db/mongoose/models/BlacklistedTokenSchema";
+import { BlacklistedTokenModel } from "@/infra/db/mongoose/models/BlacklistedTokenModel";
 import { ITokenBlacklistService } from "../../application/ports/services/ITokenBlacklistService";
 
 @injectable()

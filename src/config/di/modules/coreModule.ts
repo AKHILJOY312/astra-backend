@@ -50,9 +50,17 @@ import { IMemberRepository } from "@/application/ports/repositories/IMemberRepos
 import { MemberRepository } from "@/infra/db/mongoose/repositories/MemberRepository";
 import { ITaskAttachmentRepository } from "@/application/ports/repositories/ITaskAttachmentRepository";
 import { TaskAttachmentRepository } from "@/infra/db/mongoose/repositories/TaskAttachmentRepository";
+import { IMeetingRepository } from "@/application/ports/repositories/IMeetingRepository";
+import { MeetingRepository } from "@/infra/db/mongoose/repositories/MeetingRepository";
+import { ICommentRepository } from "@/application/ports/repositories/ICommentRepository";
+import { CommentRepository } from "@/infra/db/mongoose/repositories/CommandRepository";
+import { IMeetingService } from "@/application/ports/services/IMeetingService";
+import { LiveKitMeetingService } from "@/infra/services/LiveKitMeetingService";
 
 export const coreModule = new ContainerModule((options) => {
+  //=================================================
   // Repositories (singletons)
+  //=================================================
   options
     .bind<IUserRepository>(TYPES.UserRepository)
     .to(UserRepository)
@@ -101,13 +109,30 @@ export const coreModule = new ContainerModule((options) => {
     .bind<IAttachmentRepository>(TYPES.AttachmentRepository)
     .to(AttachmentRepository)
     .inSingletonScope();
-  options.bind<ITaskRepository>(TYPES.TaskRepository).to(TaskRepository);
-  options.bind<IMemberRepository>(TYPES.MemberRepository).to(MemberRepository);
+  options
+    .bind<ITaskRepository>(TYPES.TaskRepository)
+    .to(TaskRepository)
+    .inSingletonScope();
+  options
+    .bind<IMemberRepository>(TYPES.MemberRepository)
+    .to(MemberRepository)
+    .inSingletonScope();
   options
     .bind<ITaskAttachmentRepository>(TYPES.TaskAttachmentRepository)
-    .to(TaskAttachmentRepository);
+    .to(TaskAttachmentRepository)
+    .inSingletonScope();
+  options
+    .bind<IMeetingRepository>(TYPES.MeetingRepository)
+    .to(MeetingRepository)
+    .inSingletonScope();
+  options
+    .bind<ICommentRepository>(TYPES.CommentRepository)
+    .to(CommentRepository)
+    .inSingletonScope();
 
+  //=================================================
   // Services (singletons)
+  //=================================================
   options
     .bind<IUserService>(TYPES.UserService)
     .to(UserService)
@@ -135,5 +160,9 @@ export const coreModule = new ContainerModule((options) => {
   options
     .bind<IPdfInvoiceService>(TYPES.PdfInvoiceService)
     .to(PdfKitInvoiceGenerator)
+    .inSingletonScope();
+  options
+    .bind<IMeetingService>(TYPES.MeetingService)
+    .to(LiveKitMeetingService)
     .inSingletonScope();
 });

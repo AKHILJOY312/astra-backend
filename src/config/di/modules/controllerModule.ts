@@ -13,6 +13,7 @@ import { MessageController } from "@/interface-adapters/controllers/message/Mess
 import { UserController } from "@/interface-adapters/controllers/user/UserController";
 import { TaskController } from "@/interface-adapters/controllers/task/TaskController";
 import { MemberSearchController } from "@/interface-adapters/controllers/task/MemberSearchController";
+import { MeetingController } from "@/interface-adapters/controllers/meeting/MeetingController";
 
 export const controllerModule = new ContainerModule((options) => {
   options.bind<AuthController>(TYPES.AuthController).to(AuthController);
@@ -41,4 +42,7 @@ export const controllerModule = new ContainerModule((options) => {
   options
     .bind<MemberSearchController>(TYPES.MemberSearchController)
     .to(MemberSearchController);
+  options
+    .bind<MeetingController>(TYPES.MeetingController)
+    .to(MeetingController);
 });

@@ -4,7 +4,7 @@ import {
   ProjectMembership,
   ProjectMembershipProps,
   ProjectRole,
-} from "../../../../domain/entities/project/ProjectMembership";
+} from "@/domain/entities/project/ProjectMembership";
 
 export interface MembershipDoc extends Document {
   _id: mongoose.Types.ObjectId;

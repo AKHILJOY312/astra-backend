@@ -15,7 +15,7 @@ export class GetAvailablePlansUseCase implements IGetAvailablePlansUseCase {
   constructor(
     @inject(TYPES.PlanRepository) private planRepo: IPlanRepository,
     @inject(TYPES.UserSubscriptionRepository)
-    private subscriptRepo: IUserSubscriptionRepository
+    private subscriptRepo: IUserSubscriptionRepository,
   ) {}
 
   async execute(userId: string): Promise<AvailablePlanDTO[]> {
@@ -27,18 +27,29 @@ export class GetAvailablePlansUseCase implements IGetAvailablePlansUseCase {
     const isPaidUser = activeSub !== null && activeSub.planType !== "free";
 
     return plans
-      .filter((plan) => !(isPaidUser && plan.id === "free"))
+      .filter((plan) => {
+        // Rule: If you've already paid, you can't "downgrade" to free via this UI
+        if (isPaidUser && plan.id === "free") return false;
+        return true;
+      })
       .sort((a, b) => a.finalAmount - b.finalAmount)
-      .map((plan) => ({
-        id: plan.id,
-        name: plan.name,
-        description: plan.description,
-        price: plan.price,
-        finalAmount: plan.finalAmount,
-        features: plan.features,
-        maxProjects: plan.maxProjects,
-        maxMembersPerProject: plan.maxMembersPerProject,
-        isCurrent: activeSub?.planType === plan.id,
-      }));
+      .map((plan) => {
+        // If activeSub is null, it means they are effectively on the 'free' plan by default
+        const isCurrent = activeSub
+          ? activeSub.planType === plan.id
+          : plan.id === "free";
+
+        return {
+          id: plan.id,
+          name: plan.name,
+          description: plan.description,
+          price: plan.price,
+          finalAmount: plan.finalAmount,
+          features: plan.features,
+          maxProjects: plan.maxProjects,
+          maxMembersPerProject: plan.maxMembersPerProject,
+          isCurrent: isCurrent,
+        };
+      });
   }
 }

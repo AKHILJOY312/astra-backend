@@ -2,7 +2,10 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/di/types";
 import { UnauthorizedError } from "@/application/error/AppError";
 
-import { TaskResponseDTO } from "@/application/dto/task/taskDto";
+import {
+  GetTaskRequestDTO,
+  TaskResponseDTO,
+} from "@/application/dto/task/taskDto";
 import { Task } from "@/domain/entities/task/Task";
 import {
   IGetProjectTasksUseCase,
@@ -13,6 +16,7 @@ import { IProjectMembershipRepository } from "@/application/ports/repositories/I
 import { IUserRepository } from "@/application/ports/repositories/IUserRepository";
 import { ITaskAttachmentRepository } from "@/application/ports/repositories/ITaskAttachmentRepository";
 import { TasksAttachment } from "@/domain/entities/task/TaskAttachment";
+import { ICommentRepository } from "@/application/ports/repositories/ICommentRepository";
 
 @injectable()
 export class GetProjectTasksUseCase implements IGetProjectTasksUseCase {
@@ -25,12 +29,16 @@ export class GetProjectTasksUseCase implements IGetProjectTasksUseCase {
     @inject(TYPES.UserRepository) private userRepo: IUserRepository,
     @inject(TYPES.TaskAttachmentRepository)
     private taskAttachmentRepo: ITaskAttachmentRepository,
+    @inject(TYPES.CommentRepository) private commentRepo: ICommentRepository,
   ) {}
 
-  async execute(
-    projectId: string,
-    requesterId: string,
-  ): Promise<ProjectTasksResponse> {
+  async execute({
+    projectId,
+    requesterId,
+    status,
+    cursor,
+    limit = 10,
+  }: GetTaskRequestDTO): Promise<ProjectTasksResponse> {
     // 1. Must be project member
     const membership = await this.membershipRepo.findByProjectAndUser(
       projectId,
@@ -40,27 +48,60 @@ export class GetProjectTasksUseCase implements IGetProjectTasksUseCase {
     if (!membership) {
       throw new UnauthorizedError("You are not a project member");
     }
-    const isManger = membership.role === "manager";
+    const isManager = membership.role === "manager";
     // 2. Load tasks
-    const tasks =
-      membership.role === "manager"
-        ? await this.taskRepo.findByProjectId(projectId)
-        : await this.taskRepo.findByAssignedTo(requesterId);
+    const { tasks, hasMore } =
+      await this.taskRepo.findByProjectAndStatusPaginated(
+        projectId,
+        limit,
+        status,
+
+        cursor ? new Date(cursor) : undefined,
+        isManager ? undefined : requesterId,
+      );
 
     // 3. Map to response DTO
     const dtos = await Promise.all(
       tasks.map((task) => this.mapToResponse(task)),
     );
-    return { tasks: dtos, isManager: isManger };
+    return {
+      tasks: dtos,
+      isManager,
+      pageInfo: {
+        hasMore,
+        nextCursor: dtos.length > 0 ? dtos[dtos.length - 1].createdAt : null,
+      },
+    };
   }
 
   private async mapToResponse(task: Task): Promise<TaskResponseDTO> {
-    const [user, attachments] = await Promise.all([
+    const [user, attachments, rawComments] = await Promise.all([
       this.userRepo.findById(task.assignedTo),
       task.hasAttachments
         ? this.taskAttachmentRepo.findByTaskId(task.id!)
         : Promise.resolve([] as TasksAttachment[]),
+      this.commentRepo.listByTask(task.id!),
     ]);
+
+    const commentsWithAuthors = await Promise.all(
+      rawComments.map(async (cmd) => {
+        const author = await this.userRepo.findById(cmd.authorId);
+        return {
+          id: cmd.id!,
+          taskId: cmd.taskId,
+          projectId: cmd.projectId,
+          author: {
+            id: cmd.authorId,
+            name: author?.name || "Unknown User",
+            email: author?.email,
+            avatarUrl: author?.ImageUrl,
+          },
+          message: cmd.message,
+          createdAt: cmd.createdAt.toISOString(),
+          updatedAt: cmd.updatedAt.toISOString(),
+        };
+      }),
+    );
 
     return {
       id: task.id!,
@@ -85,7 +126,7 @@ export class GetProjectTasksUseCase implements IGetProjectTasksUseCase {
         fileUrl: att.fileUrl,
         thumbnailUrl: att.thumbnailUrl ?? null,
       })),
-
+      comments: commentsWithAuthors,
       createdAt: task.createdAt.toISOString(),
     };
   }

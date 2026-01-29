@@ -5,7 +5,7 @@ import {
   IInvitationDocument,
   InvitationModel,
   InvitationStatus,
-} from "../models/InvitationModal";
+} from "@/infra/db/mongoose/models/InvitationModel";
 
 @injectable()
 export class InvitationRepository implements IInvitationRepository {
@@ -53,7 +53,7 @@ export class InvitationRepository implements IInvitationRepository {
 
   async findByEmailAndProject(
     email: string,
-    projectId: string
+    projectId: string,
   ): Promise<Invitation | null> {
     const doc = await InvitationModel.findOne({
       email: email.toLowerCase(),
@@ -64,7 +64,7 @@ export class InvitationRepository implements IInvitationRepository {
 
   async findPendingByEmailAndProject(
     email: string,
-    projectId: string
+    projectId: string,
   ): Promise<Invitation | null> {
     const doc = await InvitationModel.findOne({
       email: email.toLowerCase(),
@@ -85,7 +85,7 @@ export class InvitationRepository implements IInvitationRepository {
     await InvitationModel.findOneAndUpdate(
       { invitationId: invitation.id },
       this.toPersistence(invitation),
-      { runValidators: true }
+      { runValidators: true },
     );
   }
 

@@ -1,7 +1,7 @@
 // src/infrastructure/auth/JwtAuthService.ts
 import jwt, { SignOptions } from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { IAuthService } from "../../application/ports/services/IAuthService";
+import { IAuthService } from "@/application/ports/services/IAuthService";
 import crypto from "crypto";
 import { IUserRepository } from "@/application/ports/repositories/IUserRepository";
 import { inject, injectable } from "inversify";
@@ -11,7 +11,7 @@ import { ENV } from "@/config/env.config";
 @injectable()
 export class JwtAuthService implements IAuthService {
   constructor(
-    @inject(TYPES.UserRepository) private userRepo: IUserRepository
+    @inject(TYPES.UserRepository) private userRepo: IUserRepository,
   ) {}
 
   async hashPassword(plain: string): Promise<string> {
@@ -25,7 +25,7 @@ export class JwtAuthService implements IAuthService {
   generateAccessToken(
     userId: string,
     email: string,
-    securityStamp: string
+    securityStamp: string,
   ): string {
     const options: SignOptions = {
       expiresIn: ENV.JWT.ACCESS_EXPIRY as SignOptions["expiresIn"],
@@ -33,7 +33,7 @@ export class JwtAuthService implements IAuthService {
     return jwt.sign(
       { id: userId, email, stamp: securityStamp },
       ENV.JWT.ACCESS_SECRET!,
-      options
+      options,
     );
   }
 

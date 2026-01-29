@@ -2,7 +2,10 @@
 import { injectable } from "inversify";
 import { Attachment } from "@/domain/entities/message/Attachment";
 import { IAttachmentRepository } from "@/application/ports/repositories/IAttachmentRepository";
-import { AttachmentModel, toAttachmentEntity } from "../models/AttachmentModel";
+import {
+  AttachmentModel,
+  toAttachmentEntity,
+} from "@/infra/db/mongoose/models/AttachmentModel";
 import { Types } from "mongoose";
 
 @injectable()

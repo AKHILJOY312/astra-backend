@@ -1,6 +1,6 @@
 // src/infrastructure/persistence/mongoose/models/PlanModel.ts
 import mongoose, { Schema, Document, Types } from "mongoose";
-import { Plan, PlanProps } from "../../../../domain/entities/billing/Plan";
+import { Plan, PlanProps } from "@/domain/entities/billing/Plan";
 
 export interface PlanDoc extends Document {
   _id: Types.ObjectId;
@@ -35,7 +35,7 @@ const planSchema = new Schema<PlanDoc>(
     isActive: { type: Boolean, default: true },
     isDeleted: { type: Boolean, default: false },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const PlanModel = mongoose.model<PlanDoc>("Plan", planSchema);

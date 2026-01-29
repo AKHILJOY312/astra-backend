@@ -1,9 +1,6 @@
 // src/infrastructure/persistence/mongoose/models/ChannelModel.ts
 import mongoose, { Schema, Document } from "mongoose";
-import {
-  Channel,
-  ChannelProps,
-} from "../../../../domain/entities/channel/Channel";
+import { Channel, ChannelProps } from "@/domain/entities/channel/Channel";
 
 interface ChannelDoc extends Document {
   projectId: mongoose.Types.ObjectId;
@@ -31,14 +28,14 @@ const channelSchema = new Schema<ChannelDoc>(
       default: {},
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 channelSchema.index({ projectId: 1, channelName: 1 }, { unique: true });
 
 export const ChannelModel = mongoose.model<ChannelDoc>(
   "Channel",
-  channelSchema
+  channelSchema,
 );
 
 // Mapper

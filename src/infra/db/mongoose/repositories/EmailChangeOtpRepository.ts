@@ -7,7 +7,7 @@ import {
   EmailChangeOtpDoc,
   EmailChangeOtpModal,
   toEmailChangeOtpEntity,
-} from "../models/EmailChangeOtpModel";
+} from "@/infra/db/mongoose/models/EmailChangeOtpModel";
 import { EmailChangeOtp } from "@/domain/entities/auth/EmailChangeOtp";
 
 export class EmailChangeOtpRepository implements IEmailChangeOtpRepository {
@@ -40,7 +40,7 @@ export class EmailChangeOtpRepository implements IEmailChangeOtpRepository {
     await EmailChangeOtpModal.findOneAndUpdate(
       { userId: doc.userId },
       { $set: doc },
-      { upsert: true, new: true }
+      { upsert: true, new: true },
     );
   }
 
@@ -52,7 +52,7 @@ export class EmailChangeOtpRepository implements IEmailChangeOtpRepository {
       { userId: new Types.ObjectId(userId) },
       {
         $inc: { attempts: 1 },
-      }
+      },
     );
   }
 
