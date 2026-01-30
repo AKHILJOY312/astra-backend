@@ -14,11 +14,11 @@ import { ILeaveMeetingUseCase } from "@/application/ports/use-cases/meeting";
 export class LeaveMeetingUseCase implements ILeaveMeetingUseCase {
   constructor(
     @inject(TYPES.MeetingRepository)
-    private meetingRepo: IMeetingRepository,
+    private _meetingRepo: IMeetingRepository,
   ) {}
 
   async execute(input: LeaveMeetingDTO): Promise<LeaveMeetingResultDTO> {
-    const meeting = await this.meetingRepo.findActiveByCode(input.meetingId);
+    const meeting = await this._meetingRepo.findActiveByCode(input.meetingId);
 
     if (!meeting) {
       throw new BadRequestError("Meeting not found or already ended");
@@ -26,7 +26,7 @@ export class LeaveMeetingUseCase implements ILeaveMeetingUseCase {
 
     meeting.removeParticipant(input.socketId);
 
-    const updated = await this.meetingRepo.update(meeting);
+    const updated = await this._meetingRepo.update(meeting);
     if (!updated) {
       throw new BadRequestError(" not updated the meeting");
     }

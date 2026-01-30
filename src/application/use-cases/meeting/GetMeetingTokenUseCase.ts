@@ -13,23 +13,23 @@ import {
 export class GetMeetingTokenUseCase implements IGetMeetingTokenUseCase {
   constructor(
     @inject(TYPES.MeetingRepository)
-    private meetingRepo: IMeetingRepository,
+    private _meetingRepo: IMeetingRepository,
 
     @inject(TYPES.MeetingService)
-    private meetingService: IMeetingService, // Injected as interface
+    private _meetingSvc: IMeetingService, // Injected as interface
   ) {}
 
   async execute(
     input: GetMeetingTokenRequestDTO,
   ): Promise<GetMeetingTokenResponseDTO> {
     // 1. Business Logic: Does this meeting exist?
-    const meeting = await this.meetingRepo.findByCode(input.code);
+    const meeting = await this._meetingRepo.findByCode(input.code);
     if (!meeting) {
       throw new NotFoundError("Meeting not found");
     }
 
     // 2. Delegate to infrastructure via the Port
-    const credentials = await this.meetingService.generateAccessCredentials({
+    const credentials = await this._meetingSvc.generateAccessCredentials({
       meetingId: meeting.id!,
       userId: input.userId,
       userName: input.userName,

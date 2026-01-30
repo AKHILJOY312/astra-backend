@@ -14,9 +14,9 @@ import { EditChannelDTO } from "@/application/dto/channel/channelDtos";
 @injectable()
 export class EditChannelUseCase implements IEditChannelUseCase {
   constructor(
-    @inject(TYPES.ChannelRepository) private channelRepo: IChannelRepository,
+    @inject(TYPES.ChannelRepository) private _channelRepo: IChannelRepository,
     @inject(TYPES.ProjectMembershipRepository)
-    private membershipRepo: IProjectMembershipRepository,
+    private _membershipRepo: IProjectMembershipRepository,
   ) {}
 
   async execute(input: EditChannelDTO) {
@@ -29,10 +29,10 @@ export class EditChannelUseCase implements IEditChannelUseCase {
       permissionsByRole,
     } = input;
 
-    const channel = await this.channelRepo.findById(channelId);
+    const channel = await this._channelRepo.findById(channelId);
     if (!channel) throw new BadRequestError("Channel not found");
 
-    const membership = await this.membershipRepo.findByProjectAndUser(
+    const membership = await this._membershipRepo.findByProjectAndUser(
       channel.projectId,
       userId,
     );
@@ -42,7 +42,7 @@ export class EditChannelUseCase implements IEditChannelUseCase {
     }
 
     if (channelName && channel.channelName !== channelName) {
-      const sameNameExist = await this.channelRepo.findByProjectAndName(
+      const sameNameExist = await this._channelRepo.findByProjectAndName(
         channel.projectId,
         channelName!,
       );
@@ -58,6 +58,6 @@ export class EditChannelUseCase implements IEditChannelUseCase {
     if (visibleToRoles) channel.updateVisibility(visibleToRoles);
     if (permissionsByRole) channel.updatePermissions(permissionsByRole);
 
-    return await this.channelRepo.update(channel);
+    return await this._channelRepo.update(channel);
   }
 }

@@ -10,21 +10,21 @@ import { IListChannelsForUserUseCase } from "@/application/ports/use-cases/chann
 @injectable()
 export class ListChannelsForUserUseCase implements IListChannelsForUserUseCase {
   constructor(
-    @inject(TYPES.ChannelRepository) private channelRepo: IChannelRepository,
+    @inject(TYPES.ChannelRepository) private _channelRepo: IChannelRepository,
     @inject(TYPES.ProjectMembershipRepository)
-    private membershipRepo: IProjectMembershipRepository
+    private _membershipRepo: IProjectMembershipRepository,
   ) {}
 
   async execute(projectId: string, userId: string) {
-    const membership = await this.membershipRepo.findByProjectAndUser(
+    const membership = await this._membershipRepo.findByProjectAndUser(
       projectId,
-      userId
+      userId,
     );
     if (!membership)
       throw new UnauthorizedError("You are not a project member");
 
     const userRole = membership.role;
-    const channels = await this.channelRepo.findByProjectId(projectId);
+    const channels = await this._channelRepo.findByProjectId(projectId);
 
     // Filter by visibility
     return channels.filter((c) => c.visibleToRoles.includes(userRole));

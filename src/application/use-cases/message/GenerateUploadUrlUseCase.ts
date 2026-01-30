@@ -17,16 +17,16 @@ import { v4 as uuidv4 } from "uuid";
 export class GenerateUploadUrlUseCase implements IGenerateUploadUrlUseCase {
   constructor(
     @inject(TYPES.ProjectMembershipRepository)
-    private membershipRepo: IProjectMembershipRepository,
+    private _membershipRepo: IProjectMembershipRepository,
     @inject(TYPES.FileUploadService)
-    private fileUploadService: IFileUploadService, // ← we'll extend it
+    private _fileUploadSvc: IFileUploadService, // ← we'll extend it
   ) {}
 
   async execute(
     input: GenerateUploadUrlInput,
   ): Promise<GenerateUploadUrlOutput> {
     // Security check: is user member?
-    const membership = await this.membershipRepo.findByProjectAndUser(
+    const membership = await this._membershipRepo.findByProjectAndUser(
       input.projectId,
       input.senderId,
     );
@@ -60,7 +60,7 @@ export class GenerateUploadUrlUseCase implements IGenerateUploadUrlUseCase {
     const key = `chat-files/${input.channelId}/${input.senderId}/${safeName}`;
 
     // Use extended file upload service
-    const { uploadUrl } = await this.fileUploadService.generateFileUploadUrl({
+    const { uploadUrl } = await this._fileUploadSvc.generateFileUploadUrl({
       key,
       contentType: input.mimeType,
       // optional: ACL, Metadata...

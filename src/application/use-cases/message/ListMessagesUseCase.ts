@@ -7,10 +7,14 @@ import { inject, injectable } from "inversify";
 @injectable()
 export class ListMessagesUseCase implements IListMessagesUseCase {
   constructor(
-    @inject(TYPES.MessageRepository) private repo: IMessageRepository
+    @inject(TYPES.MessageRepository) private _messageRepo: IMessageRepository,
   ) {}
 
   async execute(input: ListMessagesInput) {
-    return this.repo.listByChannel(input.channelId, input.cursor, input.limit);
+    return this._messageRepo.listByChannel(
+      input.channelId,
+      input.cursor,
+      input.limit,
+    );
   }
 }

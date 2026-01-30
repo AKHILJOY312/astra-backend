@@ -18,34 +18,34 @@ import { inject, injectable } from "inversify";
 @injectable()
 export class GetAttachmentDownloadUrlUseCase implements IGetAttachmentDownloadUrlUseCase {
   constructor(
-    @inject(TYPES.ChannelRepository) private channelRepo: IChannelRepository,
+    @inject(TYPES.ChannelRepository) private _channelRepo: IChannelRepository,
     @inject(TYPES.AttachmentRepository)
-    private attachmentRepo: IAttachmentRepository,
-    @inject(TYPES.MessageRepository) private messageRepo: IMessageRepository,
+    private _attachmentRepo: IAttachmentRepository,
+    @inject(TYPES.MessageRepository) private _messageRepo: IMessageRepository,
     @inject(TYPES.ProjectMembershipRepository)
-    private memberRepo: IProjectMembershipRepository,
-    @inject(TYPES.FileUploadService) private fileUploadSrv: IFileUploadService,
+    private _memberRepo: IProjectMembershipRepository,
+    @inject(TYPES.FileUploadService) private _fileUploadSvc: IFileUploadService,
   ) {}
 
   async execute(
     input: GetAttachmentsDownloadUrlInput,
   ): Promise<GetAttachmentDownloadUrlOutput> {
-    const attachment = await this.attachmentRepo.findById(input.attachmentId);
+    const attachment = await this._attachmentRepo.findById(input.attachmentId);
     if (!attachment) {
       throw new BadRequestError("Attachment not found");
     }
 
-    const message = await this.messageRepo.findById(attachment.messageId);
+    const message = await this._messageRepo.findById(attachment.messageId);
 
     if (!message) {
       throw new BadRequestError("Parent message is not found");
     }
-    const channel = await this.channelRepo.findById(message.channelId);
+    const channel = await this._channelRepo.findById(message.channelId);
     if (!channel) {
       throw new BadRequestError("Parent channel is not found");
     }
 
-    const membership = await this.memberRepo.findByProjectAndUser(
+    const membership = await this._memberRepo.findByProjectAndUser(
       channel.projectId,
       input.userId,
     );
@@ -58,7 +58,7 @@ export class GetAttachmentDownloadUrlUseCase implements IGetAttachmentDownloadUr
       throw new BadRequestError("Invalid attachment storage key");
     }
 
-    return this.fileUploadSrv.generateChatFileAccessUrl({
+    return this._fileUploadSvc.generateChatFileAccessUrl({
       key,
       contentType: attachment.fileType,
       disposition: input.disposition,

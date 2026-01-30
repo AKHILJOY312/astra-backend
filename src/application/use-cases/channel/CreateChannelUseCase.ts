@@ -18,9 +18,9 @@ import { ICreateChannelUseCase } from "@/application/ports/use-cases/channel/ICr
 @injectable()
 export class CreateChannelUseCase implements ICreateChannelUseCase {
   constructor(
-    @inject(TYPES.ChannelRepository) private channelRepo: IChannelRepository,
+    @inject(TYPES.ChannelRepository) private _channelRepo: IChannelRepository,
     @inject(TYPES.ProjectMembershipRepository)
-    private membershipRepo: IProjectMembershipRepository
+    private _membershipRepo: IProjectMembershipRepository,
   ) {}
 
   async execute(input: CreateChannelDTO): Promise<CreateChannelResultDTO> {
@@ -34,9 +34,9 @@ export class CreateChannelUseCase implements ICreateChannelUseCase {
     } = input;
 
     // 1. Check user role → must be ADMIN
-    const membership = await this.membershipRepo.findByProjectAndUser(
+    const membership = await this._membershipRepo.findByProjectAndUser(
       projectId,
-      createdBy
+      createdBy,
     );
 
     if (!membership || membership.role !== "manager") {
@@ -44,9 +44,9 @@ export class CreateChannelUseCase implements ICreateChannelUseCase {
     }
 
     // 2. Unique name
-    const exists = await this.channelRepo.findByProjectAndName(
+    const exists = await this._channelRepo.findByProjectAndName(
       projectId,
-      channelName
+      channelName,
     );
     if (exists) {
       throw new BadRequestError("Channel name already exists");
@@ -62,7 +62,7 @@ export class CreateChannelUseCase implements ICreateChannelUseCase {
       permissionsByRole,
     });
 
-    const saved = await this.channelRepo.create(channel);
+    const saved = await this._channelRepo.create(channel);
 
     return { channel: saved };
   }

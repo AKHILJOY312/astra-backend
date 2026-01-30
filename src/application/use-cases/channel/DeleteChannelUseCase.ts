@@ -13,24 +13,24 @@ import { IDeleteChannelUseCase } from "@/application/ports/use-cases/channel/IDe
 @injectable()
 export class DeleteChannelUseCase implements IDeleteChannelUseCase {
   constructor(
-    @inject(TYPES.ChannelRepository) private channelRepo: IChannelRepository,
+    @inject(TYPES.ChannelRepository) private _channelRepo: IChannelRepository,
     @inject(TYPES.ProjectMembershipRepository)
-    private membershipRepo: IProjectMembershipRepository
+    private _membershipRepo: IProjectMembershipRepository,
   ) {}
 
   async execute(channelId: string, userId: string) {
-    const channel = await this.channelRepo.findById(channelId);
+    const channel = await this._channelRepo.findById(channelId);
     if (!channel) throw new BadRequestError("Channel not found");
 
-    const membership = await this.membershipRepo.findByProjectAndUser(
+    const membership = await this._membershipRepo.findByProjectAndUser(
       channel.projectId,
-      userId
+      userId,
     );
 
     if (!membership || membership.role !== "manager") {
       throw new UnauthorizedError("Only project admins can delete channels");
     }
 
-    return await this.channelRepo.delete(channelId);
+    return await this._channelRepo.delete(channelId);
   }
 }

@@ -13,16 +13,16 @@ import { inject, injectable } from "inversify";
 @injectable()
 export class SendMessageUseCase implements ISendMessageUseCase {
   constructor(
-    @inject(TYPES.MessageRepository) private messageRepo: IMessageRepository,
+    @inject(TYPES.MessageRepository) private _messageRepo: IMessageRepository,
     @inject(TYPES.ProjectMembershipRepository)
-    private membershipRepo: IProjectMembershipRepository,
-    @inject(TYPES.UserRepository) private userRepo: IUserRepository,
+    private _membershipRepo: IProjectMembershipRepository,
+    @inject(TYPES.UserRepository) private _userRepo: IUserRepository,
     @inject(TYPES.AttachmentRepository)
-    private attachmentRepo: IAttachmentRepository,
+    private _attachmentRepo: IAttachmentRepository,
   ) {}
 
   async execute(input: SendMessageInput): Promise<Message> {
-    const isMember = await this.membershipRepo.findByProjectAndUser(
+    const isMember = await this._membershipRepo.findByProjectAndUser(
       input.projectId,
       input.senderId,
     );
@@ -30,7 +30,7 @@ export class SendMessageUseCase implements ISendMessageUseCase {
       throw new BadRequestError("User is not a member of the project");
     }
 
-    const senderDetails = await this.userRepo.findById(input.senderId);
+    const senderDetails = await this._userRepo.findById(input.senderId);
     if (!senderDetails) {
       throw new BadRequestError("Sender user not found");
     }
@@ -47,7 +47,7 @@ export class SendMessageUseCase implements ISendMessageUseCase {
       updatedAt: now,
     };
     const message = new Message(messageProps);
-    const savedMessage = await this.messageRepo.create(message);
+    const savedMessage = await this._messageRepo.create(message);
     let finalMessage = message;
 
     if (input.attachments?.length) {
@@ -67,7 +67,7 @@ export class SendMessageUseCase implements ISendMessageUseCase {
       );
 
       const savedAttachments =
-        await this.attachmentRepo.createMany(attachmentEntities);
+        await this._attachmentRepo.createMany(attachmentEntities);
 
       finalMessage = message.withAttachments(savedAttachments);
     }
