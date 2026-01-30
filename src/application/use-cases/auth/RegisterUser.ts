@@ -12,9 +12,9 @@ import { IRegisterUser } from "@/application/ports/use-cases/auth/IRegisterUserU
 @injectable()
 export class RegisterUser implements IRegisterUser {
   constructor(
-    @inject(TYPES.UserRepository) private userRepo: IUserRepository,
-    @inject(TYPES.AuthService) private auth: IAuthService,
-    @inject(TYPES.EmailService) private email: IEmailService,
+    @inject(TYPES.UserRepository) private _userRepo: IUserRepository,
+    @inject(TYPES.AuthService) private _authSvc: IAuthService,
+    @inject(TYPES.EmailService) private _emailSvc: IEmailService,
   ) {}
 
   async execute(dto: RegisterUserDto): Promise<{ message: string }> {
@@ -24,11 +24,11 @@ export class RegisterUser implements IRegisterUser {
     if (dto.password !== dto.confirmPassword)
       throw new BadRequestError("Passwords do not match");
 
-    const existing = await this.userRepo.findByEmail(dto.email);
+    const existing = await this._userRepo.findByEmail(dto.email);
     if (existing)
       throw new BadRequestError("User Already Existed Login Instead");
 
-    const hashed = await this.auth.hashPassword(dto.password);
+    const hashed = await this._authSvc.hashPassword(dto.password);
     const token = crypto.randomBytes(32).toString("hex");
     const expires = new Date(Date.now() + 3_600_000); // 1h
 
@@ -44,8 +44,8 @@ export class RegisterUser implements IRegisterUser {
       securityStamp: token,
     });
 
-    await this.userRepo.create(user);
-    await this.email.sendVerification(dto.email, token);
+    await this._userRepo.create(user);
+    await this._emailSvc.sendVerification(dto.email, token);
 
     return {
       message:

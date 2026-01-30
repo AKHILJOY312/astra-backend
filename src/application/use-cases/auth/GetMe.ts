@@ -9,18 +9,18 @@ import { IFileUploadService } from "@/application/ports/services/IFileUploadServ
 @injectable()
 export class GetMe implements IGetMe {
   constructor(
-    @inject(TYPES.UserRepository) private userRepo: IUserRepository,
-    @inject(TYPES.FileUploadService) private fileUploadSvc: IFileUploadService
+    @inject(TYPES.UserRepository) private _userRepo: IUserRepository,
+    @inject(TYPES.FileUploadService) private _fileUploadSvc: IFileUploadService,
   ) {}
 
   async execute(userId: string): Promise<GetMeResponseDTO> {
-    const user = await this.userRepo.findById(userId);
+    const user = await this._userRepo.findById(userId);
 
     if (!user) throw new NotFoundError("User");
     let profileImageUrl = undefined;
     if (user.ImageUrl) {
-      profileImageUrl = await this.fileUploadSvc.generateProfileImageViewUrl(
-        user.ImageUrl
+      profileImageUrl = await this._fileUploadSvc.generateProfileImageViewUrl(
+        user.ImageUrl,
       );
     }
     return {

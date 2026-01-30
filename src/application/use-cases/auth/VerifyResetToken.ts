@@ -7,11 +7,11 @@ import { IVerifyResetToken } from "@/application/ports/use-cases/auth/IVerifyRes
 @injectable()
 export class VerifyResetToken implements IVerifyResetToken {
   constructor(
-    @inject(TYPES.UserRepository) private userRepo: IUserRepository
+    @inject(TYPES.UserRepository) private _userRepo: IUserRepository,
   ) {}
 
   async execute(token: string): Promise<{ valid: boolean; message?: string }> {
-    const user = await this.userRepo.findByResetToken(token);
+    const user = await this._userRepo.findByResetToken(token);
     if (!user) throw new BadRequestError("Invalid or expired reset token");
 
     return { valid: true, message: "Reset token verified" };

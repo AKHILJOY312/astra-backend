@@ -14,31 +14,31 @@ import { AdminLoginResponseDTO } from "@/application/dto/auth/authDtos";
 @injectable()
 export class AdminLogin implements IAdminLogin {
   constructor(
-    @inject(TYPES.UserRepository) private userRepo: IUserRepository,
-    @inject(TYPES.AuthService) private authService: IAuthService
+    @inject(TYPES.UserRepository) private _userRepo: IUserRepository,
+    @inject(TYPES.AuthService) private _authService: IAuthService,
   ) {}
 
   async execute(
     email: string,
-    password: string
+    password: string,
   ): Promise<AdminLoginResponseDTO> {
-    const user = await this.userRepo.findByEmail(email);
+    const user = await this._userRepo.findByEmail(email);
     if (!user) throw new BadRequestError("Invalid credentials");
 
     if (!user.isAdmin) {
       throw new UnauthorizedError("Access denied. Admins only.");
     }
 
-    const isValid = await this.authService.comparePassword(
+    const isValid = await this._authService.comparePassword(
       password,
-      user.password
+      user.password,
     );
     if (!isValid) throw new ValidationError("Invalid credentials");
 
-    const accessToken = this.authService.generateAccessToken(
+    const accessToken = this._authService.generateAccessToken(
       user.id!,
       user.email,
-      user.securityStamp!
+      user.securityStamp!,
     );
 
     return {

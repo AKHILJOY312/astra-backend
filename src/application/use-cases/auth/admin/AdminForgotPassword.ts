@@ -9,12 +9,12 @@ import { IAdminForgotPassword } from "@/application/ports/use-cases/auth/admin/I
 @injectable()
 export class AdminForgotPassword implements IAdminForgotPassword {
   constructor(
-    @inject(TYPES.UserRepository) private userRepo: IUserRepository,
-    @inject(TYPES.EmailService) private emailService: IEmailService
+    @inject(TYPES.UserRepository) private _userRepo: IUserRepository,
+    @inject(TYPES.EmailService) private _emailService: IEmailService,
   ) {}
 
   async execute(email: string) {
-    const user = await this.userRepo.findByEmail(email);
+    const user = await this._userRepo.findByEmail(email);
     if (!user || !user.isAdmin) {
       // Security: always respond the same
       return {
@@ -26,10 +26,10 @@ export class AdminForgotPassword implements IAdminForgotPassword {
     const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
     user.setResetToken(token, expires);
-    await this.userRepo.update(user);
+    await this._userRepo.update(user);
 
     const resetUrl = `${process.env.ADMIN_URL}/reset-password?token=${token}`;
-    await this.emailService.sendPasswordReset(user.email, token, resetUrl);
+    await this._emailService.sendPasswordReset(user.email, token, resetUrl);
 
     return {
       message: "If an admin exists with that email, a reset link was sent.",

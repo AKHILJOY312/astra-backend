@@ -13,37 +13,35 @@ import { IRefreshToken } from "@/application/ports/use-cases/auth/IRefreshTokenU
 @injectable()
 export class RefreshToken implements IRefreshToken {
   constructor(
-    @inject(TYPES.UserRepository) private userRepo: IUserRepository,
-    @inject(TYPES.AuthService) private auth: IAuthService,
+    @inject(TYPES.UserRepository) private _userRepo: IUserRepository,
+    @inject(TYPES.AuthService) private _authSvc: IAuthService,
     @inject(TYPES.TokenBlacklistService)
-    private blackListService: ITokenBlacklistService
+    private _blackListSvc: ITokenBlacklistService,
   ) {}
 
   async execute(refreshToken: string): Promise<{ accessToken: string }> {
-    const payload = this.auth.verifyRefreshToken(refreshToken);
+    const payload = this._authSvc.verifyRefreshToken(refreshToken);
     if (!payload)
       throw new BadRequestError("Refresh token is missing or invalid");
 
-    const isBlacklisted = await this.blackListService.isBlacklisted(
-      refreshToken
-    );
+    const isBlacklisted = await this._blackListSvc.isBlacklisted(refreshToken);
     if (isBlacklisted) {
       throw new UnauthorizedError(
-        "Token has been revoked. Please login again."
+        "Token has been revoked. Please login again.",
       );
     }
-    const user = await this.userRepo.findById(payload.id);
+    const user = await this._userRepo.findById(payload.id);
     if (!user) throw new UnauthorizedError("Invalid or expired refresh token");
     if (user.isBlocked) {
       throw new ForbiddenError(
-        "Your account has been blocked. Please contact support."
+        "Your account has been blocked. Please contact support.",
       );
     }
 
-    const accessToken = this.auth.generateAccessToken(
+    const accessToken = this._authSvc.generateAccessToken(
       user.id!,
       user.email,
-      user.securityStamp!
+      user.securityStamp!,
     );
     return { accessToken };
   }

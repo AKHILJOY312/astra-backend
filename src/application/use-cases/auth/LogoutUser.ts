@@ -8,18 +8,18 @@ import { ILogoutUser } from "@/application/ports/use-cases/auth/ILogoutUserUseCa
 export class LogoutUser implements ILogoutUser {
   constructor(
     @inject(TYPES.TokenBlacklistService)
-    private readonly blacklistService: ITokenBlacklistService
+    private readonly _blacklistSvc: ITokenBlacklistService,
   ) {}
 
   async execute(
     refreshToken: string,
-    expiresAt: Date
+    expiresAt: Date,
   ): Promise<{ message: string }> {
     if (!refreshToken) {
       return { message: "No active session" };
     }
 
-    await this.blacklistService.addToBlacklist(refreshToken, expiresAt);
+    await this._blacklistSvc.addToBlacklist(refreshToken, expiresAt);
 
     return { message: "Logged out successfully" };
   }

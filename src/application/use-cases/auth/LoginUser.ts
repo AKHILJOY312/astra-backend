@@ -13,36 +13,36 @@ import { LoginUserResponseDTO } from "@/application/dto/auth/authDtos";
 @injectable()
 export class LoginUser implements ILoginUser {
   constructor(
-    @inject(TYPES.UserRepository) private userRepo: IUserRepository,
-    @inject(TYPES.AuthService) private auth: IAuthService
+    @inject(TYPES.UserRepository) private _userRepo: IUserRepository,
+    @inject(TYPES.AuthService) private _authSvc: IAuthService,
   ) {}
 
   async execute(
     email: string,
-    password: string
+    password: string,
   ): Promise<LoginUserResponseDTO> {
     if (!email || !password)
       throw new BadRequestError("Email and password are required");
 
-    const user = await this.userRepo.findByEmail(email);
+    const user = await this._userRepo.findByEmail(email);
     if (!user) throw new UnauthorizedError("Invalid email or password");
 
     if (!user.isVerified)
       throw new ForbiddenError("Please verify your email before logging in");
     if (user.isBlocked)
       throw new ForbiddenError(
-        "Sorry you have been blocked by the admin, contact the admin"
+        "Sorry you have been blocked by the admin, contact the admin",
       );
 
-    const ok = await this.auth.comparePassword(password, user.password);
+    const ok = await this._authSvc.comparePassword(password, user.password);
     if (!ok) throw new UnauthorizedError("Invalid email or password");
 
-    const access = this.auth.generateAccessToken(
+    const access = this._authSvc.generateAccessToken(
       user.id!,
       user.email,
-      user.securityStamp!
+      user.securityStamp!,
     );
-    const refresh = this.auth.generateRefreshToken(user.id!);
+    const refresh = this._authSvc.generateRefreshToken(user.id!);
 
     return {
       accessToken: access,

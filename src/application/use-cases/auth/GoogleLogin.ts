@@ -14,8 +14,8 @@ import {
 @injectable()
 export class GoogleLogin implements IGoogleLogin {
   constructor(
-    @inject(TYPES.UserRepository) private userRepo: IUserRepository,
-    @inject(TYPES.AuthService) private authService: IAuthService
+    @inject(TYPES.UserRepository) private _userRepo: IUserRepository,
+    @inject(TYPES.AuthService) private _authService: IAuthService,
   ) {}
 
   async execute(profile: GoogleProfile): Promise<GoogleLoginResponseDTO> {
@@ -24,7 +24,7 @@ export class GoogleLogin implements IGoogleLogin {
 
     if (!email) throw new NotFoundError("Email");
 
-    let user = await this.userRepo.findByEmail(email);
+    let user = await this._userRepo.findByEmail(email);
 
     if (!user) {
       // Create new Google user
@@ -40,20 +40,20 @@ export class GoogleLogin implements IGoogleLogin {
       });
 
       // Set random password hash (so login works)
-      const randomHash = await this.authService.hashPassword(
-        crypto.randomUUID()
+      const randomHash = await this._authService.hashPassword(
+        crypto.randomUUID(),
       );
       newUser.setPassword(randomHash);
 
-      user = await this.userRepo.create(newUser);
+      user = await this._userRepo.create(newUser);
     }
 
-    const accessToken = this.authService.generateAccessToken(
+    const accessToken = this._authService.generateAccessToken(
       user.id!,
       user.email,
-      user.securityStamp!
+      user.securityStamp!,
     );
-    const refreshToken = this.authService.generateRefreshToken(user.id!);
+    const refreshToken = this._authService.generateRefreshToken(user.id!);
 
     return {
       user: {

@@ -12,8 +12,8 @@ import { IAdminResetPassword } from "@/application/ports/use-cases/auth/admin/IA
 @injectable()
 export class AdminResetPassword implements IAdminResetPassword {
   constructor(
-    @inject(TYPES.UserRepository) private userRepo: IUserRepository,
-    @inject(TYPES.AuthService) private authService: IAuthService
+    @inject(TYPES.UserRepository) private _userRepo: IUserRepository,
+    @inject(TYPES.AuthService) private _authService: IAuthService,
   ) {}
 
   async execute(token: string, password: string, confirmPassword: string) {
@@ -21,15 +21,15 @@ export class AdminResetPassword implements IAdminResetPassword {
       throw new ValidationError("Passwords do not match");
     }
 
-    const user = await this.userRepo.findByResetToken(token);
+    const user = await this._userRepo.findByResetToken(token);
     if (!user || !user.isAdmin) {
       throw new UnauthorizedError("Invalid or expired token");
     }
 
-    const hashed = await this.authService.hashPassword(password);
+    const hashed = await this._authService.hashPassword(password);
     user.setPassword(hashed);
     user.clearResetToken();
-    await this.userRepo.update(user);
+    await this._userRepo.update(user);
 
     return { message: "Admin password reset successfully" };
   }

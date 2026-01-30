@@ -7,16 +7,16 @@ import { IVerifyEmail } from "@/application/ports/use-cases/auth/IVerifyEmailUse
 @injectable()
 export class VerifyEmail implements IVerifyEmail {
   constructor(
-    @inject(TYPES.UserRepository) private userRepo: IUserRepository
+    @inject(TYPES.UserRepository) private _userRepo: IUserRepository,
   ) {}
 
   async execute(token: string): Promise<{ message: string }> {
-    const user = await this.userRepo.findByVerificationToken(token);
+    const user = await this._userRepo.findByVerificationToken(token);
     if (!user) throw new BadRequestError("Invalid or expired token");
 
     user.verify();
     user.clearVerificationToken();
-    await this.userRepo.update(user);
+    await this._userRepo.update(user);
 
     return { message: "Email verified successfully. You can now log in." };
   }

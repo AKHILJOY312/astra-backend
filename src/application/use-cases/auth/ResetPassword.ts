@@ -9,14 +9,14 @@ import { IResetPassword } from "@/application/ports/use-cases/auth/IResetPasswor
 @injectable()
 export class ResetPassword implements IResetPassword {
   constructor(
-    @inject(TYPES.UserRepository) private userRepo: IUserRepository,
-    @inject(TYPES.AuthService) private auth: IAuthService
+    @inject(TYPES.UserRepository) private _userRepo: IUserRepository,
+    @inject(TYPES.AuthService) private _authSvc: IAuthService,
   ) {}
 
   async execute(
     token: string,
     password: string,
-    confirmPassword: string
+    confirmPassword: string,
   ): Promise<{ message: string; role: "admin" | "user" }> {
     if (!token) throw new Error("Invalid token");
     if (!password || !confirmPassword)
@@ -24,13 +24,13 @@ export class ResetPassword implements IResetPassword {
     if (password !== confirmPassword)
       throw new BadRequestError("Passwords do not match");
 
-    const user = await this.userRepo.findByResetToken(token);
+    const user = await this._userRepo.findByResetToken(token);
     if (!user) throw new BadRequestError("Invalid or expired token");
-    const hashed = await this.auth.hashPassword(password);
+    const hashed = await this._authSvc.hashPassword(password);
 
     user.setPassword(hashed);
     user.clearResetToken();
-    await this.userRepo.update(user);
+    await this._userRepo.update(user);
 
     return {
       message: "Password reset successfully",
