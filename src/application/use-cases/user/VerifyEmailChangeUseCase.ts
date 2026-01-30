@@ -13,39 +13,39 @@ import { inject, injectable } from "inversify";
 injectable();
 export class VerifyEmailChangeUseCase implements IVerifyEmailChangeUseCase {
   constructor(
-    @inject(TYPES.UserRepository) private userRepo: IUserRepository,
+    @inject(TYPES.UserRepository) private _userRepo: IUserRepository,
     @inject(TYPES.EmailChangeOtpRepository)
-    private otpRepo: IEmailChangeOtpRepository,
-    @inject(TYPES.AuthService) private auth: IAuthService
+    private _otpRepo: IEmailChangeOtpRepository,
+    @inject(TYPES.AuthService) private _authSvc: IAuthService,
   ) {}
 
   async execute(userId: string, otp: string) {
-    const record = await this.otpRepo.findByUserId(userId);
+    const record = await this._otpRepo.findByUserId(userId);
     if (!record || record.expiresAt < new Date()) {
       throw new BadRequestError("Invalid or expired OTP");
     }
 
     if (record.attempts >= 5) {
-      await this.otpRepo.deleteByUserId(userId);
+      await this._otpRepo.deleteByUserId(userId);
       throw new UnauthorizedError("Too many failed attempts");
     }
 
-    const isValid = await this.auth.comparePassword(otp, record.otpHash);
+    const isValid = await this._authSvc.comparePassword(otp, record.otpHash);
     if (!isValid) {
-      await this.otpRepo.incrementAttempts(userId);
+      await this._otpRepo.incrementAttempts(userId);
       throw new UnauthorizedError("Invalid OTP");
     }
 
-    const user = await this.userRepo.findById(userId);
+    const user = await this._userRepo.findById(userId);
     if (!user) throw new NotFoundError("User");
 
     user.setEmail(record.newEmail);
     //user.verify();
 
-    await this.userRepo.update(user);
+    await this._userRepo.update(user);
 
-    await this.auth.invalidateUserSessions(userId);
-    await this.otpRepo.deleteByUserId(userId);
+    await this._authSvc.invalidateUserSessions(userId);
+    await this._otpRepo.deleteByUserId(userId);
 
     return { message: "Email changed successfully", newEmail: record.newEmail };
   }

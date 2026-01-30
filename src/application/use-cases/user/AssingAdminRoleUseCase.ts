@@ -11,11 +11,11 @@ import {
 @injectable()
 export class AssignAdminRoleUseCase implements IAssignAdminRoleUseCase {
   constructor(
-    @inject(TYPES.UserRepository) private userRepo: IUserRepository
+    @inject(TYPES.UserRepository) private _userRepo: IUserRepository,
   ) {}
 
   async execute(userId: string): Promise<AdminRoleResponseDTO> {
-    const user = await this.userRepo.findById(userId);
+    const user = await this._userRepo.findById(userId);
 
     if (!user) throw new NotFoundError("User");
     const isAdmin = user.isAdmin;
@@ -24,7 +24,7 @@ export class AssignAdminRoleUseCase implements IAssignAdminRoleUseCase {
     user.setAdminRole(!isAdmin);
     // console.log("user after setting the role : ", user);
     // 2. Persist the change
-    await this.userRepo.updateRole(user.id!); // Use existing save/updateRole (if created)
+    await this._userRepo.updateRole(user.id!); // Use existing save/updateRole (if created)
 
     return {
       id: user.id!,

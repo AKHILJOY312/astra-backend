@@ -13,26 +13,25 @@ import { IFileUploadService } from "@/application/ports/services/IFileUploadServ
 export class GetUserProfileUseCase implements IGetUserProfileUseCase {
   constructor(
     @inject(TYPES.UserRepository)
-    private userRepo: IUserRepository,
+    private _userRepo: IUserRepository,
 
     @inject(TYPES.UserSubscriptionRepository)
-    private subscriptionRepo: IUserSubscriptionRepository,
-    @inject(TYPES.FileUploadService) private fileUploadSvc: IFileUploadService
+    private _subscriptionRepo: IUserSubscriptionRepository,
+    @inject(TYPES.FileUploadService) private _fileUploadSvc: IFileUploadService,
   ) {}
 
   async execute(userId: string): Promise<UserProfileResponseDTO> {
-    const user = await this.userRepo.findById(userId);
+    const user = await this._userRepo.findById(userId);
     if (!user) throw new NotFoundError("User");
 
     let profileImageUrl = undefined;
     if (user.ImageUrl) {
-      profileImageUrl = await this.fileUploadSvc.generateProfileImageViewUrl(
-        user.ImageUrl
+      profileImageUrl = await this._fileUploadSvc.generateProfileImageViewUrl(
+        user.ImageUrl,
       );
     }
-    const activeSubscription = await this.subscriptionRepo.findActiveByUserId(
-      userId
-    );
+    const activeSubscription =
+      await this._subscriptionRepo.findActiveByUserId(userId);
 
     return {
       id: user.id,

@@ -12,12 +12,12 @@ import {
 @injectable()
 export class BlockUserUseCase implements IBlockUserUseCase {
   constructor(
-    @inject(TYPES.UserRepository) private userRepo: IUserRepository,
-    @inject(TYPES.AuthService) private authService: IAuthService // For invalidating JWT/session
+    @inject(TYPES.UserRepository) private _userRepo: IUserRepository,
+    @inject(TYPES.AuthService) private _authSvc: IAuthService, // For invalidating JWT/session
   ) {}
 
   async execute(userId: string): Promise<BlockUserResponseDTO> {
-    const user = await this.userRepo.findById(userId);
+    const user = await this._userRepo.findById(userId);
 
     if (!user) throw new NotFoundError("User");
 
@@ -25,11 +25,11 @@ export class BlockUserUseCase implements IBlockUserUseCase {
     // 1. Flip status on the User entity
     user.setBlockStatus(!isBlocked);
     // 2. Persist the change
-    await this.userRepo.updateStatus(user.id!); // Use existing save/updateStatus (if created)
+    await this._userRepo.updateStatus(user.id!); // Use existing save/updateStatus (if created)
 
     // 3. Invalidate JWT/session immediately
     if (user.isBlocked) {
-      await this.authService.invalidateUserSessions(userId);
+      await this._authSvc.invalidateUserSessions(userId);
     }
 
     return {

@@ -13,46 +13,46 @@ import { inject, injectable } from "inversify";
 @injectable()
 export class ChangePasswordUseCase implements IChangePasswordUseCase {
   constructor(
-    @inject(TYPES.UserRepository) private userRepo: IUserRepository,
-    @inject(TYPES.AuthService) private auth: IAuthService
+    @inject(TYPES.UserRepository) private _userRepo: IUserRepository,
+    @inject(TYPES.AuthService) private _authSvc: IAuthService,
   ) {}
 
   async execute(userId: string, oldPassword: string, newPassword: string) {
     // 1. Fetch user WITH password (note: your current findById selects -password!)
-    const user = await this.userRepo.findByIdWithPassword(userId);
+    const user = await this._userRepo.findByIdWithPassword(userId);
     if (!user) {
       throw new NotFoundError("User");
     }
 
     // 2. Verify old password
-    const isOldPasswordValid = await this.auth.comparePassword(
+    const isOldPasswordValid = await this._authSvc.comparePassword(
       oldPassword,
-      user.password
+      user.password,
     );
     if (!isOldPasswordValid) {
       throw new UnauthorizedError("Current password is incorrect");
     }
 
     // 3. Optional: prevent setting same password
-    const isSameAsOld = await this.auth.comparePassword(
+    const isSameAsOld = await this._authSvc.comparePassword(
       newPassword,
-      user.password
+      user.password,
     );
     if (isSameAsOld) {
       throw new BadRequestError(
-        "New password must be different from the current one"
+        "New password must be different from the current one",
       );
     }
 
     // 4. Hash new password
-    const hashedPassword = await this.auth.hashPassword(newPassword);
+    const hashedPassword = await this._authSvc.hashPassword(newPassword);
 
     // 5. Update password + invalidate other sessions (best practice on password change)
     user.setPassword(hashedPassword);
-    await this.userRepo.update(user);
+    await this._userRepo.update(user);
 
     // Invalidate all other sessions by changing security stamp
-    await this.auth.invalidateUserSessions(userId);
+    await this._authSvc.invalidateUserSessions(userId);
 
     return { message: "Password updated successfully" };
   }

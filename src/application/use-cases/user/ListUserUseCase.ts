@@ -17,11 +17,11 @@ export interface ListUsersQuery {
 @injectable()
 export class ListUsersUseCase implements IListUsersUseCase {
   constructor(
-    @inject(TYPES.UserRepository) private userRepo: IUserRepository
+    @inject(TYPES.UserRepository) private _userRepo: IUserRepository,
   ) {}
 
   async execute(query: ListUsersQuery): Promise<UserListResponseDTO> {
-    const result = await this.userRepo.findUsersWithPagination(query);
+    const result = await this._userRepo.findUsersWithPagination(query);
 
     const users: UserDTO[] = result.users.map((user) => ({
       id: user.id!,

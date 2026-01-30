@@ -9,23 +9,23 @@ import { IDeleteUserAccountUseCase } from "@/application/ports/use-cases/user/ID
 export class DeleteUserAccountUseCase implements IDeleteUserAccountUseCase {
   constructor(
     @inject(TYPES.UserRepository)
-    private userRepo: IUserRepository,
+    private _userRepo: IUserRepository,
 
     @inject(TYPES.UserSubscriptionRepository)
-    private subscriptionRepo: IUserSubscriptionRepository
+    private _subscriptionRepo: IUserSubscriptionRepository,
   ) {}
 
   async execute(userId: string) {
-    const user = await this.userRepo.findById(userId);
+    const user = await this._userRepo.findById(userId);
     if (!user) throw new NotFoundError("User");
 
-    const subscription = await this.subscriptionRepo.findByUserId(userId);
+    const subscription = await this._subscriptionRepo.findByUserId(userId);
 
     if (subscription) {
-      await this.subscriptionRepo.delete(subscription.id!);
+      await this._subscriptionRepo.delete(subscription.id!);
     }
 
     // hard delete
-    await this.userRepo.delete(userId);
+    await this._userRepo.delete(userId);
   }
 }

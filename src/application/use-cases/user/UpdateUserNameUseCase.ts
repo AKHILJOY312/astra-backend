@@ -11,11 +11,11 @@ import {
 export class UpdateUserProfileUseCase implements IUpdateUserProfileUseCase {
   constructor(
     @inject(TYPES.UserRepository)
-    private userRepo: IUserRepository
+    private _userRepo: IUserRepository,
   ) {}
 
   async execute(userId: string, dto: UpdateProfileDTO) {
-    const user = await this.userRepo.findById(userId);
+    const user = await this._userRepo.findById(userId);
     if (!user) throw new NotFoundError("User");
 
     if (dto.name) user.setName(dto.name);
@@ -23,7 +23,7 @@ export class UpdateUserProfileUseCase implements IUpdateUserProfileUseCase {
     if (dto.phone) user.setPhone(dto.phone);
     if (dto.link) user.setLink(dto.link);
 
-    await this.userRepo.update(user);
+    await this._userRepo.update(user);
 
     return {
       id: user.id,
