@@ -46,7 +46,6 @@ export class TaskRepository implements ITaskRepository {
   }
 
   async softDelete(taskId: string): Promise<void> {
-    console.log("taskId for sofrDetal", taskId);
     await TaskModel.updateOne(
       { _id: taskId, isDeleted: false },
       {

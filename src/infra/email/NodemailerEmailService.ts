@@ -3,6 +3,7 @@ import nodemailer, { Transporter, SendMailOptions } from "nodemailer";
 import { IEmailService } from "@/application/ports/services/IEmailService";
 import { injectable } from "inversify";
 import { ENV } from "@/config/env.config";
+import { logger } from "../logger/logger";
 
 @injectable()
 export class NodemailerEmailService implements IEmailService {
@@ -17,7 +18,7 @@ export class NodemailerEmailService implements IEmailService {
 
     if (!email || !pass) {
       throw new Error(
-        "NODEMAILER_EMAIL and NODEMAILER_PASS must be defined in .env"
+        "NODEMAILER_EMAIL and NODEMAILER_PASS must be defined in .env",
       );
     }
 
@@ -33,9 +34,11 @@ export class NodemailerEmailService implements IEmailService {
 
     this.transporter.verify((error) => {
       if (error) {
-        console.error("SMTP connection failed:", error);
+        logger.error("SMTP connection failed", {
+          error: error instanceof Error ? error.message : error,
+        });
       } else {
-        console.log("SMTP ready – emails can be sent from:", email);
+        logger.info("SMTP connection verified");
       }
     });
   }
@@ -96,7 +99,7 @@ export class NodemailerEmailService implements IEmailService {
     projectName: string,
     inviterName: string,
     invitationLink: string,
-    registrationLink: string
+    registrationLink: string,
   ): string {
     return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background: #ffffff;">
@@ -140,7 +143,7 @@ export class NodemailerEmailService implements IEmailService {
   }
   async sendVerification(email: string, token: string): Promise<void> {
     const verificationUrl = `${this.clientUrl}/verify-email?token=${token}`;
-    console.log("User verification Url: ", verificationUrl);
+    logger.debug("User verification Url: ", verificationUrl);
     const mailOptions: SendMailOptions = {
       from: `"Astra" <${this.fromEmail}>`,
       to: email,
@@ -150,22 +153,22 @@ export class NodemailerEmailService implements IEmailService {
 
     try {
       const info = await this.transporter.sendMail(mailOptions);
-      console.log("Verification email sent:", info.messageId, "to:", email);
+      logger.info("Verification email sent:", info.messageId, "to:", email);
     } catch (error: unknown) {
       const err = error as Error; // Safe — nodemailer errors extend Error
-      console.error("Failed to send verification email:", {
+      logger.error("Failed to send verification email:", {
         to: email,
         message: err.message,
       });
       throw new Error(
-        "Failed to send verification email. Please try again later."
+        "Failed to send verification email. Please try again later.",
       );
     }
   }
 
   async sendPasswordReset(email: string, token: string): Promise<void> {
     const resetUrl = `${this.clientUrl}/reset-password?token=${token}`;
-    console.log("User reset password url:", resetUrl);
+    console.debug("User reset password url:", resetUrl);
     const mailOptions: SendMailOptions = {
       from: `"Astra" <${this.fromEmail}>`,
       to: email,
@@ -175,15 +178,15 @@ export class NodemailerEmailService implements IEmailService {
 
     try {
       const info = await this.transporter.sendMail(mailOptions);
-      console.log("Password reset email sent:", info.messageId, "to:", email);
+      logger.info("Password reset email sent:", info.messageId, "to:", email);
     } catch (error: unknown) {
       const err = error as Error;
-      console.error("Failed to send password reset email:", {
+      logger.error("Failed to send password reset email:", {
         to: email,
         message: err.message,
       });
       throw new Error(
-        "Failed to send password reset email. Please try again later."
+        "Failed to send password reset email. Please try again later.",
       );
     }
   }
@@ -197,10 +200,10 @@ export class NodemailerEmailService implements IEmailService {
 
     try {
       const info = await this.transporter.sendMail(mailOptions);
-      console.log("Email change OTP sent:", info.messageId, "to: ", email);
+      logger.info("Email change OTP sent:", info.messageId, "to: ", email);
     } catch (error: unknown) {
       const err = error as Error;
-      console.log("failed to send email change OTP:", err.message);
+      logger.error("failed to send email change OTP:", err.message);
       throw new Error("Failed to send OTP. Please try again.");
     }
   }
@@ -209,7 +212,7 @@ export class NodemailerEmailService implements IEmailService {
     projectName: string,
     inviterName: string,
     invitationLink: string,
-    registrationLink: string
+    registrationLink: string,
   ): Promise<void> {
     const mailOptions: SendMailOptions = {
       from: `"Astra Team" <${this.fromEmail}>`,
@@ -219,21 +222,21 @@ export class NodemailerEmailService implements IEmailService {
         projectName,
         inviterName,
         invitationLink,
-        registrationLink
+        registrationLink,
       ),
     };
 
     try {
       const info = await this.transporter.sendMail(mailOptions);
-      console.log("Project invitation sent:", info.messageId, "to:", email);
+      logger.info("Project invitation sent:", info.messageId, "to:", email);
     } catch (error: unknown) {
       const err = error as Error;
-      console.error("Failed to send project invitation:", {
+      logger.error("Failed to send project invitation:", {
         to: email,
         message: err.message,
       });
       throw new Error(
-        "Failed to send invitation email. Please try again later."
+        "Failed to send invitation email. Please try again later.",
       );
     }
   }

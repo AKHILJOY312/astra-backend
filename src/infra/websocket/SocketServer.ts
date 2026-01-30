@@ -52,7 +52,7 @@ export function createSocketServer(
     console.log(`User connected: ${userId} | Socket: ${socket.id}`);
 
     socket.onAny((event, payload) => {
-      console.log("📥 EVENT", event, payload, "from", socket.id);
+      console.log(" EVENT", event, payload, "from", socket.id);
     });
 
     // Resolve use cases once per connection
