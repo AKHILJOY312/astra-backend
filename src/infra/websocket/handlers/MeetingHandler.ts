@@ -22,10 +22,7 @@ export class MeetingHandler extends BaseSocketHandler {
   }
 
   handle(): void {
-    console.log(
-      "🧠 MeetingHandler (LiveKit Mode) initialized:",
-      this.socket.id,
-    );
+    console.log(" MeetingHandler (LiveKit Mode) initialized:", this.socket.id);
 
     this.socket.on("meeting:join", async ({ code }) => {
       const userId = this.socket.data.user.id;
@@ -52,9 +49,9 @@ export class MeetingHandler extends BaseSocketHandler {
           meetingId,
         });
 
-        console.log(`✅ User ${userId} joined room ${meetingId}`);
+        console.log(` User ${userId} joined room ${meetingId}`);
       } catch (error) {
-        console.error("❌ Failed to join meeting room:", error);
+        console.error(" Failed to join meeting room:", error);
       }
     });
 
@@ -81,9 +78,9 @@ export class MeetingHandler extends BaseSocketHandler {
           meetingId,
         });
 
-        console.log(`🚪 User left room: ${meetingId}`);
+        console.log(` User left room: ${meetingId}`);
       } catch (error) {
-        console.error("❌ Error during meeting:leave:", error);
+        console.error(" Error during meeting:leave:", error);
       }
     });
   }

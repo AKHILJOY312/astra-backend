@@ -1,5 +1,5 @@
 // src/core/repositories/IProjectRepository.ts
-import { Project } from "../../../domain/entities/project/Project";
+import { Project } from "@/domain/entities/project/Project";
 import { IBaseRepository } from "./IBaseRepository";
 
 export interface IProjectRepository extends IBaseRepository<Project> {
@@ -26,6 +26,6 @@ export interface IProjectRepository extends IBaseRepository<Project> {
   existsByIdAndOwnerId(id: string, ownerId: string): Promise<boolean>;
   existsByNameAndOwnerId(
     projectName: string,
-    ownerId: string
+    ownerId: string,
   ): Promise<boolean>;
 }

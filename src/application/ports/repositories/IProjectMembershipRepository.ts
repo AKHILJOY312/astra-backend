@@ -1,6 +1,6 @@
 // src/core/repositories/IProjectMembershipRepository.ts
 import { ProjectMemberView } from "@/application/dto/project/ProjectMemberView";
-import { ProjectMembership } from "../../../domain/entities/project/ProjectMembership";
+import { ProjectMembership } from "@/domain/entities/project/ProjectMembership";
 import { IBaseRepository } from "./IBaseRepository";
 
 export interface IProjectMembershipRepository extends IBaseRepository<ProjectMembership> {

@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { container } from "@/config/di/container";
+import { API_ROUTES } from "@/config/routes.config";
+import { logger } from "@/infra/logger/logger";
 
 import { getAuthRoutes } from "./auth.routes";
 import { getAdminAuthRoutes } from "./admin/adminAuthRoutes";
@@ -9,13 +11,17 @@ import { getProjectRoutes } from "./project.routes";
 import { getChannelRoutes } from "./channel.routes";
 import { getSubscriptionRoutes } from "./subscription.routes";
 import { getUserRoutes } from "./user.routes";
-import { API_ROUTES } from "@/config/routes.config";
 import { getAttachmentRoutes } from "./attachment.routes";
 import { getMeetingRoutes } from "./meeting.routes";
+
 const router = Router();
 
 router.use((req, res, next) => {
-  console.log("req.body:", req.body);
+  logger.debug("Incoming request body", {
+    path: req.path,
+    method: req.method,
+    bodyKeys: Object.keys(req.body || {}),
+  });
   next();
 });
 

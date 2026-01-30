@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { IUserRepository } from "../../../../application/ports/repositories/IUserRepository";
+import { IUserRepository } from "@/application/ports/repositories/IUserRepository";
 import {
   AUTH_MESSAGES,
   ERROR_MESSAGES,
@@ -8,6 +8,7 @@ import {
 import { HTTP_STATUS } from "@/interface-adapters/http/constants/httpStatus";
 import { ENV } from "@/config/env.config";
 import { ITokenBlacklistService } from "@/application/ports/services/ITokenBlacklistService";
+import { logger } from "@/infra/logger/logger";
 
 interface JwtPayload {
   id: string;
@@ -28,7 +29,7 @@ declare module "express-serve-static-core" {
 
 export const createProtectMiddleware = (
   userRepo: IUserRepository,
-  blacklistService: ITokenBlacklistService
+  blacklistService: ITokenBlacklistService,
 ) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     let token: string | undefined;
@@ -41,9 +42,7 @@ export const createProtectMiddleware = (
         .status(HTTP_STATUS.UNAUTHORIZED)
         .json({ message: AUTH_MESSAGES.ACCESS_DENIED_NO_AUTH });
     }
-    console.log(
-      "---------------------------------------------------------------------------------"
-    );
+    logger.debug("Auth middleware executed");
     try {
       const isBlacklisted = await blacklistService.isBlacklisted(token);
       if (isBlacklisted) {
@@ -76,7 +75,9 @@ export const createProtectMiddleware = (
 
       next();
     } catch (error) {
-      console.error("Token verification failed:", error);
+      logger.error("JWT verification failed", {
+        error: error instanceof Error ? error.message : error,
+      });
       return res
         .status(HTTP_STATUS.UNAUTHORIZED)
         .json({ message: ERROR_MESSAGES.TOKEN_INVALID_OR_EXPIRED });

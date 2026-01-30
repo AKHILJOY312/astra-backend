@@ -1,4 +1,4 @@
-import { Payment } from "../../../domain/entities/billing/Payment";
+import { Payment } from "@/domain/entities/billing/Payment";
 
 export interface IPaymentRepository {
   create(payment: Payment): Promise<Payment>;
@@ -6,7 +6,7 @@ export interface IPaymentRepository {
   updateStatus(
     orderId: string,
     status: string,
-    paymentId?: string
+    paymentId?: string,
   ): Promise<void>;
   findByUserId(userId: string): Promise<Payment[]>;
   findByInvoiceId(invoiceNumber: string): Promise<Payment | null>;
@@ -15,7 +15,7 @@ export interface IPaymentRepository {
     userId: string,
     page: number,
     limit: number,
-    search?: string
+    search?: string,
   ): Promise<{
     data: Payment[];
     total: number;
@@ -25,7 +25,7 @@ export interface IPaymentRepository {
   getAllPaginated(
     page: number,
     limit: number,
-    search?: string
+    search?: string,
   ): Promise<{
     data: Payment[];
     total: number;

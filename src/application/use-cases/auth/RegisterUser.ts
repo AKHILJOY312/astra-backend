@@ -2,7 +2,7 @@ import { User } from "../../../domain/entities/user/User";
 import { IUserRepository } from "../../ports/repositories/IUserRepository";
 import { IAuthService } from "../../ports/services/IAuthService";
 import { IEmailService } from "../../ports/services/IEmailService";
-import { RegisterUserDto } from "../../dto/RegisterUserDto";
+import { RegisterUserDto } from "../../dto/auth/RegisterUserDto";
 import crypto from "crypto";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/di/types";
@@ -14,7 +14,7 @@ export class RegisterUser implements IRegisterUser {
   constructor(
     @inject(TYPES.UserRepository) private userRepo: IUserRepository,
     @inject(TYPES.AuthService) private auth: IAuthService,
-    @inject(TYPES.EmailService) private email: IEmailService
+    @inject(TYPES.EmailService) private email: IEmailService,
   ) {}
 
   async execute(dto: RegisterUserDto): Promise<{ message: string }> {

@@ -1,4 +1,4 @@
-import { Plan } from "../../../domain/entities/billing/Plan";
+import { Plan } from "@/domain/entities/billing/Plan";
 import { IBaseRepository } from "./IBaseRepository";
 
 export interface IPlanRepository extends IBaseRepository<Plan> {

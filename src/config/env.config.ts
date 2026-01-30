@@ -2,6 +2,7 @@ export const ENV = {
   NODE_ENV: process.env.NODE_ENV || "development",
   PORT: process.env.PORT || 3000,
   CLIENT_URL: process.env.CLIENT_URL || "http://localhost:5173",
+  LOG_LEVEL: process.env.LOG_LEVEL || "info",
 
   DATABASE: {
     MONGO_URI: process.env.MONGO_URI!,

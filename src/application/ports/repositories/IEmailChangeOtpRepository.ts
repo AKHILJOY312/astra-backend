@@ -1,6 +1,5 @@
 // src/application/ports/repositories/IEmailChangeOtpRepository.ts
 import { EmailChangeOtp } from "@/domain/entities/auth/EmailChangeOtp";
-// src/application/dtos/EmailChangeOtpDTOs.ts
 
 export interface CreateEmailChangeOtpDTO {
   userId: string;
