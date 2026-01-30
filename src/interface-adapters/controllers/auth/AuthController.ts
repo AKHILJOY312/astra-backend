@@ -34,16 +34,17 @@ import { registerSchema } from "@/interface-adapters/http/validators/userAuthVal
 @injectable()
 export class AuthController {
   constructor(
-    @inject(TYPES.RegisterUser) private registerUC: IRegisterUser,
-    @inject(TYPES.VerifyEmail) private verifyEmailUC: IVerifyEmail,
-    @inject(TYPES.LoginUser) private loginUC: ILoginUser,
-    @inject(TYPES.RefreshToken) private refreshUC: IRefreshToken,
-    @inject(TYPES.LogoutUser) private logoutUC: ILogoutUser,
-    @inject(TYPES.GetMe) private meUC: IGetMe,
-    @inject(TYPES.ForgotPassword) private forgotUC: IForgotPassword,
-    @inject(TYPES.ResetPassword) private resetUC: IResetPassword,
-    @inject(TYPES.VerifyResetToken) private verifyResetUC: IVerifyResetToken,
-    @inject(TYPES.GoogleLogin) private googleLoginUC: IGoogleLogin
+    @inject(TYPES.RegisterUserUseCase) private _registerUC: IRegisterUser,
+    @inject(TYPES.VerifyEmailUseCase) private _verifyEmailUC: IVerifyEmail,
+    @inject(TYPES.LoginUserUseCase) private _loginUC: ILoginUser,
+    @inject(TYPES.RefreshTokenUseCase) private _refreshUC: IRefreshToken,
+    @inject(TYPES.LogoutUserUseCase) private _logoutUC: ILogoutUser,
+    @inject(TYPES.GetMeUseCase) private _meUC: IGetMe,
+    @inject(TYPES.ForgotPasswordUseCase) private _forgotUC: IForgotPassword,
+    @inject(TYPES.ResetPasswordUseCase) private _resetUC: IResetPassword,
+    @inject(TYPES.VerifyResetTokenUseCase)
+    private _verifyResetUC: IVerifyResetToken,
+    @inject(TYPES.GoogleLoginUseCase) private _googleLoginUC: IGoogleLogin,
   ) {}
 
   googleLogin = (_req: Request, res: Response) => {
@@ -55,9 +56,8 @@ export class AuthController {
       const googleProfile = req.user as GoogleProfile | undefined;
       if (!googleProfile) throw new Error(ERROR_MESSAGES.GOOGLE_ERROR);
 
-      const { accessToken, refreshToken } = await this.googleLoginUC.execute(
-        googleProfile
-      );
+      const { accessToken, refreshToken } =
+        await this._googleLoginUC.execute(googleProfile);
 
       setRefreshTokenCookie(res, refreshToken);
 
@@ -82,7 +82,7 @@ export class AuthController {
     if (!validatedData.success) {
       throw new ValidationError(ERROR_MESSAGES.VALIDATION_ERROR);
     }
-    const result = await this.registerUC.execute(req.body);
+    const result = await this._registerUC.execute(req.body);
     res.status(HTTP_STATUS.CREATED).json(result);
   };
 
@@ -90,15 +90,15 @@ export class AuthController {
     const { token } = req.query;
     if (typeof token !== "string")
       throw new BadRequestError(ERROR_MESSAGES.INVALID_TOKEN);
-    const msg = await this.verifyEmailUC.execute(token);
+    const msg = await this._verifyEmailUC.execute(token);
     res.json(msg);
   };
 
   login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
-    const { accessToken, refreshToken, user } = await this.loginUC.execute(
+    const { accessToken, refreshToken, user } = await this._loginUC.execute(
       email,
-      password
+      password,
     );
 
     setRefreshTokenCookie(res, refreshToken);
@@ -115,7 +115,7 @@ export class AuthController {
     //   .status(HTTP_STATUS.UNAUTHORIZED)
     //   .json({ message: AUTH_MESSAGES.NO_REFRESH_TOKEN });
 
-    const { accessToken } = await this.refreshUC.execute(token);
+    const { accessToken } = await this._refreshUC.execute(token);
     res.json({ accessToken });
   };
 
@@ -133,14 +133,14 @@ export class AuthController {
 
     // 1. Blacklist refresh token (using existing use case)
     const refreshExpiresAt: Date = new Date(
-      Date.now() + 7 * 24 * 60 * 60 * 1000
+      Date.now() + 7 * 24 * 60 * 60 * 1000,
     ); // fallback
     // const refreshPayload = jwt.decode(refreshToken) as { exp?: number } | null;
     // if (refreshPayload?.exp) {
     //   refreshExpiresAt = new Date(refreshPayload.exp * 1000);
     // }
 
-    await this.logoutUC.execute(refreshToken, refreshExpiresAt);
+    await this._logoutUC.execute(refreshToken, refreshExpiresAt);
     clearRefreshTokenCookie(res);
     res.json({ message: AUTH_MESSAGES.LOGOUT_SUCCESS });
   };
@@ -148,7 +148,7 @@ export class AuthController {
   me = async (req: Request, res: Response) => {
     // @ts-expect-error – set by protect middleware
     const userId: string = req.user.id;
-    const data = await this.meUC.execute(userId);
+    const data = await this._meUC.execute(userId);
     res.json(data);
   };
 
@@ -161,20 +161,20 @@ export class AuthController {
     //   .status(HTTP_STATUS.BAD_REQUEST)
     //   .json({ message: AUTH_MESSAGES.EMAIL_REQUIRED });
 
-    const msg = await this.forgotUC.execute(email);
+    const msg = await this._forgotUC.execute(email);
     res.json(msg);
   };
 
   resetPassword = async (req: Request, res: Response) => {
     const { token } = req.query as { token: string };
     const { password, confirmPassword } = req.body;
-    const msg = await this.resetUC.execute(token, password, confirmPassword);
+    const msg = await this._resetUC.execute(token, password, confirmPassword);
     res.json(msg);
   };
 
   verifyResetToken = async (req: Request, res: Response) => {
     const { token } = req.query as { token: string };
-    const { valid } = await this.verifyResetUC.execute(token);
+    const { valid } = await this._verifyResetUC.execute(token);
     res.json({ message: AUTH_MESSAGES.RESET_TOKEN_VALID, valid });
   };
 }

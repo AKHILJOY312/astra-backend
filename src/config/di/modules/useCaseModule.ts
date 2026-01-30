@@ -145,24 +145,26 @@ import { GetMeetingTokenUseCase } from "@/application/use-cases/meeting/GetMeeti
 
 export const useCaseModule = new ContainerModule((options) => {
   // Regular Auth Use Cases
-  options.bind<IRegisterUser>(TYPES.RegisterUser).to(RegisterUser);
-  options.bind<IVerifyEmail>(TYPES.VerifyEmail).to(VerifyEmail);
-  options.bind<ILoginUser>(TYPES.LoginUser).to(LoginUser);
-  options.bind<IRefreshToken>(TYPES.RefreshToken).to(RefreshToken);
-  options.bind<ILogoutUser>(TYPES.LogoutUser).to(LogoutUser);
-  options.bind<IGetMe>(TYPES.GetMe).to(GetMe);
-  options.bind<IForgotPassword>(TYPES.ForgotPassword).to(ForgotPassword);
-  options.bind<IResetPassword>(TYPES.ResetPassword).to(ResetPassword);
-  options.bind<IVerifyResetToken>(TYPES.VerifyResetToken).to(VerifyResetToken);
-  options.bind<IGoogleLogin>(TYPES.GoogleLogin).to(GoogleLogin);
+  options.bind<IRegisterUser>(TYPES.RegisterUserUseCase).to(RegisterUser);
+  options.bind<IVerifyEmail>(TYPES.VerifyEmailUseCase).to(VerifyEmail);
+  options.bind<ILoginUser>(TYPES.LoginUserUseCase).to(LoginUser);
+  options.bind<IRefreshToken>(TYPES.RefreshTokenUseCase).to(RefreshToken);
+  options.bind<ILogoutUser>(TYPES.LogoutUserUseCase).to(LogoutUser);
+  options.bind<IGetMe>(TYPES.GetMeUseCase).to(GetMe);
+  options.bind<IForgotPassword>(TYPES.ForgotPasswordUseCase).to(ForgotPassword);
+  options.bind<IResetPassword>(TYPES.ResetPasswordUseCase).to(ResetPassword);
+  options
+    .bind<IVerifyResetToken>(TYPES.VerifyResetTokenUseCase)
+    .to(VerifyResetToken);
+  options.bind<IGoogleLogin>(TYPES.GoogleLoginUseCase).to(GoogleLogin);
 
   // Admin Auth Use Cases
-  options.bind<IAdminLogin>(TYPES.AdminLogin).to(AdminLogin);
+  options.bind<IAdminLogin>(TYPES.AdminLoginUseCase).to(AdminLogin);
   options
-    .bind<IAdminForgotPassword>(TYPES.AdminForgotPassword)
+    .bind<IAdminForgotPassword>(TYPES.AdminForgotPasswordUseCase)
     .to(AdminForgotPassword);
   options
-    .bind<IAdminResetPassword>(TYPES.AdminResetPassword)
+    .bind<IAdminResetPassword>(TYPES.AdminResetPasswordUseCase)
     .to(AdminResetPassword);
 
   // Admin User Use Cases

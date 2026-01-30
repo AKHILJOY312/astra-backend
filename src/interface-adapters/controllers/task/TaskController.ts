@@ -25,22 +25,22 @@ import {
 export class TaskController {
   constructor(
     @inject(TYPES.CreateTaskUseCase)
-    private createTaskUC: ICreateTaskUseCase,
+    private _createTaskUC: ICreateTaskUseCase,
 
     @inject(TYPES.DeleteTaskUseCase)
-    private deleteTaskUC: IDeleteTaskUseCase,
+    private _deleteTaskUC: IDeleteTaskUseCase,
 
     @inject(TYPES.GetProjectTasksUseCase)
-    private listTasksUC: IGetProjectTasksUseCase,
+    private _listTasksUC: IGetProjectTasksUseCase,
 
     @inject(TYPES.UpdateTaskStatusUseCase)
-    private updateStatusUC: IUpdateTaskStatusUseCase,
+    private _updateStatusUC: IUpdateTaskStatusUseCase,
 
     @inject(TYPES.GetAttachmentUploadUrlUseCase)
-    private attachmentUploadUC: IGetAttachmentUploadUrlUseCase,
+    private _attachmentUploadUC: IGetAttachmentUploadUrlUseCase,
 
-    @inject(TYPES.UpdateTaskUseCase) private updateTaskUC: IUpdateTaskUseCase,
-    @inject(TYPES.AddCommentUseCase) private addCommentUC: IAddCommentUseCase,
+    @inject(TYPES.UpdateTaskUseCase) private _updateTaskUC: IUpdateTaskUseCase,
+    @inject(TYPES.AddCommentUseCase) private _addCommentUC: IAddCommentUseCase,
   ) {}
 
   // POST /projects/:projectId/tasks
@@ -53,7 +53,7 @@ export class TaskController {
     const { projectId } = req.params;
     const managerId = req.user!.id;
 
-    const task = await this.createTaskUC.execute(
+    const task = await this._createTaskUC.execute(
       {
         projectId,
         ...parsed.data,
@@ -75,7 +75,7 @@ export class TaskController {
     }
     const { taskId } = req.params;
     const managerId = req.user!.id;
-    const result = await this.updateTaskUC.execute(
+    const result = await this._updateTaskUC.execute(
       taskId,
       parsedBody.data,
       managerId,
@@ -98,7 +98,7 @@ export class TaskController {
     const { projectId } = req.params;
     const requesterId = req.user!.id;
     const { status, cursor, limit } = parsedQuery.data;
-    const result = await this.listTasksUC.execute({
+    const result = await this._listTasksUC.execute({
       projectId,
       requesterId,
       status,
@@ -117,7 +117,7 @@ export class TaskController {
     const { taskId } = req.params;
     const requestedBy = req.user!.id;
 
-    await this.deleteTaskUC.execute(taskId, requestedBy);
+    await this._deleteTaskUC.execute(taskId, requestedBy);
 
     return res.status(HTTP_STATUS.OK).json({
       success: true,
@@ -135,7 +135,7 @@ export class TaskController {
     const { taskId } = req.params;
     const requestedBy = req.user!.id;
 
-    const task = await this.updateStatusUC.execute(
+    const task = await this._updateStatusUC.execute(
       taskId,
       parsed.data,
       requestedBy,
@@ -157,7 +157,7 @@ export class TaskController {
     const { projectId } = req.params;
     const requesterId = req.user!.id;
 
-    const result = await this.attachmentUploadUC.execute(
+    const result = await this._attachmentUploadUC.execute(
       projectId,
       parsed.data.fileName,
       parsed.data.fileType,
@@ -184,7 +184,7 @@ export class TaskController {
       projectId,
       message,
     };
-    const result = await this.addCommentUC.execute(input, requesterId);
+    const result = await this._addCommentUC.execute(input, requesterId);
     return res.status(HTTP_STATUS.CREATED).json({
       success: true,
       data: result,

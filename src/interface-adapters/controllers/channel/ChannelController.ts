@@ -18,13 +18,13 @@ import { IListChannelsForUserUseCase } from "@/application/ports/use-cases/chann
 export class ChannelController {
   constructor(
     @inject(TYPES.CreateChannelUseCase)
-    private createChannelUC: ICreateChannelUseCase,
+    private _createChannelUC: ICreateChannelUseCase,
     @inject(TYPES.EditChannelUseCase)
-    private editChannelUC: IEditChannelUseCase,
+    private _editChannelUC: IEditChannelUseCase,
     @inject(TYPES.DeleteChannelUseCase)
-    private deleteChannelUC: IDeleteChannelUseCase,
+    private _deleteChannelUC: IDeleteChannelUseCase,
     @inject(TYPES.ListChannelsForUserUseCase)
-    private listChannelsForUserUC: IListChannelsForUserUseCase
+    private _listChannelsForUserUC: IListChannelsForUserUseCase,
   ) {}
 
   // ---------------------------------------------------
@@ -38,7 +38,7 @@ export class ChannelController {
       throw new ValidationError(CHANNEL_MESSAGES.WRONG_DATA);
     }
     const createdBy = req.user!.id;
-    const { channel } = await this.createChannelUC.execute({
+    const { channel } = await this._createChannelUC.execute({
       projectId: req.params.projectId,
       ...result.data,
       createdBy,
@@ -62,7 +62,7 @@ export class ChannelController {
     if (!result.success) {
       throw new BadRequestError(CHANNEL_MESSAGES.WRONG_DATA);
     }
-    const data = await this.editChannelUC.execute({
+    const data = await this._editChannelUC.execute({
       ...result.data,
     });
 
@@ -74,7 +74,10 @@ export class ChannelController {
   // ---------------------------------------------------
   deleteChannel = async (req: Request, res: Response) => {
     const { channelId } = req.params;
-    const deleted = await this.deleteChannelUC.execute(channelId, req.user!.id);
+    const deleted = await this._deleteChannelUC.execute(
+      channelId,
+      req.user!.id,
+    );
     return res.json({ success: true, data: deleted });
   };
 
@@ -83,9 +86,9 @@ export class ChannelController {
   // ---------------------------------------------------
   listProjectChannelsBasedOnRole = async (req: Request, res: Response) => {
     const { projectId } = req.params;
-    const channels = await this.listChannelsForUserUC.execute(
+    const channels = await this._listChannelsForUserUC.execute(
       projectId,
-      req.user!.id
+      req.user!.id,
     );
 
     return res.json({

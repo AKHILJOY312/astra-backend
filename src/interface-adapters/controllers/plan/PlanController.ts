@@ -12,22 +12,22 @@ import { IGetPlansPaginated } from "@/application/ports/use-cases/plan/admin/IGe
 @injectable()
 export class PlanController {
   constructor(
-    @inject(TYPES.CreatePlan) private createPlan: ICreatePlan,
-    @inject(TYPES.UpdatePlan) private updatePlan: IUpdatePlan,
-    @inject(TYPES.SoftDeletePlan) private deletePlan: ISoftDeletePlan,
+    @inject(TYPES.CreatePlan) private _createPlan: ICreatePlan,
+    @inject(TYPES.UpdatePlan) private _updatePlan: IUpdatePlan,
+    @inject(TYPES.SoftDeletePlan) private _deletePlan: ISoftDeletePlan,
     @inject(TYPES.GetPlansPaginated)
-    private getPlansPaginated: IGetPlansPaginated
+    private _getPlansPaginated: IGetPlansPaginated,
   ) {}
 
   create = async (req: Request, res: Response) => {
-    const plan = await this.createPlan.execute(req.body);
+    const plan = await this._createPlan.execute(req.body);
     res.status(HTTP_STATUS.CREATED).json(plan);
   };
 
   getAll = async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
     const limit = 10;
-    const result = await this.getPlansPaginated.execute(page, limit);
+    const result = await this._getPlansPaginated.execute(page, limit);
     res.json(result);
   };
 
@@ -37,7 +37,7 @@ export class PlanController {
       ...req.body,
     };
 
-    const result = await this.updatePlan.execute(dto);
+    const result = await this._updatePlan.execute(dto);
 
     return res.json({
       success: true,
@@ -47,7 +47,7 @@ export class PlanController {
   };
 
   delete = async (req: Request, res: Response) => {
-    await this.deletePlan.execute({ id: req.params.id });
+    await this._deletePlan.execute({ id: req.params.id });
     res.json({ message: PLAN_MESSAGES.PLAN_DELETED });
   };
 }

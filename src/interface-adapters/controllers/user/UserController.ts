@@ -20,24 +20,24 @@ import { emailSchema } from "@/interface-adapters/http/validators/baseValidators
 export class UserController {
   constructor(
     @inject(TYPES.GetUserProfileUseCase)
-    private getProfileUC: IGetUserProfileUseCase,
+    private _getProfileUC: IGetUserProfileUseCase,
     @inject(TYPES.UpdateUserNameUseCase)
-    private updateProfileUC: IUpdateUserProfileUseCase,
+    private _updateProfileUC: IUpdateUserProfileUseCase,
     @inject(TYPES.DeleteUserAccountUseCase)
-    private deleteAccountUC: IDeleteUserAccountUseCase,
+    private _deleteAccountUC: IDeleteUserAccountUseCase,
     @inject(TYPES.UploadProfileImageUseCase)
-    private uploadProfileImageUC: IUploadProfileImageUseCase,
+    private _uploadProfileImageUC: IUploadProfileImageUseCase,
     @inject(TYPES.ChangePasswordUseCase)
-    private changePasswordUC: IChangePasswordUseCase,
+    private _changePasswordUC: IChangePasswordUseCase,
     @inject(TYPES.RequestEmailChangeUseCase)
-    private requestOtpUC: IRequestEmailChangeUseCase,
+    private _requestOtpUC: IRequestEmailChangeUseCase,
     @inject(TYPES.VerifyEmailChangeUseCase)
-    private verifyEmailUC: IVerifyEmailChangeUseCase
+    private _verifyEmailUC: IVerifyEmailChangeUseCase,
   ) {}
 
   getProfile = async (req: Request, res: Response) => {
     const userId = req.user!.id;
-    const data = await this.getProfileUC.execute(userId);
+    const data = await this._getProfileUC.execute(userId);
     res.status(200).json(data);
   };
 
@@ -45,14 +45,14 @@ export class UserController {
     const userId = req.user!.id;
     const validatedData = updateProfileSchema.parse(req.body);
 
-    const updated = await this.updateProfileUC.execute(userId, validatedData);
+    const updated = await this._updateProfileUC.execute(userId, validatedData);
 
     res.status(200).json(updated);
   };
 
   deleteAccount = async (req: Request, res: Response) => {
     const userId = req.user!.id;
-    await this.deleteAccountUC.execute(userId);
+    await this._deleteAccountUC.execute(userId);
     res.status(204).send();
   };
   // === NEW: Presigned URL for direct S3 upload ===
@@ -65,7 +65,7 @@ export class UserController {
     }
 
     const { uploadUrl, fileKey } =
-      await this.uploadProfileImageUC.generatePresignedUrl({
+      await this._uploadProfileImageUC.generatePresignedUrl({
         userId,
         fileType,
       });
@@ -82,7 +82,7 @@ export class UserController {
       return res.status(400).json({ message: "imageUrl is required" });
     }
 
-    const imageUrl = await this.uploadProfileImageUC.saveImageUrl({
+    const imageUrl = await this._uploadProfileImageUC.saveImageUrl({
       userId,
       fileKey,
     });
@@ -100,10 +100,10 @@ export class UserController {
 
     const userId = req.user!.id;
 
-    const result = await this.changePasswordUC.execute(
+    const result = await this._changePasswordUC.execute(
       userId,
       validatedData.oldPassword,
-      validatedData.newPassword
+      validatedData.newPassword,
     );
     return res.json(result);
   };
@@ -111,7 +111,7 @@ export class UserController {
     const validatedEmail = await emailSchema.parse(req.body.newEmail);
     const userId = req.user!.id;
 
-    const result = await this.requestOtpUC.execute(userId, validatedEmail);
+    const result = await this._requestOtpUC.execute(userId, validatedEmail);
 
     return res.json(result);
   };
@@ -119,7 +119,7 @@ export class UserController {
     const userId = req.user!.id;
     const emailChangeOtp = req.body.emailChangeOtp;
 
-    const result = await this.verifyEmailUC.execute(userId, emailChangeOtp);
+    const result = await this._verifyEmailUC.execute(userId, emailChangeOtp);
     console.log(result);
     return res.json(result);
   };

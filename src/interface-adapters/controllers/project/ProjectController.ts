@@ -19,11 +19,11 @@ import { IUpdateProjectUseCase } from "@/application/ports/use-cases/project/IUp
 export class ProjectController {
   constructor(
     @inject(TYPES.CreateProjectUseCase)
-    private createProjectUseCase: ICreateProjectUseCase,
+    private _createProjectUseCase: ICreateProjectUseCase,
     @inject(TYPES.GetUserProjectsUseCase)
-    private getUserProjectsUseCase: IGetUserProjectsUseCase,
+    private _getUserProjectsUseCase: IGetUserProjectsUseCase,
     @inject(TYPES.UpdateProjectUseCase)
-    private updateProjectUseCase: IUpdateProjectUseCase
+    private _updateProjectUseCase: IUpdateProjectUseCase,
   ) {}
 
   createProject = async (req: Request, res: Response) => {
@@ -36,7 +36,7 @@ export class ProjectController {
     const { projectName, description, imageUrl } = result.data;
     const ownerId = req.user!.id;
 
-    const { project } = await this.createProjectUseCase.execute({
+    const { project } = await this._createProjectUseCase.execute({
       projectName,
       description,
       imageUrl,
@@ -57,7 +57,7 @@ export class ProjectController {
     const { projectId } = req.params;
     const userId = req.user!.id;
 
-    const { project } = await this.updateProjectUseCase.execute({
+    const { project } = await this._updateProjectUseCase.execute({
       projectId,
       userId,
       ...result.data,
@@ -77,7 +77,7 @@ export class ProjectController {
     const { page, limit, search } = queryParsed.data;
     const userId = req.user!.id;
 
-    const result = await this.getUserProjectsUseCase.execute({
+    const result = await this._getUserProjectsUseCase.execute({
       userId,
       page,
       limit,

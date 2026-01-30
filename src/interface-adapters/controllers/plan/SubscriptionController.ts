@@ -21,23 +21,23 @@ import { IDownloadInvoiceUseCase } from "@/application/ports/use-cases/upgradeto
 export class SubscriptionController {
   constructor(
     @inject(TYPES.UpgradeToPlanUseCase)
-    private upgradeUseCase: IUpgradeToPlanUseCase,
+    private _upgradeUseCase: IUpgradeToPlanUseCase,
     @inject(TYPES.GetUserLimitsUseCase)
-    private getLimitsUseCase: IGetUserLimitsUseCase,
+    private _getLimitsUseCase: IGetUserLimitsUseCase,
     @inject(TYPES.GetAvailablePlansUseCase)
-    private getAvailablePlans: IGetAvailablePlansUseCase,
+    private _getAvailablePlans: IGetAvailablePlansUseCase,
     @inject(TYPES.CapturePaymentUseCase)
-    private captureUseCase: ICapturePaymentUseCase,
+    private _captureUseCase: ICapturePaymentUseCase,
     @inject(TYPES.GetUserBillingUseCase)
-    private paymentHistoryUC: IGetUserBillingHistoryUseCase,
+    private _paymentHistoryUC: IGetUserBillingHistoryUseCase,
     @inject(TYPES.DownloadInvoiceOutput)
-    private downloadInvoiceUC: IDownloadInvoiceUseCase
+    private _downloadInvoiceUC: IDownloadInvoiceUseCase,
   ) {}
 
   // GET /api/subscription/plans
   getPlansToSubscribe = async (req: Request, res: Response) => {
     const userId = req.user!.id;
-    const plans = await this.getAvailablePlans.execute(userId);
+    const plans = await this._getAvailablePlans.execute(userId);
     return res.json({ success: true, plans });
   };
 
@@ -45,7 +45,7 @@ export class SubscriptionController {
   getLimits = async (req: Request, res: Response) => {
     const userId = req.user!.id;
     const projectId = req.query.projectId as string | undefined;
-    const limits = await this.getLimitsUseCase.execute(userId, projectId);
+    const limits = await this._getLimitsUseCase.execute(userId, projectId);
     return res.json({ success: true, data: limits });
   };
 
@@ -58,7 +58,7 @@ export class SubscriptionController {
       throw new BadRequestError(PLAN_MESSAGES.ID_NEEDED);
     }
 
-    const result = await this.upgradeUseCase.execute({ userId, planId });
+    const result = await this._upgradeUseCase.execute({ userId, planId });
 
     return res.json({
       success: true,
@@ -74,7 +74,7 @@ export class SubscriptionController {
   };
 
   capture = async (req: Request, res: Response) => {
-    const result = await this.captureUseCase.execute(req.body);
+    const result = await this._captureUseCase.execute(req.body);
     if (!result.success) {
       throw new BadRequestError(result.message);
     }
@@ -88,11 +88,11 @@ export class SubscriptionController {
     }
     const { page, limit, search } = queryParsed.data;
 
-    const data = await this.paymentHistoryUC.execute(
+    const data = await this._paymentHistoryUC.execute(
       userId!,
       page ? Number(page) : 1,
       limit ? Number(limit) : 5,
-      search ? String(search) : undefined
+      search ? String(search) : undefined,
     );
     return res.json(data);
   };
@@ -105,7 +105,7 @@ export class SubscriptionController {
       throw new BadRequestError("Invoice number is required");
     }
 
-    const result = await this.downloadInvoiceUC.execute({
+    const result = await this._downloadInvoiceUC.execute({
       userId,
       paymentId,
     });
@@ -113,7 +113,7 @@ export class SubscriptionController {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename=${result.fileName}`
+      `attachment; filename=${result.fileName}`,
     );
 
     // SEND ONLY THE BUFFER

@@ -13,15 +13,15 @@ import { inject, injectable } from "inversify";
 export class MessageController {
   constructor(
     @inject(TYPES.SendMessageUseCase)
-    private sendMessageUC: ISendMessageUseCase,
+    private _sendMessageUC: ISendMessageUseCase,
     @inject(TYPES.ListMessagesUseCase)
-    private listMessagesUC: IListMessagesUseCase,
+    private _listMessagesUC: IListMessagesUseCase,
     @inject(TYPES.GenerateUploadUrlUseCase)
-    private generateUploadUrlUC: IGenerateUploadUrlUseCase,
+    private _generateUploadUrlUC: IGenerateUploadUrlUseCase,
     @inject(TYPES.GetAttachmentDownloadUrlUseCase)
-    private getAttachmentDownloadUrlUC: IGetAttachmentDownloadUrlUseCase,
+    private _getAttachmentDownloadUrlUC: IGetAttachmentDownloadUrlUseCase,
     @inject(TYPES.GetTaskAttachmentDownloadUrlUseCase)
-    private getTaskAttachmentDownloadUrlUC: IGetTaskAttachmentDownloadUrlUseCase,
+    private _getTaskAttachmentDownloadUrlUC: IGetTaskAttachmentDownloadUrlUseCase,
   ) {}
 
   listMessagesPerChannel = async (req: Request, res: Response) => {
@@ -31,7 +31,7 @@ export class MessageController {
       ? parseInt(req.query.limit as string, 10)
       : undefined;
 
-    const messages = await this.listMessagesUC.execute({
+    const messages = await this._listMessagesUC.execute({
       channelId,
       cursor,
       limit,
@@ -47,7 +47,7 @@ export class MessageController {
     const senderId = req.user!.id;
     const { text, attachments } = req.body;
 
-    const message = await this.sendMessageUC.execute({
+    const message = await this._sendMessageUC.execute({
       projectId,
       channelId,
       senderId,
@@ -74,7 +74,7 @@ export class MessageController {
       throw new BadRequestError("Invalid fileSize");
     }
 
-    const result = await this.generateUploadUrlUC.execute({
+    const result = await this._generateUploadUrlUC.execute({
       projectId,
       channelId,
       senderId,
@@ -100,8 +100,8 @@ export class MessageController {
     }
     const result =
       req.query.disposition === "task"
-        ? await this.getTaskAttachmentDownloadUrlUC.execute(attachmentId)
-        : await this.getAttachmentDownloadUrlUC.execute({
+        ? await this._getTaskAttachmentDownloadUrlUC.execute(attachmentId)
+        : await this._getAttachmentDownloadUrlUC.execute({
             attachmentId,
             userId,
             disposition,

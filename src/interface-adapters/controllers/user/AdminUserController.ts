@@ -11,10 +11,10 @@ import { IAssignAdminRoleUseCase } from "@/application/ports/use-cases/user/IAss
 @injectable()
 export class AdminUserController {
   constructor(
-    @inject(TYPES.ListUsersUseCase) private listUsersUseCase: IListUsersUseCase,
-    @inject(TYPES.BlockUserUseCase) private blockUserUseCase: IBlockUserUseCase,
+    @inject(TYPES.ListUsersUseCase) private _listUsersUC: IListUsersUseCase,
+    @inject(TYPES.BlockUserUseCase) private _blockUserUC: IBlockUserUseCase,
     @inject(TYPES.AssignAdminRoleUseCase)
-    private assignAdminRoleUseCase: IAssignAdminRoleUseCase
+    private _assignAdminRoleUC: IAssignAdminRoleUseCase,
   ) {}
 
   listUsers = async (req: Request, res: Response): Promise<void> => {
@@ -24,7 +24,7 @@ export class AdminUserController {
     }
 
     const { page, limit, search } = parsed.data;
-    const result = await this.listUsersUseCase.execute({
+    const result = await this._listUsersUC.execute({
       page,
       limit,
       search,
@@ -34,13 +34,13 @@ export class AdminUserController {
 
   blockUser = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
-    const user = await this.blockUserUseCase.execute(id);
+    const user = await this._blockUserUC.execute(id);
     res.json({ message: `User status updated `, user });
   };
 
   updateRole = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
-    const user = await this.assignAdminRoleUseCase.execute(id);
+    const user = await this._assignAdminRoleUC.execute(id);
     res.json({ message: `User role updated`, user });
   };
 }

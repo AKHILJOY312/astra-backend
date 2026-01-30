@@ -21,16 +21,16 @@ import {
 export class MeetingController {
   constructor(
     @inject(TYPES.CreateMeetingUseCase)
-    private createMeetingUC: ICreateMeetingUseCase,
+    private _createMeetingUC: ICreateMeetingUseCase,
 
     @inject(TYPES.JoinMeetingUseCase)
-    private joinMeetingUC: IJoinMeetingUseCase,
+    private _joinMeetingUC: IJoinMeetingUseCase,
 
     @inject(TYPES.LeaveMeetingUseCase)
-    private leaveMeetingUC: ILeaveMeetingUseCase,
+    private _leaveMeetingUC: ILeaveMeetingUseCase,
 
     @inject(TYPES.GetMeetingTokenUseCase)
-    private getTokenUC: IGetMeetingTokenUseCase,
+    private _getTokenUC: IGetMeetingTokenUseCase,
   ) {}
 
   // ---------------------------------------------------
@@ -43,7 +43,7 @@ export class MeetingController {
     //   throw new ValidationError("Invalid meeting data");
     // }
     const createdBy = req.user!.id;
-    const { meeting } = await this.createMeetingUC.execute({
+    const { meeting } = await this._createMeetingUC.execute({
       createdBy,
     });
 
@@ -64,7 +64,7 @@ export class MeetingController {
       throw new BadRequestError("Invalid meeting code");
     }
 
-    const { participants } = await this.joinMeetingUC.execute({
+    const { participants } = await this._joinMeetingUC.execute({
       code,
       socketId: "http-preview", // placeholder (real socket join later)
     });
@@ -88,7 +88,7 @@ export class MeetingController {
       throw new ValidationError("Invalid leave request");
     }
 
-    const data = await this.leaveMeetingUC.execute(result.data);
+    const data = await this._leaveMeetingUC.execute(result.data);
 
     return res.json({
       success: true,
@@ -100,7 +100,7 @@ export class MeetingController {
     const userId = req.user!.id;
     const userName = req.user!.name || userId;
 
-    const result = await this.getTokenUC.execute({
+    const result = await this._getTokenUC.execute({
       code,
       userId,
       userName,

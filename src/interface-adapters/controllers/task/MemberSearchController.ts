@@ -10,7 +10,7 @@ import { ISearchProjectMembersUseCase } from "@/application/ports/use-cases/task
 export class MemberSearchController {
   constructor(
     @inject(TYPES.SearchProjectMembersUseCase)
-    private searchMembersUC: ISearchProjectMembersUseCase,
+    private _searchMembersUC: ISearchProjectMembersUseCase,
   ) {}
 
   // GET /projects/:projectId/tasks/members/search
@@ -23,7 +23,7 @@ export class MemberSearchController {
     const { projectId } = req.params;
     const managerId = req.user!.id;
 
-    const members = await this.searchMembersUC.execute(
+    const members = await this._searchMembersUC.execute(
       {
         projectId,
 

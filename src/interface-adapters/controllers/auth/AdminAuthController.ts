@@ -11,28 +11,28 @@ import { IAdminResetPassword } from "@/application/ports/use-cases/auth/admin/IA
 @injectable()
 export class AdminAuthController {
   constructor(
-    @inject(TYPES.AdminLogin) private adminLogin: IAdminLogin,
-    @inject(TYPES.AdminForgotPassword)
-    private adminForgotPassword: IAdminForgotPassword,
-    @inject(TYPES.AdminResetPassword)
-    private adminResetPassword: IAdminResetPassword
+    @inject(TYPES.AdminLoginUseCase) private _adminLogin: IAdminLogin,
+    @inject(TYPES.AdminForgotPasswordUseCase)
+    private _adminForgotPassword: IAdminForgotPassword,
+    @inject(TYPES.AdminResetPasswordUseCase)
+    private _adminResetPassword: IAdminResetPassword,
   ) {}
 
   login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
-    const result = await this.adminLogin.execute(email, password);
+    const result = await this._adminLogin.execute(email, password);
     res.json(result);
   };
 
   forgotPassword = async (req: Request, res: Response) => {
     const { email } = req.body;
-    const result = await this.adminForgotPassword.execute(email);
+    const result = await this._adminForgotPassword.execute(email);
     res.json(result);
   };
 
   resetPassword = async (req: Request, res: Response) => {
     const { token, password, confirmPassword } = req.body;
-    await this.adminResetPassword.execute(token, password, confirmPassword);
+    await this._adminResetPassword.execute(token, password, confirmPassword);
     res.json({ message: AUTH_MESSAGES.PASSWORD_RESET_SUCCESS });
   };
 }

@@ -47,21 +47,21 @@ const TYPES = {
   MeetingController: Symbol.for("MeetingController"),
 
   // Use Cases (User/Auth)
-  RegisterUser: Symbol.for("RegisterUser"),
-  VerifyEmail: Symbol.for("VerifyEmail"),
-  LoginUser: Symbol.for("LoginUser"),
-  RefreshToken: Symbol.for("RefreshToken"),
-  LogoutUser: Symbol.for("LogoutUser"),
-  GetMe: Symbol.for("GetMe"),
-  ForgotPassword: Symbol.for("ForgotPassword"),
-  ResetPassword: Symbol.for("ResetPassword"),
-  VerifyResetToken: Symbol.for("VerifyResetToken"),
-  GoogleLogin: Symbol.for("GoogleLogin"),
+  RegisterUserUseCase: Symbol.for("RegisterUserUseCase"),
+  VerifyEmailUseCase: Symbol.for("VerifyEmailUseCase"),
+  LoginUserUseCase: Symbol.for("LoginUserUseCase"),
+  RefreshTokenUseCase: Symbol.for("RefreshTokenUseCase"),
+  LogoutUserUseCase: Symbol.for("LogoutUserUseCase"),
+  GetMeUseCase: Symbol.for("GetMeUseCase"),
+  ForgotPasswordUseCase: Symbol.for("ForgotPasswordUseCase"),
+  ResetPasswordUseCase: Symbol.for("ResetPasswordUseCase"),
+  VerifyResetTokenUseCase: Symbol.for("VerifyResetTokenUseCase"),
+  GoogleLoginUseCase: Symbol.for("GoogleLoginUseCase"),
 
   // Use Cases (Admin Auth)
-  AdminLogin: Symbol.for("AdminLogin"),
-  AdminForgotPassword: Symbol.for("AdminForgotPassword"),
-  AdminResetPassword: Symbol.for("AdminResetPassword"),
+  AdminLoginUseCase: Symbol.for("AdminLoginUseCase"),
+  AdminForgotPasswordUseCase: Symbol.for("AdminForgotPasswordUseCase"),
+  AdminResetPasswordUseCase: Symbol.for("AdminResetPasswordUseCase"),
 
   // Use Cases (Admin User)
   ListUsersUseCase: Symbol.for("ListUsersUseCase"),

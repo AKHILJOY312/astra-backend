@@ -13,7 +13,6 @@ import {
 import { IInviteMemberToProjectUseCase } from "@/application/ports/use-cases/project/IInviteMemberToProjectUseCase";
 import { IRemoveMemberFromProjectUseCase } from "@/application/ports/use-cases/project/IRemoveMemberFromProjectUseCase";
 import { IChangeMemberRoleUseCase } from "@/application/ports/use-cases/project/IChangeMemberRoleUseCase";
-import { IUserService } from "@/application/ports/services/IUserService";
 import { IListProjectMembersUseCase } from "@/application/ports/use-cases/project/IListProjectMembersUseCase";
 import { ProjectMembership } from "@/domain/entities/project/ProjectMembership";
 import { IAcceptInvitationUseCase } from "@/application/ports/use-cases/project/IAcceptInvitationUseCase";
@@ -26,16 +25,15 @@ type InviteResult =
 export class MemberController {
   constructor(
     @inject(TYPES.InviteMemberToProjectUseCase)
-    private addMemberUC: IInviteMemberToProjectUseCase,
+    private _addMemberUC: IInviteMemberToProjectUseCase,
     @inject(TYPES.RemoveMemberFromProjectUseCase)
-    private removeMemberUC: IRemoveMemberFromProjectUseCase,
+    private _removeMemberUC: IRemoveMemberFromProjectUseCase,
     @inject(TYPES.ChangeMemberRoleUseCase)
-    private changeRoleUC: IChangeMemberRoleUseCase,
-    @inject(TYPES.UserService) private userService: IUserService,
+    private _changeRoleUC: IChangeMemberRoleUseCase,
     @inject(TYPES.ListProjectMembers)
-    private listProjectMembersUC: IListProjectMembersUseCase,
+    private _listProjectMembersUC: IListProjectMembersUseCase,
     @inject(TYPES.AcceptInvitationUseCase)
-    private acceptInvitationUC: IAcceptInvitationUseCase
+    private _acceptInvitationUC: IAcceptInvitationUseCase,
   ) {}
 
   // POST /projects/:projectId/members
@@ -50,7 +48,7 @@ export class MemberController {
     const projectId = req.params.projectId;
     const requestedBy = req.user!.id;
 
-    const result: InviteResult = await this.addMemberUC.execute({
+    const result: InviteResult = await this._addMemberUC.execute({
       projectId,
       newMemberEmail,
       role,
@@ -90,7 +88,7 @@ export class MemberController {
     const currentUserId = req.user!.id; // From your auth middleware
 
     // Execute the use case
-    await this.acceptInvitationUC.execute({
+    await this._acceptInvitationUC.execute({
       token,
       currentUserId,
     });
@@ -105,7 +103,7 @@ export class MemberController {
     const { projectId } = req.params;
     const requestedBy = req.user!.id;
 
-    const members = await this.listProjectMembersUC.execute({
+    const members = await this._listProjectMembersUC.execute({
       projectId,
       requestedBy,
     });
@@ -121,7 +119,7 @@ export class MemberController {
     const { projectId, memberId } = req.params;
     const requestedBy = req.user!.id;
 
-    await this.removeMemberUC.execute({
+    await this._removeMemberUC.execute({
       projectId,
       memberId,
       requestedBy,
@@ -140,7 +138,7 @@ export class MemberController {
     const { projectId, memberId } = req.params;
     const requestedBy = req.user!.id;
 
-    const { membership } = await this.changeRoleUC.execute({
+    const { membership } = await this._changeRoleUC.execute({
       projectId,
       memberId,
       newRole: role,
