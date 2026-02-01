@@ -49,4 +49,10 @@ export class MessageRepository implements IMessageRepository {
 
     return doc ? toMessageEntity(doc) : null;
   }
+  async updateHasReply(messageId: string): Promise<void> {
+    await MessageModel.findOneAndUpdate(
+      { _id: messageId },
+      { $set: { hasReplies: true } },
+    );
+  }
 }

@@ -17,6 +17,7 @@ const TYPES = {
   TaskAttachmentRepository: Symbol.for("TaskAttachmentRepository"),
   MeetingRepository: Symbol.for("MeetingRepository"),
   CommentRepository: Symbol.for("CommentRepository"),
+  MessageReplyRepository: Symbol.for("MessageReplyRepository"),
 
   // Services
   UserService: Symbol.for("UserService"),
@@ -114,6 +115,10 @@ const TYPES = {
   GetAttachmentDownloadUrlUseCase: Symbol.for(
     "GetAttachmentDownloadUrlUseCase",
   ),
+
+  //Reply
+  SendMessageReplyUseCase: Symbol.for("SendMessageReplyUseCase"),
+  ListMessageRepliesUseCase: Symbol.for("ListMessageRepliesUseCase"),
 
   //Tasks
   CreateTaskUseCase: Symbol.for("CreateTaskUseCase"),

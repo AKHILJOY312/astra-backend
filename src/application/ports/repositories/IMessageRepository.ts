@@ -5,7 +5,8 @@ export interface IMessageRepository {
   listByChannel(
     channelId: string,
     cursor?: string,
-    limit?: number
+    limit?: number,
   ): Promise<Message[]>;
   findById(id: string): Promise<Message | null>;
+  updateHasReply(messageId: string): void;
 }

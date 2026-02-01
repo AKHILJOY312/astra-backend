@@ -1,4 +1,4 @@
-import { Attachment } from "./Attachment";
+import { Attachment, AttachmentProps } from "./Attachment";
 
 export interface MessageProps {
   id: string;
@@ -10,17 +10,7 @@ export interface MessageProps {
   hasReplies: boolean;
   createdAt: string;
   updatedAt: string;
-  attachments?: Array<{
-    id: string;
-    messageId: string;
-    uploadedBy: string;
-    fileName: string;
-    fileType: string;
-    fileSize: number;
-    fileUrl: string;
-    thumbnailUrl?: string;
-    uploadedAt: string;
-  }>;
+  attachments?: AttachmentProps[];
 }
 
 export class Message {

@@ -17,6 +17,7 @@ import {
   IJoinMeetingUseCase,
   ILeaveMeetingUseCase,
 } from "@/application/ports/use-cases/meeting";
+import { ISendMessageReplyUseCase } from "@/application/ports/use-cases/message-reply";
 
 const authenticateSocket = (socket: Socket, next: (err?: Error) => void) => {
   const token = socket.handshake.auth?.token as string | undefined;
@@ -59,6 +60,11 @@ export function createSocketServer(
     const sendMessageUC = container.get<ISendMessageUseCase>(
       TYPES.SendMessageUseCase,
     );
+
+    const sendMessageReplyUC = container.get<ISendMessageReplyUseCase>(
+      TYPES.SendMessageReplyUseCase,
+    );
+
     const joinMeetingUC = container.get<IJoinMeetingUseCase>(
       TYPES.JoinMeetingUseCase,
     );
@@ -68,7 +74,7 @@ export function createSocketServer(
     );
     // Initialize handlers
     new ChannelHandler(socket).handle();
-    new MessageHandler(socket, sendMessageUC, io).handle();
+    new MessageHandler(socket, sendMessageUC, sendMessageReplyUC, io).handle();
     new MeetingHandler(socket, joinMeetingUC, leaveMeetingUC, io).handle();
 
     socket.on("disconnect", (reason) => {

@@ -56,6 +56,8 @@ import { ICommentRepository } from "@/application/ports/repositories/ICommentRep
 import { CommentRepository } from "@/infra/db/mongoose/repositories/CommandRepository";
 import { IMeetingService } from "@/application/ports/services/IMeetingService";
 import { LiveKitMeetingService } from "@/infra/services/LiveKitMeetingService";
+import { IMessageReplyRepository } from "@/application/ports/repositories/IMessageReplyRepository";
+import { MessageReplyRepository } from "@/infra/db/mongoose/repositories/MessageReplyRepository";
 
 export const coreModule = new ContainerModule((options) => {
   //=================================================
@@ -128,6 +130,10 @@ export const coreModule = new ContainerModule((options) => {
   options
     .bind<ICommentRepository>(TYPES.CommentRepository)
     .to(CommentRepository)
+    .inSingletonScope();
+  options
+    .bind<IMessageReplyRepository>(TYPES.MessageReplyRepository)
+    .to(MessageReplyRepository)
     .inSingletonScope();
 
   //=================================================

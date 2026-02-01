@@ -142,6 +142,12 @@ import { JoinMeetingUseCase } from "@/application/use-cases/meeting/JoinMeetingU
 import { LeaveMeetingUseCase } from "@/application/use-cases/meeting/LeaveMeetingUseCase";
 import { AddCommentUseCase } from "@/application/use-cases/tasks/AddCommandUseCase";
 import { GetMeetingTokenUseCase } from "@/application/use-cases/meeting/GetMeetingTokenUseCase";
+import {
+  IListMessageRepliesUseCase,
+  ISendMessageReplyUseCase,
+} from "@/application/ports/use-cases/message-reply";
+import { SendMessageReplyUseCase } from "@/application/use-cases/message-reply/SendMessageReplyUseCase";
+import { ListMessageRepliesUseCase } from "@/application/use-cases/message-reply/ListMessageRepliesUseCase";
 
 export const useCaseModule = new ContainerModule((options) => {
   // Regular Auth Use Cases
@@ -279,6 +285,14 @@ export const useCaseModule = new ContainerModule((options) => {
       TYPES.GetAttachmentDownloadUrlUseCase,
     )
     .to(GetAttachmentDownloadUrlUseCase);
+
+  //Reply
+  options
+    .bind<ISendMessageReplyUseCase>(TYPES.SendMessageReplyUseCase)
+    .to(SendMessageReplyUseCase);
+  options
+    .bind<IListMessageRepliesUseCase>(TYPES.ListMessageRepliesUseCase)
+    .to(ListMessageRepliesUseCase);
 
   //Tasks
   options
