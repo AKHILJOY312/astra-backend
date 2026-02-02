@@ -116,6 +116,7 @@ import {
   IAddCommentUseCase,
   ICreateTaskUseCase,
   IDeleteTaskUseCase,
+  IGetAllProjectTasksUseCase,
   IGetAttachmentUploadUrlUseCase,
   IGetProjectTasksUseCase,
   IGetTaskAttachmentDownloadUrlUseCase,
@@ -148,6 +149,7 @@ import {
 } from "@/application/ports/use-cases/message-reply";
 import { SendMessageReplyUseCase } from "@/application/use-cases/message-reply/SendMessageReplyUseCase";
 import { ListMessageRepliesUseCase } from "@/application/use-cases/message-reply/ListMessageRepliesUseCase";
+import { GetAllProjectTasksUseCase } from "@/application/use-cases/tasks/GetAllProjectTasksUseCase";
 
 export const useCaseModule = new ContainerModule((options) => {
   // Regular Auth Use Cases
@@ -321,6 +323,9 @@ export const useCaseModule = new ContainerModule((options) => {
   options
     .bind<IAddCommentUseCase>(TYPES.AddCommentUseCase)
     .to(AddCommentUseCase);
+  options
+    .bind<IGetAllProjectTasksUseCase>(TYPES.GetAllProjectTasksUseCase)
+    .to(GetAllProjectTasksUseCase);
 
   //search
   options

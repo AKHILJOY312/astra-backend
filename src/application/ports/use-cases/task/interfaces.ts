@@ -12,6 +12,7 @@ import {
   MemberSearchResponseDTO,
   GetTaskAttachmentDownloadUrlOutput,
   GetTaskRequestDTO,
+  AllProjectTasksDTO,
 } from "@/application/dto/task/taskDto";
 
 /* ─────────────────────────────
@@ -96,4 +97,8 @@ export interface IAddCommentUseCase {
     input: AddCommentRequestDTO,
     userId: string,
   ): Promise<CommentResponseDTO>;
+}
+
+export interface IGetAllProjectTasksUseCase {
+  execute(userId: string): Promise<AllProjectTasksDTO>;
 }

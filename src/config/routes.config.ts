@@ -56,6 +56,7 @@ export const API_ROUTES = {
       COMMENT: "/:projectId/tasks/:taskId/comment",
       ATTACHMENT_UPLOAD: "/:projectId/tasks/attachments/upload-url",
       MEMBERS_SEARCH: "/:projectId/tasks/members/search",
+      GET_ALL_TASKS: "/tasks",
     },
   },
 

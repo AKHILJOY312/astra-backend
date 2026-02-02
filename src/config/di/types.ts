@@ -131,6 +131,7 @@ const TYPES = {
   ),
   UpdateTaskUseCase: Symbol.for("UpdateTaskUseCase"),
   AddCommentUseCase: Symbol.for("AddCommentUseCase"),
+  GetAllProjectTasksUseCase: Symbol.for("GetAllProjectTasksUseCase"),
 
   //Search the user with the project
   SearchProjectMembersUseCase: Symbol.for("SearchProjectMembersUseCase"),
