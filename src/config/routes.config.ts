@@ -32,6 +32,7 @@ export const API_ROUTES = {
     PLANS: "/admin/plans",
     STATUS: "/:id/status",
     ROLE: "/:id/role",
+    BILLING: "/admin/billings",
   },
 
   USER: {

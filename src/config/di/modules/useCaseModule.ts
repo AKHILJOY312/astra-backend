@@ -150,6 +150,8 @@ import {
 import { SendMessageReplyUseCase } from "@/application/use-cases/message-reply/SendMessageReplyUseCase";
 import { ListMessageRepliesUseCase } from "@/application/use-cases/message-reply/ListMessageRepliesUseCase";
 import { GetAllProjectTasksUseCase } from "@/application/use-cases/tasks/GetAllProjectTasksUseCase";
+import { IGetUserPaymentDetailsUseCase } from "@/application/ports/use-cases/upgradetopremium/admin";
+import { GetUserPaymentDetailsUseCase } from "@/application/use-cases/upgradetopremium/admin/GetUserPaymentDetailsUseCase";
 
 export const useCaseModule = new ContainerModule((options) => {
   // Regular Auth Use Cases
@@ -181,6 +183,11 @@ export const useCaseModule = new ContainerModule((options) => {
   options
     .bind<IAssignAdminRoleUseCase>(TYPES.AssignAdminRoleUseCase)
     .to(AssignAdminRoleUseCase);
+
+  //Admin Billing Use case
+  options
+    .bind<IGetUserPaymentDetailsUseCase>(TYPES.GetUserPaymentDetailsUseCase)
+    .to(GetUserPaymentDetailsUseCase);
 
   //User Use Case
   options

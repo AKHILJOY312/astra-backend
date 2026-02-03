@@ -5,7 +5,7 @@ import {
   PaymentDoc,
 } from "@/infra/db/mongoose/models/PaymentModel";
 import { injectable } from "inversify";
-import { FilterQuery } from "mongoose";
+import mongoose, { FilterQuery } from "mongoose";
 
 @injectable()
 export class PaymentRepository implements IPaymentRepository {
@@ -136,5 +136,64 @@ export class PaymentRepository implements IPaymentRepository {
       data: docs.map(this.toEntity),
       total,
     };
+  }
+
+  async getAdminSummary(userId: string): Promise<any> {
+    const summary = await PaymentModel.aggregate([
+      { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "userData",
+        },
+      },
+      { $unwind: "$userData" },
+      {
+        $lookup: {
+          from: "usersubscriptions",
+          localField: "userId",
+          foreignField: "userId",
+          as: "subData",
+        },
+      },
+      { $unwind: { path: "$subData", preserveNullAndEmptyArrays: true } },
+      {
+        $group: {
+          _id: "$userId",
+          user: { $first: "$userData" },
+          subscription: { $first: "$subData" },
+          ltv: {
+            $sum: { $cond: [{ $eq: ["$status", "captured"] }, "$amount", 0] },
+          },
+          failedCount: {
+            $sum: { $cond: [{ $eq: ["$status", "failed"] }, 1, 0] },
+          },
+          totalTx: { $count: {} },
+          history: { $push: "$$ROOT" },
+        },
+      },
+      {
+        $project: {
+          userId: "$_id",
+          user: {
+            name: "$user.name",
+            email: "$user.email",
+            status: { $cond: ["$user.isBlocked", "suspended", "active"] },
+            signupDate: "$user.createdAt",
+          },
+          subscription: 1,
+          stats: {
+            ltv: "$ltv",
+            failedCount: "$failedCount",
+            totalTransactions: "$totalTx",
+          },
+          history: { $slice: ["$history", 10] },
+        },
+      },
+    ]);
+
+    return summary[0];
   }
 }

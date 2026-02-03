@@ -46,7 +46,7 @@ const TYPES = {
   TaskController: Symbol.for("TaskController"),
   MemberSearchController: Symbol.for("MemberSearchController"),
   MeetingController: Symbol.for("MeetingController"),
-
+  AdminBillingController: Symbol.for("AdminBillingController"),
   // Use Cases (User/Auth)
   RegisterUserUseCase: Symbol.for("RegisterUserUseCase"),
   VerifyEmailUseCase: Symbol.for("VerifyEmailUseCase"),
@@ -84,6 +84,9 @@ const TYPES = {
   SoftDeletePlan: Symbol.for("SoftDeletePlan"),
   GetPlansPaginated: Symbol.for("GetPlansPaginated"),
   GetAvailablePlansUseCase: Symbol.for("GetAvailablePlansUseCase"),
+
+  //Use Case ( Billing Admin)
+  GetUserPaymentDetailsUseCase: Symbol.for("GetUserPaymentDetailsUseCase"),
 
   // Use Cases (Project/Membership)
   CreateProjectUseCase: Symbol.for("CreateProjectUseCase"),

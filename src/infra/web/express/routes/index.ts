@@ -13,6 +13,7 @@ import { getSubscriptionRoutes } from "./subscription.routes";
 import { getUserRoutes } from "./user.routes";
 import { getAttachmentRoutes } from "./attachment.routes";
 import { getMeetingRoutes } from "./meeting.routes";
+import { getAdminbillingsRoutes } from "./admin/adminPaymentRoutes";
 
 const router = Router();
 
@@ -30,6 +31,7 @@ router.use(API_ROUTES.AUTH.ROOT, getAuthRoutes(container));
 router.use(API_ROUTES.ADMIN.AUTH, getAdminAuthRoutes(container));
 router.use(API_ROUTES.ADMIN.PLANS, getAdminPlanRoutes(container));
 router.use(API_ROUTES.ADMIN.USERS, getAdminUserRoutes(container));
+router.use(API_ROUTES.ADMIN.BILLING, getAdminbillingsRoutes(container));
 
 router.use(API_ROUTES.USER.ROOT, getUserRoutes(container));
 router.use(API_ROUTES.PROJECTS.ROOT, getProjectRoutes(container));
