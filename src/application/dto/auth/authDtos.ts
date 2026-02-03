@@ -17,6 +17,7 @@ export interface AdminUserDTO {
 }
 export interface AdminLoginResponseDTO {
   accessToken: string;
+  refreshToken: string;
   user: AdminUserDTO;
 }
 

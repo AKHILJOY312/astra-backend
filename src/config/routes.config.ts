@@ -4,9 +4,12 @@ export const API_ROUTES = {
   BASE: "/",
   AUTH: {
     ROOT: "/auth",
+    SESSION: "/session",
+
+    //old routes
     REGISTER: "/register",
     LOGIN: "/login",
-    LOGOUT: "/logout",
+    // LOGOUT: "/logout",
     REFRESH: "/refresh-token",
     ME: "/me",
     VERIFY_EMAIL: "/verify-email",

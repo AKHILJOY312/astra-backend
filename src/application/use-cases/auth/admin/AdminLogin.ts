@@ -15,7 +15,7 @@ import { AdminLoginResponseDTO } from "@/application/dto/auth/authDtos";
 export class AdminLogin implements IAdminLogin {
   constructor(
     @inject(TYPES.UserRepository) private _userRepo: IUserRepository,
-    @inject(TYPES.AuthService) private _authService: IAuthService,
+    @inject(TYPES.AuthService) private _authSvc: IAuthService,
   ) {}
 
   async execute(
@@ -29,20 +29,21 @@ export class AdminLogin implements IAdminLogin {
       throw new UnauthorizedError("Access denied. Admins only.");
     }
 
-    const isValid = await this._authService.comparePassword(
+    const isValid = await this._authSvc.comparePassword(
       password,
       user.password,
     );
     if (!isValid) throw new ValidationError("Invalid credentials");
 
-    const accessToken = this._authService.generateAccessToken(
+    const accessToken = this._authSvc.generateAccessToken(
       user.id!,
       user.email,
       user.securityStamp!,
     );
-
+    const refresh = this._authSvc.generateRefreshToken(user.id!);
     return {
       accessToken,
+      refreshToken: refresh,
       user: {
         id: user.id!,
         email: user.email,
