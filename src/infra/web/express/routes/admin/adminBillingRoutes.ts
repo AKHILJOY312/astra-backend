@@ -21,11 +21,15 @@ export function getAdminbillingsRoutes(container: Container): Router {
   router.use(protect, adminOnly);
 
   router
-    .route(API_ROUTES.ADMIN.ROOT)
+    .route(API_ROUTES.ADMIN.BILLING)
     .get(asyncHandler(adminBillingController.getPaymentOverview));
 
   router
-    .route(API_ROUTES.ADMIN.USERS)
+    .route(API_ROUTES.ADMIN.DETAILS)
     .get(asyncHandler(adminBillingController.userPaymentDetails));
+
+  router
+    .route(API_ROUTES.ADMIN.DASHBOARD)
+    .get(asyncHandler(adminBillingController.dashboardStats));
   return router;
 }

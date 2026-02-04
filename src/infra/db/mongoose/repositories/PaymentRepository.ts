@@ -247,4 +247,89 @@ export class PaymentRepository implements IPaymentRepository {
       totalRevenue: metadata.totalRevenue,
     };
   }
+
+  async getDashboardRevenueMetrics(today: Date, month: Date) {
+    const stats = await PaymentModel.aggregate([
+      {
+        $facet: {
+          // Section A: Revenue & Section C: Status
+          metrics: [
+            {
+              $group: {
+                _id: null,
+                todayRev: {
+                  $sum: {
+                    $cond: [
+                      {
+                        $and: [
+                          { $eq: ["$status", "captured"] },
+                          { $gte: ["$createdAt", today] },
+                        ],
+                      },
+                      "$amount",
+                      0,
+                    ],
+                  },
+                },
+                monthRev: {
+                  $sum: {
+                    $cond: [
+                      {
+                        $and: [
+                          { $eq: ["$status", "captured"] },
+                          { $gte: ["$createdAt", month] },
+                        ],
+                      },
+                      "$amount",
+                      0,
+                    ],
+                  },
+                },
+                failedCount: {
+                  $sum: { $cond: [{ $eq: ["$status", "failed"] }, 1, 0] },
+                },
+                pendingCount: {
+                  $sum: { $cond: [{ $eq: ["$status", "pending"] }, 1, 0] },
+                },
+              },
+            },
+          ],
+          // Section E: Plan Distribution
+          planDist: [
+            { $match: { status: "captured" } },
+            {
+              $group: {
+                _id: "$planName",
+                userCount: { $addToSet: "$userId" },
+                revenue: { $sum: "$amount" },
+              },
+            },
+            {
+              $project: {
+                planName: "$_id",
+                userCount: { $size: "$userCount" },
+                revenue: 1,
+                _id: 0,
+              },
+            },
+          ],
+        },
+      },
+    ]);
+
+    const m = stats[0].metrics[0] || {};
+    return {
+      mrr: m.monthRev || 0, // Basic MRR calculation (Total Monthly Captured)
+      today: m.todayRev || 0,
+      thisMonth: m.monthRev || 0,
+      changePercentage: 0, // Would require comparing to a previous period query
+      paymentStatus: {
+        successToday: 0, // Add count logic here
+        failedCount: m.failedCount || 0,
+        pendingCount: m.pendingCount || 0,
+        refundsMonth: 0,
+      },
+      planDistribution: stats[0].planDist,
+    };
+  }
 }

@@ -59,4 +59,52 @@ export class UserSubscriptionRepository implements IUserSubscriptionRepository {
     const doc = await UserSubscriptionModel.findByIdAndDelete(id);
     return doc ? toUserSubscriptionEntity(doc) : null;
   }
+  async getDashboardSubscriptionMetrics() {
+    const sevenDaysFromNow = new Date();
+    sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
+
+    const stats = await UserSubscriptionModel.aggregate([
+      {
+        $facet: {
+          statusCounts: [
+            {
+              $group: {
+                _id: "$status",
+                count: { $sum: 1 },
+              },
+            },
+          ],
+
+          churnedThisMonth: [
+            {
+              $match: {
+                status: "canceled",
+                updatedAt: { $gte: startOfMonth },
+              },
+            },
+            { $count: "count" },
+          ],
+        },
+      },
+    ]);
+
+    // const counts = stats[0].statusCounts;
+    // const active = counts.find((c) => c._id === "active")?.count || 0;
+    const active = 0;
+    // const canceled = stats[0].churnedThisMonth[0]?.count || 0;
+    const canceled = 0;
+
+    // Simple Churn Rate Calculation: (Canceled this month / Total Active at start)
+    const churnRate = active > 0 ? (canceled / (active + canceled)) * 100 : 0;
+
+    return {
+      totalActive: active,
+      canceledThisMonth: canceled,
+      churnRate: parseFloat(churnRate.toFixed(2)),
+    };
+  }
 }

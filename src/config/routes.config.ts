@@ -26,14 +26,16 @@ export const API_ROUTES = {
 
   ADMIN: {
     ROOT: "/",
+    MAIN: "/admin",
     BY_ID: "/:id",
     AUTH: "/admin/auth",
     USERS: "/admin/users",
     PLANS: "/admin/plans",
     STATUS: "/:id/status",
     ROLE: "/:id/role",
-    BILLING: "/admin/billings",
-    DETAILS: "/details",
+    BILLING: "/billings",
+    DETAILS: "/billings/details",
+    DASHBOARD: "/dashboard",
   },
 
   USER: {

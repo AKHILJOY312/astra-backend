@@ -39,4 +39,21 @@ export interface IPaymentRepository {
     limit: number,
     search?: string,
   ): Promise<any>;
+
+  getDashboardRevenueMetrics(
+    today: Date,
+    month: Date,
+  ): Promise<{
+    mrr: any;
+    today: any;
+    thisMonth: any;
+    changePercentage: any;
+    paymentStatus: {
+      successToday: any;
+      failedCount: any;
+      pendingCount: any;
+      refundsMonth: any;
+    };
+    planDistribution: any;
+  }>;
 }

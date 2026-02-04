@@ -168,4 +168,46 @@ export class UserRepository implements IUserRepository {
     await UserModel.deleteOne({ _id: userId }).exec();
     // Fixed: changed {userId} to {_id: userId} to match Mongo primary key
   }
+
+  async getDashboardUserMetrics(startOfToday: Date) {
+    const startOfWeek = new Date();
+    startOfWeek.setDate(startOfWeek.getDate() - 7);
+
+    const stats = await UserModel.aggregate([
+      {
+        $facet: {
+          totalUsers: [{ $count: "count" }],
+          newToday: [
+            { $match: { createdAt: { $gte: startOfToday } } },
+            { $count: "count" },
+          ],
+          newThisWeek: [
+            { $match: { createdAt: { $gte: startOfWeek } } },
+            { $count: "count" },
+          ],
+          // Active = logged in within last 30 days
+          activeUsers: [
+            {
+              $match: {
+                updatedAt: {
+                  $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+                },
+              },
+            },
+            { $count: "count" },
+          ],
+        },
+      },
+    ]);
+
+    const s = stats[0];
+    return {
+      total: s.totalUsers[0]?.count || 0,
+      newToday: s.newToday[0]?.count || 0,
+      newThisWeek: s.newThisWeek[0]?.count || 0,
+      activeUsers: s.activeUsers[0]?.count || 0,
+      inactiveUsers:
+        (s.totalUsers[0]?.count || 0) - (s.activeUsers[0]?.count || 0),
+    };
+  }
 }

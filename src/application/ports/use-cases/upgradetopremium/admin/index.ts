@@ -56,3 +56,40 @@ export interface IPaymentOverviewUseCase {
     search?: string,
   ): Promise<PaymentOverviewOutput>;
 }
+
+// src/application/ports/use-cases/dashboard/IGetAdminDashboardStatsUseCase.ts
+
+export interface DashboardStats {
+  revenue: {
+    mrr: number;
+    today: number;
+    thisMonth: number;
+    changePercentage: number;
+  };
+  subscriptions: {
+    totalActive: number;
+
+    churnRate: number;
+  };
+  payments: {
+    successToday: number;
+    failedCount: number;
+    pendingCount: number;
+    refundsMonth: number;
+  };
+  userMetrics: {
+    total: number;
+    newToday: number;
+    newThisWeek: number;
+  };
+  planDistribution: {
+    planName: string;
+    userCount: number;
+    revenue: number;
+  }[];
+  lastUpdated: Date;
+}
+
+export interface IGetAdminDashboardStatsUseCase {
+  execute(): Promise<DashboardStats>;
+}

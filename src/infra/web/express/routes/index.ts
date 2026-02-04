@@ -31,7 +31,7 @@ router.use(API_ROUTES.AUTH.ROOT, getAuthRoutes(container));
 router.use(API_ROUTES.ADMIN.AUTH, getAdminAuthRoutes(container));
 router.use(API_ROUTES.ADMIN.PLANS, getAdminPlanRoutes(container));
 router.use(API_ROUTES.ADMIN.USERS, getAdminUserRoutes(container));
-router.use(API_ROUTES.ADMIN.BILLING, getAdminbillingsRoutes(container));
+router.use(API_ROUTES.ADMIN.MAIN, getAdminbillingsRoutes(container));
 
 router.use(API_ROUTES.USER.ROOT, getUserRoutes(container));
 router.use(API_ROUTES.PROJECTS.ROOT, getProjectRoutes(container));

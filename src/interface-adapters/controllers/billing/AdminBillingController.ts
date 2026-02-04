@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/di/types";
 import {
+  IGetAdminDashboardStatsUseCase,
   IGetUserPaymentDetailsUseCase,
   IPaymentOverviewUseCase,
 } from "@/application/ports/use-cases/upgradetopremium/admin";
@@ -16,6 +17,9 @@ export class AdminBillingController {
 
     @inject(TYPES.PaymentOverviewUseCase)
     private _getOverviewUC: IPaymentOverviewUseCase,
+
+    @inject(TYPES.GetAdminDashboardStatsUseCase)
+    private _getDashboardUC: IGetAdminDashboardStatsUseCase,
   ) {}
 
   userPaymentDetails = async (req: Request, res: Response) => {
@@ -32,6 +36,11 @@ export class AdminBillingController {
 
     const result = await this._getOverviewUC.execute(page, limit, search);
 
+    res.json({ success: true, data: result });
+  };
+
+  dashboardStats = async (req: Request, res: Response) => {
+    const result = await this._getDashboardUC.execute();
     res.json({ success: true, data: result });
   };
 }

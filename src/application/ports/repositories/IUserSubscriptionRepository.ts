@@ -9,4 +9,10 @@ export interface IUserSubscriptionRepository {
   findByUserId(userId: string): Promise<UserSubscription | null>;
   findActiveByUserId(userId: string): Promise<UserSubscription | null>;
   findByRazorpayOrderId(orderId: string): Promise<UserSubscription | null>;
+
+  getDashboardSubscriptionMetrics(): Promise<{
+    totalActive: number;
+    canceledThisMonth: number;
+    churnRate: number;
+  }>;
 }

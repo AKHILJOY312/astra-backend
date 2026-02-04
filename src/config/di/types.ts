@@ -88,6 +88,7 @@ const TYPES = {
   //Use Case (Billing Admin)
   GetUserPaymentDetailsUseCase: Symbol.for("GetUserPaymentDetailsUseCase"),
   PaymentOverviewUseCase: Symbol.for("PaymentOverviewUseCase"),
+  GetAdminDashboardStatsUseCase: Symbol.for("GetAdminDashboardStatsUseCase"),
 
   // Use Cases (Project/Membership)
   CreateProjectUseCase: Symbol.for("CreateProjectUseCase"),

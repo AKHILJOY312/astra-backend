@@ -27,4 +27,12 @@ export interface IUserRepository {
   updateStatus(userId: string): Promise<void>;
   updateRole(userId: string): Promise<void>;
   updateSecurityStamp(userId: string, stamp: string): Promise<void>;
+
+  getDashboardUserMetrics(startOfToday: Date): Promise<{
+    total: number;
+    newToday: number;
+    newThisWeek: number;
+    activeUsers: number;
+    inactiveUsers: number;
+  }>;
 }
