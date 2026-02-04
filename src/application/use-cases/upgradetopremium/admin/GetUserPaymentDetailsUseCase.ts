@@ -3,23 +3,23 @@
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/di/types";
 import { NotFoundError } from "@/application/error/AppError";
-
-import { IPaymentRepository } from "@/application/ports/repositories/IPaymentRepository";
 import {
   IGetUserPaymentDetailsUseCase,
   UserBillingSummary,
 } from "@/application/ports/use-cases/upgradetopremium/admin";
+import { IPaymentAnalyticsRepository } from "@/application/ports/repositories/IPaymentAnalyticsRepository";
 
 @injectable()
 export class GetUserPaymentDetailsUseCase implements IGetUserPaymentDetailsUseCase {
   constructor(
-    @inject(TYPES.PaymentRepository) private _paymentRepo: IPaymentRepository,
+    @inject(TYPES.PaymentRepository)
+    private _analyticsRepo: IPaymentAnalyticsRepository,
   ) {}
 
   async execute(userId: string): Promise<UserBillingSummary> {
     // 1. Fetch the aggregated data from the Repository
     // This calls the MongoDB $lookup + $group query we designed
-    const summary = await this._paymentRepo.getAdminSummary(userId);
+    const summary = await this._analyticsRepo.getAdminSummary(userId);
 
     if (!summary) {
       throw new NotFoundError("User billing record not found");
@@ -37,12 +37,10 @@ export class GetUserPaymentDetailsUseCase implements IGetUserPaymentDetailsUseCa
       },
       subscription: {
         planName: summary.subscription?.planType || "Free/None",
-        amount: summary.subscription?.amount || 0,
-        currency: summary.subscription?.currency || "INR",
+
         status: summary.subscription?.status || "inactive",
         startDate: summary.subscription?.startDate,
         endDate: summary.subscription?.endDate,
-        trialEndDate: summary.subscription?.trialEndDate,
       },
       stats: {
         ltv: summary.stats.ltv,
@@ -50,8 +48,8 @@ export class GetUserPaymentDetailsUseCase implements IGetUserPaymentDetailsUseCa
         totalTransactions: summary.stats.totalTransactions,
       },
       // Transform raw DB history into Entity-compatible JSON
-      paymentHistory: summary.history.map((p: any) => ({
-        id: p._id.toString(),
+      paymentHistory: summary.history.map((p) => ({
+        _id: p._id.toString(),
         userId: p.userId.toString(),
         planId: p.planId,
         planName: p.planName,

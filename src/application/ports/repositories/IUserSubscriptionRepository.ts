@@ -11,8 +11,13 @@ export interface IUserSubscriptionRepository {
   findByRazorpayOrderId(orderId: string): Promise<UserSubscription | null>;
 
   getDashboardSubscriptionMetrics(): Promise<{
-    totalActive: number;
+    active: number;
+    pending: number;
+    canceled: number;
+    expired: number;
+    newThisMonth: number;
     canceledThisMonth: number;
+    expiringSoon: number;
     churnRate: number;
   }>;
 }

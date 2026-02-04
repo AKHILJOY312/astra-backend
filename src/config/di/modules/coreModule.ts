@@ -58,6 +58,8 @@ import { IMeetingService } from "@/application/ports/services/IMeetingService";
 import { LiveKitMeetingService } from "@/infra/services/LiveKitMeetingService";
 import { IMessageReplyRepository } from "@/application/ports/repositories/IMessageReplyRepository";
 import { MessageReplyRepository } from "@/infra/db/mongoose/repositories/MessageReplyRepository";
+import { IPaymentAnalyticsRepository } from "@/application/ports/repositories/IPaymentAnalyticsRepository";
+import { PaymentAnalyticsRepository } from "@/infra/db/mongoose/repositories/PaymentAnalyticsRepository";
 
 export const coreModule = new ContainerModule((options) => {
   //=================================================
@@ -135,7 +137,10 @@ export const coreModule = new ContainerModule((options) => {
     .bind<IMessageReplyRepository>(TYPES.MessageReplyRepository)
     .to(MessageReplyRepository)
     .inSingletonScope();
-
+  options
+    .bind<IPaymentAnalyticsRepository>(TYPES.PaymentAnalyticsRepository)
+    .to(PaymentAnalyticsRepository)
+    .inSingletonScope();
   //=================================================
   // Services (singletons)
   //=================================================

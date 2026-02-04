@@ -1,6 +1,6 @@
 // src/application/ports/use-cases/billing/IGetUserPaymentDetailsUseCase.ts
 
-import { PaymentProps } from "@/domain/entities/billing/Payment";
+import { PaymentStatus } from "@/domain/entities/billing/Payment";
 
 export interface UserBillingSummary {
   user: {
@@ -12,21 +12,34 @@ export interface UserBillingSummary {
   };
   subscription: {
     planName: string;
-    amount: number;
-    currency: string;
+    // amount: number;
+    // currency: string;
     status: string;
-    startDate: Date;
-    endDate?: Date;
-    trialEndDate?: Date;
+    startDate?: Date;
+    endDate?: Date | null;
   };
   stats: {
     ltv: number;
     failedCount: number;
     totalTransactions: number;
   };
-  paymentHistory: PaymentProps[];
+  paymentHistory: AdminPaymentHistoryRow[];
 }
-
+interface AdminPaymentHistoryRow {
+  _id: string;
+  userId: string;
+  planId?: string;
+  planName?: string;
+  amount: number;
+  currency: string;
+  status: PaymentStatus;
+  method?: string;
+  razorpayOrderId?: string;
+  razorpayPaymentId?: string;
+  invoiceNumber?: string;
+  billingSnapshot?: unknown;
+  createdAt: Date;
+}
 export interface IGetUserPaymentDetailsUseCase {
   execute(userId: string): Promise<UserBillingSummary>;
 }
@@ -57,36 +70,49 @@ export interface IPaymentOverviewUseCase {
   ): Promise<PaymentOverviewOutput>;
 }
 
-// src/application/ports/use-cases/dashboard/IGetAdminDashboardStatsUseCase.ts
-
 export interface DashboardStats {
   revenue: {
     mrr: number;
     today: number;
     thisMonth: number;
-    changePercentage: number;
+    monthOverMonthChange: number;
+    byPlan: {
+      planName: string;
+      userCount: number;
+      revenue: number;
+    }[];
   };
-  subscriptions: {
-    totalActive: number;
 
+  subscriptions: {
+    active: number;
+    pending: number;
+    canceled: number;
+    expired: number;
+    newThisMonth: number;
+    canceledThisMonth: number;
+    expiringSoon: number;
     churnRate: number;
   };
   payments: {
-    successToday: number;
-    failedCount: number;
-    pendingCount: number;
-    refundsMonth: number;
+    today: {
+      success: number;
+      failed: number;
+      pending: number;
+    };
+    thisMonth: {
+      refunds: number;
+    };
   };
-  userMetrics: {
+  users: {
     total: number;
-    newToday: number;
-    newThisWeek: number;
+    active: number;
+    inactive: number;
+    new: {
+      today: number;
+      thisWeek: number;
+    };
   };
-  planDistribution: {
-    planName: string;
-    userCount: number;
-    revenue: number;
-  }[];
+
   lastUpdated: Date;
 }
 

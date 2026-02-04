@@ -201,13 +201,22 @@ export class UserRepository implements IUserRepository {
     ]);
 
     const s = stats[0];
+    // return {
+    //   total: s.totalUsers[0]?.count || 0,
+    //   newToday: s.newToday[0]?.count || 0,
+    //   newThisWeek: s.newThisWeek[0]?.count || 0,
+    //   activeUsers: s.activeUsers[0]?.count || 0,
+    //   inactiveUsers:
+    //     (s.totalUsers[0]?.count || 0) - (s.activeUsers[0]?.count || 0),
+    // };
     return {
       total: s.totalUsers[0]?.count || 0,
-      newToday: s.newToday[0]?.count || 0,
-      newThisWeek: s.newThisWeek[0]?.count || 0,
-      activeUsers: s.activeUsers[0]?.count || 0,
-      inactiveUsers:
-        (s.totalUsers[0]?.count || 0) - (s.activeUsers[0]?.count || 0),
+      active: s.activeUsers[0]?.count || 0,
+      inactive: (s.totalUsers[0]?.count || 0) - (s.activeUsers[0]?.count || 0),
+      new: {
+        today: s.newToday[0]?.count || 0,
+        thisWeek: s.newThisWeek[0]?.count || 0,
+      },
     };
   }
 }

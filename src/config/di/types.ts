@@ -18,7 +18,7 @@ const TYPES = {
   MeetingRepository: Symbol.for("MeetingRepository"),
   CommentRepository: Symbol.for("CommentRepository"),
   MessageReplyRepository: Symbol.for("MessageReplyRepository"),
-
+  PaymentAnalyticsRepository: Symbol.for("PaymentAnalyticsRepository"),
   // Services
   UserService: Symbol.for("UserService"),
   AuthService: Symbol.for("AuthService"), // For JwtAuthService

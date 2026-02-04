@@ -2,18 +2,19 @@
 
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/di/types";
-import { IPaymentRepository } from "@/application/ports/repositories/IPaymentRepository";
 import { IUserSubscriptionRepository } from "@/application/ports/repositories/IUserSubscriptionRepository";
 import { IUserRepository } from "@/application/ports/repositories/IUserRepository";
 import {
   DashboardStats,
   IGetAdminDashboardStatsUseCase,
 } from "@/application/ports/use-cases/upgradetopremium/admin";
+import { IPaymentAnalyticsRepository } from "@/application/ports/repositories/IPaymentAnalyticsRepository";
 
 @injectable()
 export class GetAdminDashboardStatsUseCase implements IGetAdminDashboardStatsUseCase {
   constructor(
-    @inject(TYPES.PaymentRepository) private _paymentRepo: IPaymentRepository,
+    @inject(TYPES.PaymentRepository)
+    private _analyticsRepo: IPaymentAnalyticsRepository,
     @inject(TYPES.UserSubscriptionRepository)
     private _subRepo: IUserSubscriptionRepository,
     @inject(TYPES.UserRepository) private _userRepo: IUserRepository,
@@ -29,17 +30,19 @@ export class GetAdminDashboardStatsUseCase implements IGetAdminDashboardStatsUse
 
     // Run parallel queries for speed
     const [revStats, subStats, userStats] = await Promise.all([
-      this._paymentRepo.getDashboardRevenueMetrics(startOfToday, startOfMonth),
+      this._analyticsRepo.getDashboardRevenueMetrics(
+        startOfToday,
+        startOfMonth,
+      ),
       this._subRepo.getDashboardSubscriptionMetrics(),
       this._userRepo.getDashboardUserMetrics(startOfToday),
     ]);
 
     return {
-      revenue: revStats,
+      revenue: revStats.revenue,
       subscriptions: subStats,
       payments: revStats.paymentStatus,
-      userMetrics: userStats,
-      planDistribution: revStats.planDistribution,
+      users: userStats,
       lastUpdated: new Date(),
     };
   }

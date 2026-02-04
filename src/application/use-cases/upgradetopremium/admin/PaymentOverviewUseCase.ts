@@ -2,17 +2,17 @@
 
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/di/types";
-
-import { IPaymentRepository } from "@/application/ports/repositories/IPaymentRepository";
 import {
   IPaymentOverviewUseCase,
   PaymentOverviewOutput,
 } from "@/application/ports/use-cases/upgradetopremium/admin";
+import { IPaymentAnalyticsRepository } from "@/application/ports/repositories/IPaymentAnalyticsRepository";
 
 @injectable()
 export class PaymentOverviewUseCase implements IPaymentOverviewUseCase {
   constructor(
-    @inject(TYPES.PaymentRepository) private _paymentRepo: IPaymentRepository,
+    @inject(TYPES.PaymentRepository)
+    private _analyticsRepo: IPaymentAnalyticsRepository,
   ) {}
 
   async execute(
@@ -22,11 +22,11 @@ export class PaymentOverviewUseCase implements IPaymentOverviewUseCase {
   ): Promise<PaymentOverviewOutput> {
     // 1. Fetch data through the repository's optimized overview method
     const { data, total, totalRevenue } =
-      await this._paymentRepo.getPaymentsOverview(page, limit, search);
+      await this._analyticsRepo.getPaymentsOverview(page, limit, search);
 
     // 2. Map raw database results to a clean Overview Item structure
-    const users = data.map((item: any) => ({
-      userId: item.userId,
+    const users = data.map((item) => ({
+      userId: item._id,
       userName: item.userName,
       userEmail: item.userEmail,
       planName: item.planName || "N/A",

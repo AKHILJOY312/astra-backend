@@ -30,9 +30,11 @@ export interface IUserRepository {
 
   getDashboardUserMetrics(startOfToday: Date): Promise<{
     total: number;
-    newToday: number;
-    newThisWeek: number;
-    activeUsers: number;
-    inactiveUsers: number;
+    active: number;
+    inactive: number;
+    new: {
+      today: number;
+      thisWeek: number;
+    };
   }>;
 }

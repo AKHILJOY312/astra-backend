@@ -33,27 +33,4 @@ export interface IPaymentRepository {
   }>;
   findByRazorpayOrderId(orderId: string): Promise<Payment | null>;
   countAll(): Promise<number>; // Used for Invoice numbering
-  getAdminSummary(userId: string): Promise<any>;
-  getPaymentsOverview(
-    page: number,
-    limit: number,
-    search?: string,
-  ): Promise<any>;
-
-  getDashboardRevenueMetrics(
-    today: Date,
-    month: Date,
-  ): Promise<{
-    mrr: any;
-    today: any;
-    thisMonth: any;
-    changePercentage: any;
-    paymentStatus: {
-      successToday: any;
-      failedCount: any;
-      pendingCount: any;
-      refundsMonth: any;
-    };
-    planDistribution: any;
-  }>;
 }
