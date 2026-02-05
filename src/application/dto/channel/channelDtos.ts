@@ -32,3 +32,15 @@ export interface EditChannelDTO {
   visibleToRoles?: string[];
   permissionsByRole?: Record<string, "view" | "message" | "manager">;
 }
+
+export interface ChannelResponseDto {
+  id: string;
+  projectId: string;
+  channelName: string;
+  description: string;
+  createdBy: string;
+  visibleToRoles: string[];
+  permissionsByRole: Record<string, "view" | "message" | "manager">;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
