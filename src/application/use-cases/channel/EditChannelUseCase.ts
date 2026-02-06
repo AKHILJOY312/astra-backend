@@ -9,7 +9,11 @@ import {
   UnauthorizedError,
 } from "@/application/error/AppError";
 import { IEditChannelUseCase } from "@/application/ports/use-cases/channel/IEditChannelUseCase";
-import { EditChannelDTO } from "@/application/dto/channel/channelDtos";
+import {
+  ChannelResponseDto,
+  EditChannelDTO,
+} from "@/application/dto/channel/channelDtos";
+import { Channel } from "@/domain/entities/channel/Channel";
 
 @injectable()
 export class EditChannelUseCase implements IEditChannelUseCase {
@@ -57,7 +61,23 @@ export class EditChannelUseCase implements IEditChannelUseCase {
     if (description !== undefined) channel.updateDescription(description);
     if (visibleToRoles) channel.updateVisibility(visibleToRoles);
     if (permissionsByRole) channel.updatePermissions(permissionsByRole);
-
-    return await this._channelRepo.update(channel);
+    const result = await this._channelRepo.update(channel);
+    if (!result) {
+      throw new Error("Channel update not complete, Please try again");
+    }
+    return this.toResponseDto(result);
+  }
+  private toResponseDto(channel: Channel): ChannelResponseDto {
+    return {
+      id: channel.id!,
+      projectId: channel.projectId,
+      channelName: channel.channelName,
+      description: channel.description || "",
+      createdBy: channel.createdBy,
+      visibleToRoles: channel.visibleToRoles,
+      permissionsByRole: channel.permissionsByRole,
+      createdAt: channel.createdAt,
+      updatedAt: channel.updatedAt,
+    };
   }
 }

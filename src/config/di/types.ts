@@ -17,7 +17,8 @@ const TYPES = {
   TaskAttachmentRepository: Symbol.for("TaskAttachmentRepository"),
   MeetingRepository: Symbol.for("MeetingRepository"),
   CommentRepository: Symbol.for("CommentRepository"),
-
+  MessageReplyRepository: Symbol.for("MessageReplyRepository"),
+  PaymentAnalyticsRepository: Symbol.for("PaymentAnalyticsRepository"),
   // Services
   UserService: Symbol.for("UserService"),
   AuthService: Symbol.for("AuthService"), // For JwtAuthService
@@ -45,7 +46,7 @@ const TYPES = {
   TaskController: Symbol.for("TaskController"),
   MemberSearchController: Symbol.for("MemberSearchController"),
   MeetingController: Symbol.for("MeetingController"),
-
+  AdminBillingController: Symbol.for("AdminBillingController"),
   // Use Cases (User/Auth)
   RegisterUserUseCase: Symbol.for("RegisterUserUseCase"),
   VerifyEmailUseCase: Symbol.for("VerifyEmailUseCase"),
@@ -84,6 +85,11 @@ const TYPES = {
   GetPlansPaginated: Symbol.for("GetPlansPaginated"),
   GetAvailablePlansUseCase: Symbol.for("GetAvailablePlansUseCase"),
 
+  //Use Case (Billing Admin)
+  GetUserPaymentDetailsUseCase: Symbol.for("GetUserPaymentDetailsUseCase"),
+  PaymentOverviewUseCase: Symbol.for("PaymentOverviewUseCase"),
+  GetAdminDashboardStatsUseCase: Symbol.for("GetAdminDashboardStatsUseCase"),
+
   // Use Cases (Project/Membership)
   CreateProjectUseCase: Symbol.for("CreateProjectUseCase"),
   UpdateProjectUseCase: Symbol.for("UpdateProjectUseCase"),
@@ -115,6 +121,10 @@ const TYPES = {
     "GetAttachmentDownloadUrlUseCase",
   ),
 
+  //Reply
+  SendMessageReplyUseCase: Symbol.for("SendMessageReplyUseCase"),
+  ListMessageRepliesUseCase: Symbol.for("ListMessageRepliesUseCase"),
+
   //Tasks
   CreateTaskUseCase: Symbol.for("CreateTaskUseCase"),
   DeleteTaskUseCase: Symbol.for("DeleteTaskUseCase"),
@@ -126,6 +136,7 @@ const TYPES = {
   ),
   UpdateTaskUseCase: Symbol.for("UpdateTaskUseCase"),
   AddCommentUseCase: Symbol.for("AddCommentUseCase"),
+  GetAllProjectTasksUseCase: Symbol.for("GetAllProjectTasksUseCase"),
 
   //Search the user with the project
   SearchProjectMembersUseCase: Symbol.for("SearchProjectMembersUseCase"),

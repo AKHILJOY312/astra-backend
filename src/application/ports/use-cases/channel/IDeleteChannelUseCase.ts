@@ -1,6 +1,8 @@
-import { Channel } from "@/domain/entities/channel/Channel";
+import { ChannelResponseDto } from "@/application/dto/channel/channelDtos";
 
-// src/core/ports/useCases/IDeleteChannelUseCase.ts
 export interface IDeleteChannelUseCase {
-  execute(channelId: string, userId: string): Promise<Channel | null>;
+  execute(
+    channelId: string,
+    userId: string,
+  ): Promise<ChannelResponseDto | null>;
 }

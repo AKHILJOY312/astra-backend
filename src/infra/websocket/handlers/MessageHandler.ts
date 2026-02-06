@@ -4,6 +4,9 @@ import { BadRequestError } from "@/application/error/AppError";
 import { Server } from "socket.io";
 import { ISendMessageUseCase } from "@/application/ports/use-cases/message/ISendMessageUseCase";
 import { AttachmentInput } from "@/application/dto/message/messageDtos";
+import { ISendMessageReplyUseCase } from "@/application/ports/use-cases/message-reply";
+import { logger } from "@/infra/logger/logger";
+import { SendMessageReplyInputDTO } from "@/application/dto/message/messageReplyDTOs";
 
 interface SendMessagePayload {
   channelId: string;
@@ -12,10 +15,19 @@ interface SendMessagePayload {
   attachments?: AttachmentInput[];
 }
 
+interface SendReplyPayload {
+  projectId: string;
+  channelId: string;
+  parentMessageId: string;
+  senderId: string;
+  text: string;
+}
+
 export class MessageHandler extends BaseSocketHandler {
   constructor(
     socket: AuthenticatedSocket,
     private sendMessageUC: ISendMessageUseCase,
+    private sendMessageReplyUC: ISendMessageReplyUseCase,
     private io: Server,
   ) {
     super(socket);
@@ -41,12 +53,40 @@ export class MessageHandler extends BaseSocketHandler {
         // Broadcast to room
         this.io.to(payload.channelId).emit("message:new", message);
       } catch (err) {
-        const errorMsg =
-          err instanceof BadRequestError
-            ? err.message
-            : "Failed to send message";
-        this.socket.emit("message:error", errorMsg);
+        this.handleError(err, "Failed to send message");
       }
     });
+
+    //messageReply
+    this.socket.on("message:reply", async (payload: SendReplyPayload) => {
+      const userId = this.socket.data.user.id;
+
+      if (!payload?.channelId || !payload?.parentMessageId || !payload?.text) {
+        this.socket.emit("message:error", "Invalid reply payload");
+        return;
+      }
+      try {
+        const replyDTO: SendMessageReplyInputDTO = {
+          projectId: payload.projectId,
+          channelId: payload.channelId,
+          parentMessageId: payload.parentMessageId,
+          senderId: userId,
+          text: payload.text.trim(),
+        };
+
+        const reply = await this.sendMessageReplyUC.execute(replyDTO);
+
+        // Broadcast the reply to everyone in the channel
+        this.io.to(payload.channelId).emit("message:reply:new", reply);
+      } catch (err) {
+        this.handleError(err, "Failed to send reply");
+      }
+    });
+  }
+
+  private handleError(err: unknown, defaultMsg: string): void {
+    const errorMsg = err instanceof BadRequestError ? err.message : defaultMsg;
+    this.socket.emit("message:error", errorMsg);
+    logger.error(`[MessageHandler Error]: `, err);
   }
 }

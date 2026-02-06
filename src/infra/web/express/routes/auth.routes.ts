@@ -13,61 +13,45 @@ export function getAuthRoutes(container: Container): Router {
   const authController = container.get<AuthController>(TYPES.AuthController);
 
   const protect = container.get<ReturnType<typeof createProtectMiddleware>>(
-    TYPES.ProtectMiddleware
+    TYPES.ProtectMiddleware,
   );
 
-  router.post(
-    API_ROUTES.AUTH.REGISTER,
-    asyncHandler(authController.register.bind(authController))
-  );
-  router.get(
-    API_ROUTES.AUTH.VERIFY_EMAIL,
-    asyncHandler(authController.verifyEmail.bind(authController))
-  );
-  router.post(
-    API_ROUTES.AUTH.LOGIN,
-    asyncHandler(authController.login.bind(authController))
-  );
-  router.post(
-    API_ROUTES.AUTH.REFRESH,
-    asyncHandler(authController.refreshToken.bind(authController))
-  );
-  router.post(
-    API_ROUTES.AUTH.LOGOUT,
-    authController.logout.bind(authController)
-  );
-  router.get(
-    API_ROUTES.AUTH.ME,
-    protect,
-    asyncHandler(authController.me.bind(authController))
-  );
-  router.post(
-    API_ROUTES.AUTH.FORGOT_PASSWORD,
-    asyncHandler(authController.forgotPassword.bind(authController))
-  );
-  router.get(
-    API_ROUTES.AUTH.VERIFY_RESET_TOKEN,
-    asyncHandler(authController.verifyResetToken.bind(authController))
-  );
-  router.post(
-    API_ROUTES.AUTH.RESET_PASSWORD,
-    asyncHandler(authController.resetPassword.bind(authController))
-  );
+  router
+    .route(API_ROUTES.AUTH.SESSION)
+    .post(asyncHandler(authController.login.bind(authController)))
+    .delete(authController.logout.bind(authController));
+
+  router
+    .route(API_ROUTES.AUTH.ME)
+    .get(protect, asyncHandler(authController.me.bind(authController)));
+
+  router
+    .route(API_ROUTES.AUTH.REGISTER)
+    .post(asyncHandler(authController.register.bind(authController)))
+    .get(asyncHandler(authController.verifyEmail.bind(authController)));
+
+  router
+    .route(API_ROUTES.AUTH.REFRESH)
+    .post(asyncHandler(authController.refreshToken.bind(authController)));
+
+  router
+    .route(API_ROUTES.AUTH.RESET_PASSWORD)
+    .post(asyncHandler(authController.forgotPassword.bind(authController)))
+    .get(asyncHandler(authController.verifyResetToken.bind(authController)))
+    .put(asyncHandler(authController.resetPassword.bind(authController)));
 
   router.get(
     API_ROUTES.AUTH.GOOGLE.ROOT,
-    authController.googleLogin.bind(authController)
+    authController.googleLogin.bind(authController),
   );
-
   router.get(
     API_ROUTES.AUTH.GOOGLE.PASSPORT,
-    passport.authenticate("google", { scope: ["profile", "email"] })
+    passport.authenticate("google", { scope: ["profile", "email"] }),
   );
-
   router.get(
     API_ROUTES.AUTH.GOOGLE.CALLBACK,
     passport.authenticate("google", { session: false }),
-    authController.googleCallback.bind(authController)
+    authController.googleCallback.bind(authController),
   );
 
   return router;

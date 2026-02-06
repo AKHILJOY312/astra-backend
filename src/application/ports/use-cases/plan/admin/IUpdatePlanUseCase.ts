@@ -1,10 +1,11 @@
 // src/application/ports/useCases/IUpdatePlan.ts
 
 // import { UpdatePlanDto } from "@/application/dto/plan/CreatePlanDto";
-import { UpdatePlanDto } from "@/application/dto/plan/UpdatePlanDto";
-import { Plan } from "@/domain/entities/billing/Plan";
+import { PlanResponseDto } from "@/application/dto/plan";
+import { UpdatePlanDto } from "@/application/dto/plan";
+
 // import { PlanResponseDTO } from "./ICreatePlanUseCase";
 
 export interface IUpdatePlan {
-  execute(dto: UpdatePlanDto): Promise<Plan | null>;
+  execute(dto: UpdatePlanDto): Promise<PlanResponseDto | null>;
 }

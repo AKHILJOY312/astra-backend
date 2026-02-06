@@ -9,6 +9,8 @@ import {
   UnauthorizedError,
 } from "@/application/error/AppError";
 import { IDeleteChannelUseCase } from "@/application/ports/use-cases/channel/IDeleteChannelUseCase";
+import { Channel } from "@/domain/entities/channel/Channel";
+import { ChannelResponseDto } from "@/application/dto/channel/channelDtos";
 
 @injectable()
 export class DeleteChannelUseCase implements IDeleteChannelUseCase {
@@ -30,7 +32,25 @@ export class DeleteChannelUseCase implements IDeleteChannelUseCase {
     if (!membership || membership.role !== "manager") {
       throw new UnauthorizedError("Only project admins can delete channels");
     }
+    const result = await this._channelRepo.delete(channelId);
 
-    return await this._channelRepo.delete(channelId);
+    if (!result) {
+      throw new BadRequestError("Channel not Deleted");
+    }
+    return this.toResponseDto(result);
+  }
+
+  private toResponseDto(channel: Channel): ChannelResponseDto {
+    return {
+      id: channel.id!,
+      projectId: channel.projectId,
+      channelName: channel.channelName,
+      description: channel.description || "",
+      createdBy: channel.createdBy,
+      visibleToRoles: channel.visibleToRoles,
+      permissionsByRole: channel.permissionsByRole,
+      createdAt: channel.createdAt,
+      updatedAt: channel.updatedAt,
+    };
   }
 }

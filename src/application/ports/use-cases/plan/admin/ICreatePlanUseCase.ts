@@ -1,7 +1,7 @@
 // src/application/ports/useCases/ICreatePlan.ts
 
-import { CreatePlanDto } from "@/application/dto/plan/CreatePlanDto";
-import { Plan } from "@/domain/entities/billing/Plan";
+import { PlanResponseDto } from "@/application/dto/plan";
+import { CreatePlanDto } from "@/application/dto/plan";
 
 export interface PlanResponseDTO {
   id: string;
@@ -21,5 +21,5 @@ export interface PlanResponseDTO {
 }
 
 export interface ICreatePlan {
-  execute(dto: CreatePlanDto): Promise<Plan>;
+  execute(dto: CreatePlanDto): Promise<PlanResponseDto>;
 }

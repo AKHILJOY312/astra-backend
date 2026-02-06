@@ -7,6 +7,7 @@ import { AUTH_MESSAGES } from "@/interface-adapters/http/constants/messages";
 import { IAdminLogin } from "@/application/ports/use-cases/auth/admin/IAdminLoginUseCase";
 import { IAdminForgotPassword } from "@/application/ports/use-cases/auth/admin/IAdminForgotPasswordUseCase";
 import { IAdminResetPassword } from "@/application/ports/use-cases/auth/admin/IAdminResetPasswordUseCase";
+import { setRefreshTokenCookie } from "@/infra/web/express/utils/cookieUtils";
 
 @injectable()
 export class AdminAuthController {
@@ -21,6 +22,7 @@ export class AdminAuthController {
   login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
     const result = await this._adminLogin.execute(email, password);
+    setRefreshTokenCookie(res, result.refreshToken);
     res.json(result);
   };
 

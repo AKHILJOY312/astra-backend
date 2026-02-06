@@ -1,6 +1,8 @@
 export interface MessageReplyProps {
   id: string;
   parentMessageId: string;
+  channelId: string;
+  projectId: string;
   senderId: string;
   text: string;
   createdAt: string;
@@ -20,7 +22,12 @@ export class MessageReply {
   get parentMessageId(): string {
     return this.props.parentMessageId;
   }
-
+  get channelId(): string {
+    return this.props.channelId;
+  }
+  get projectId(): string {
+    return this.props.projectId;
+  }
   get senderId(): string {
     return this.props.senderId;
   }

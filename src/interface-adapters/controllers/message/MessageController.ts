@@ -1,4 +1,5 @@
 import { BadRequestError } from "@/application/error/AppError";
+import { IListMessageRepliesUseCase } from "@/application/ports/use-cases/message-reply";
 import { IGenerateUploadUrlUseCase } from "@/application/ports/use-cases/message/IGenerateUploadUrlUseCase";
 import { IGetAttachmentDownloadUrlUseCase } from "@/application/ports/use-cases/message/IGetAttachmentDownloadUrlUseCase";
 import { IListMessagesUseCase } from "@/application/ports/use-cases/message/IListMessagesUseCase";
@@ -22,6 +23,8 @@ export class MessageController {
     private _getAttachmentDownloadUrlUC: IGetAttachmentDownloadUrlUseCase,
     @inject(TYPES.GetTaskAttachmentDownloadUrlUseCase)
     private _getTaskAttachmentDownloadUrlUC: IGetTaskAttachmentDownloadUrlUseCase,
+    @inject(TYPES.ListMessageRepliesUseCase)
+    private _listRepliesUC: IListMessageRepliesUseCase,
   ) {}
 
   listMessagesPerChannel = async (req: Request, res: Response) => {
@@ -110,6 +113,22 @@ export class MessageController {
     return res.json({
       success: true,
       data: result,
+    });
+  };
+  listReplyToMessage = async (req: Request, res: Response) => {
+    const messageId = req.params.messageId;
+    const cursor = req.query.cursor as string | undefined;
+    const limit =
+      typeof req.query.limit === "string" ? Number(req.query.limit) : 20;
+
+    const replies = await this._listRepliesUC.execute({
+      messageId,
+      limit,
+      cursor,
+    });
+    return res.json({
+      success: true,
+      data: replies,
     });
   };
 }

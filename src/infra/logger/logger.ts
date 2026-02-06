@@ -1,11 +1,6 @@
-// import { Request, Response, NextFunction } from "express";
-
-// src/utils/logger.ts
 import winston from "winston";
 import morgan from "morgan";
-// import crypto from "crypto";
 import DailyRotateFile from "winston-daily-rotate-file";
-
 import { ENV } from "@/config/env.config";
 
 /**
@@ -22,7 +17,6 @@ const LOG_LEVEL =
  * -----------------------------
  */
 
-// Pretty console logs (development)
 const consoleFormat = winston.format.combine(
   winston.format.colorize(),
   winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
@@ -33,7 +27,6 @@ const consoleFormat = winston.format.combine(
   }),
 );
 
-// Structured JSON logs (files / production)
 const fileFormat = winston.format.combine(
   winston.format.timestamp(),
   winston.format.errors({ stack: true }),
@@ -95,7 +88,6 @@ export const logger = winston.createLogger({
   ],
 });
 
-// Console logging only in development
 if (ENV.NODE_ENV !== "production") {
   logger.add(
     new winston.transports.Console({
@@ -110,16 +102,6 @@ if (ENV.NODE_ENV !== "production") {
  * -----------------------------
  */
 
-// export const requestIdMiddleware = (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction,
-// ) => {
-//   req.requestId = crypto.randomUUID();
-//   res.setHeader("X-Request-Id", req.requestId);
-//   next();
-// };
-
 /**
  * -----------------------------
  * 5. Morgan → Winston (Structured)
@@ -128,7 +110,6 @@ if (ENV.NODE_ENV !== "production") {
 export const morganMiddleware = morgan(
   (tokens, req, res) =>
     JSON.stringify({
-      // requestId: (req as Request).requestId,
       method: tokens.method(req, res),
       url: tokens.url(req, res),
       status: Number(tokens.status(req, res)),

@@ -6,7 +6,7 @@ import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 dotenv.config();
-
+import { ENV } from "@/config/env.config";
 import routes from "@/infra/web/express/routes/index";
 import { connectDB } from "@/config/database";
 import { setupGoogleStrategy } from "../passport/googleStrategy";
@@ -16,7 +16,6 @@ import { createSocketServer } from "../websocket/SocketServer";
 import { container } from "@/config/di/container";
 import { globalErrorHandler } from "./express/middleware/globalErrorHandler";
 import { logger, morganMiddleware } from "../logger/logger";
-import { ENV } from "@/config/env.config";
 
 const app = express();
 const server = http.createServer(app);

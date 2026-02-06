@@ -4,9 +4,12 @@ export const API_ROUTES = {
   BASE: "/",
   AUTH: {
     ROOT: "/auth",
+    SESSION: "/session",
+
+    //old routes
     REGISTER: "/register",
     LOGIN: "/login",
-    LOGOUT: "/logout",
+    // LOGOUT: "/logout",
     REFRESH: "/refresh-token",
     ME: "/me",
     VERIFY_EMAIL: "/verify-email",
@@ -23,12 +26,16 @@ export const API_ROUTES = {
 
   ADMIN: {
     ROOT: "/",
+    MAIN: "/admin",
     BY_ID: "/:id",
     AUTH: "/admin/auth",
     USERS: "/admin/users",
     PLANS: "/admin/plans",
     STATUS: "/:id/status",
     ROLE: "/:id/role",
+    BILLING: "/billings",
+    DETAILS: "/billings/details",
+    DASHBOARD: "/dashboard",
   },
 
   USER: {
@@ -56,6 +63,7 @@ export const API_ROUTES = {
       COMMENT: "/:projectId/tasks/:taskId/comment",
       ATTACHMENT_UPLOAD: "/:projectId/tasks/attachments/upload-url",
       MEMBERS_SEARCH: "/:projectId/tasks/members/search",
+      GET_ALL_TASKS: "/tasks",
     },
   },
 

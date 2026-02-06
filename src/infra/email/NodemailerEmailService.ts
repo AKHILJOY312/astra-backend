@@ -18,7 +18,7 @@ export class NodemailerEmailService implements IEmailService {
 
     if (!email || !pass) {
       throw new Error(
-        "NODEMAILER_EMAIL and NODEMAILER_PASS must be defined in .env",
+        "NODEMAILER_EMAIL and NODEMAILER_PASSWORD must be defined in .env",
       );
     }
 
@@ -166,14 +166,19 @@ export class NodemailerEmailService implements IEmailService {
     }
   }
 
-  async sendPasswordReset(email: string, token: string): Promise<void> {
-    const resetUrl = `${this.clientUrl}/reset-password?token=${token}`;
-    console.debug("User reset password url:", resetUrl);
+  async sendPasswordReset(
+    email: string,
+    token: string,
+    resetUrl: string,
+  ): Promise<void> {
+    const url = resetUrl ?? `${this.clientUrl}/reset-password?token=${token}`;
+
+    console.debug("User reset password url:", url);
     const mailOptions: SendMailOptions = {
       from: `"Astra" <${this.fromEmail}>`,
       to: email,
       subject: "Reset Your Password",
-      html: this.getPasswordResetHtml(resetUrl),
+      html: this.getPasswordResetHtml(url),
     };
 
     try {

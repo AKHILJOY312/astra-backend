@@ -116,6 +116,7 @@ import {
   IAddCommentUseCase,
   ICreateTaskUseCase,
   IDeleteTaskUseCase,
+  IGetAllProjectTasksUseCase,
   IGetAttachmentUploadUrlUseCase,
   IGetProjectTasksUseCase,
   IGetTaskAttachmentDownloadUrlUseCase,
@@ -142,6 +143,21 @@ import { JoinMeetingUseCase } from "@/application/use-cases/meeting/JoinMeetingU
 import { LeaveMeetingUseCase } from "@/application/use-cases/meeting/LeaveMeetingUseCase";
 import { AddCommentUseCase } from "@/application/use-cases/tasks/AddCommandUseCase";
 import { GetMeetingTokenUseCase } from "@/application/use-cases/meeting/GetMeetingTokenUseCase";
+import {
+  IListMessageRepliesUseCase,
+  ISendMessageReplyUseCase,
+} from "@/application/ports/use-cases/message-reply";
+import { SendMessageReplyUseCase } from "@/application/use-cases/message-reply/SendMessageReplyUseCase";
+import { ListMessageRepliesUseCase } from "@/application/use-cases/message-reply/ListMessageRepliesUseCase";
+import { GetAllProjectTasksUseCase } from "@/application/use-cases/tasks/GetAllProjectTasksUseCase";
+import {
+  IGetAdminDashboardStatsUseCase,
+  IGetUserPaymentDetailsUseCase,
+  IPaymentOverviewUseCase,
+} from "@/application/ports/use-cases/upgradetopremium/admin";
+import { GetUserPaymentDetailsUseCase } from "@/application/use-cases/upgradetopremium/admin/GetUserPaymentDetailsUseCase";
+import { PaymentOverviewUseCase } from "@/application/use-cases/upgradetopremium/admin/PaymentOverviewUseCase";
+import { GetAdminDashboardStatsUseCase } from "@/application/use-cases/upgradetopremium/admin/GetAdminDashboardStatsUseCase";
 
 export const useCaseModule = new ContainerModule((options) => {
   // Regular Auth Use Cases
@@ -173,6 +189,17 @@ export const useCaseModule = new ContainerModule((options) => {
   options
     .bind<IAssignAdminRoleUseCase>(TYPES.AssignAdminRoleUseCase)
     .to(AssignAdminRoleUseCase);
+
+  //Admin Billing Use case
+  options
+    .bind<IGetUserPaymentDetailsUseCase>(TYPES.GetUserPaymentDetailsUseCase)
+    .to(GetUserPaymentDetailsUseCase);
+  options
+    .bind<IPaymentOverviewUseCase>(TYPES.PaymentOverviewUseCase)
+    .to(PaymentOverviewUseCase);
+  options
+    .bind<IGetAdminDashboardStatsUseCase>(TYPES.GetAdminDashboardStatsUseCase)
+    .to(GetAdminDashboardStatsUseCase);
 
   //User Use Case
   options
@@ -280,6 +307,14 @@ export const useCaseModule = new ContainerModule((options) => {
     )
     .to(GetAttachmentDownloadUrlUseCase);
 
+  //Reply
+  options
+    .bind<ISendMessageReplyUseCase>(TYPES.SendMessageReplyUseCase)
+    .to(SendMessageReplyUseCase);
+  options
+    .bind<IListMessageRepliesUseCase>(TYPES.ListMessageRepliesUseCase)
+    .to(ListMessageRepliesUseCase);
+
   //Tasks
   options
     .bind<ICreateTaskUseCase>(TYPES.CreateTaskUseCase)
@@ -307,6 +342,9 @@ export const useCaseModule = new ContainerModule((options) => {
   options
     .bind<IAddCommentUseCase>(TYPES.AddCommentUseCase)
     .to(AddCommentUseCase);
+  options
+    .bind<IGetAllProjectTasksUseCase>(TYPES.GetAllProjectTasksUseCase)
+    .to(GetAllProjectTasksUseCase);
 
   //search
   options

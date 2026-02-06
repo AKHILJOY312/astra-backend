@@ -1,7 +1,7 @@
 // application/use-cases/billing/UpdatePlan.ts
-import { IPlanRepository } from "../../../ports/repositories/IPlanRepository";
-import { UpdatePlanDto } from "../../../dto/plan/UpdatePlanDto";
-import { Plan } from "../../../../domain/entities/billing/Plan";
+import { IPlanRepository } from "@/application/ports/repositories/IPlanRepository";
+import { PlanResponseDto, UpdatePlanDto } from "@/application/dto/plan";
+import { Plan } from "@/domain/entities/billing/Plan";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/di/types";
 import { NotFoundError } from "@/application/error/AppError";
@@ -13,7 +13,7 @@ export class UpdatePlan implements IUpdatePlan {
     @inject(TYPES.PlanRepository) private _planRepo: IPlanRepository,
   ) {}
 
-  async execute(dto: UpdatePlanDto): Promise<Plan | null> {
+  async execute(dto: UpdatePlanDto): Promise<PlanResponseDto | null> {
     const plan = await this._planRepo.findById(dto.id);
     if (!plan) throw new NotFoundError("Plan");
 
@@ -34,6 +34,23 @@ export class UpdatePlan implements IUpdatePlan {
 
     await this._planRepo.update(plan);
 
-    return plan;
+    return this.toResponseDto(plan);
+  }
+  private toResponseDto(plan: Plan): PlanResponseDto {
+    return {
+      id: plan.id!,
+      name: plan.name,
+      description: plan.description,
+      price: plan.price,
+      finalAmount: plan.finalAmount,
+      currency: plan.currency,
+      billingCycle: plan.billingCycle,
+      features: plan.features,
+      maxProjects: plan.maxProjects,
+      maxMembersPerProject: plan.maxMembersPerProject,
+      isActive: plan.isActive,
+      createdAt: plan.createdAt,
+      updatedAt: plan.updatedAt,
+    };
   }
 }

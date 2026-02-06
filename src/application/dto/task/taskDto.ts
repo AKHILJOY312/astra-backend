@@ -100,3 +100,33 @@ export interface GetTaskAttachmentDownloadUrlOutput {
   url: string;
   expiresAt: string;
 }
+export interface ProjectStats {
+  total: number;
+  todo: number;
+  inprogress: number;
+  done: number;
+  completionPercentage: number; // 0–100
+}
+
+export interface AllProjectTasksDTO {
+  overall: {
+    totalTasks: number;
+    completionPercentage: number;
+  };
+  projects: Array<{
+    projectId: string;
+    projectTitle: string;
+    stats: ProjectStats;
+    tasks: Array<{
+      id: string;
+      title: string;
+      description?: string | null;
+      status: TaskStatus;
+      priority: TaskPriority;
+      dueDate?: Date | null;
+      createdAt: Date;
+      updatedAt: Date;
+      hasAttachments?: boolean;
+    }>;
+  }>;
+}

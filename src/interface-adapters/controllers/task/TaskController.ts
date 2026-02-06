@@ -7,6 +7,7 @@ import {
   IAddCommentUseCase,
   ICreateTaskUseCase,
   IDeleteTaskUseCase,
+  IGetAllProjectTasksUseCase,
   IGetAttachmentUploadUrlUseCase,
   IGetProjectTasksUseCase,
   IUpdateTaskStatusUseCase,
@@ -41,6 +42,8 @@ export class TaskController {
 
     @inject(TYPES.UpdateTaskUseCase) private _updateTaskUC: IUpdateTaskUseCase,
     @inject(TYPES.AddCommentUseCase) private _addCommentUC: IAddCommentUseCase,
+    @inject(TYPES.GetAllProjectTasksUseCase)
+    private _getAllTaskUC: IGetAllProjectTasksUseCase,
   ) {}
 
   // POST /projects/:projectId/tasks
@@ -186,6 +189,15 @@ export class TaskController {
     };
     const result = await this._addCommentUC.execute(input, requesterId);
     return res.status(HTTP_STATUS.CREATED).json({
+      success: true,
+      data: result,
+    });
+  };
+  listAllTaskPerProject = async (req: Request, res: Response) => {
+    const userId = req.user?.id;
+    const result = await this._getAllTaskUC.execute(userId!);
+
+    return res.json({
       success: true,
       data: result,
     });

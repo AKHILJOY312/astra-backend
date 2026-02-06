@@ -11,13 +11,13 @@ export function getChannelRoutes(container: Container): Router {
   const router = Router({ mergeParams: true });
 
   const channelController = container.get<ChannelController>(
-    TYPES.ChannelController
+    TYPES.ChannelController,
   );
   const messageController = container.get<MessageController>(
-    TYPES.MessageController
+    TYPES.MessageController,
   );
   const protect = container.get<ReturnType<typeof createProtectMiddleware>>(
-    TYPES.ProtectMiddleware
+    TYPES.ProtectMiddleware,
   );
 
   router.use(protect);
@@ -27,24 +27,29 @@ export function getChannelRoutes(container: Container): Router {
     .post(asyncHandler(channelController.createChannel.bind(channelController)))
     .get(
       asyncHandler(
-        channelController.listProjectChannelsBasedOnRole.bind(channelController)
-      )
+        channelController.listProjectChannelsBasedOnRole.bind(
+          channelController,
+        ),
+      ),
     );
 
   router
     .route(API_ROUTES.CHANNELS.BY_ID)
     .patch(asyncHandler(channelController.editChannel.bind(channelController)))
     .delete(
-      asyncHandler(channelController.deleteChannel.bind(channelController))
+      asyncHandler(channelController.deleteChannel.bind(channelController)),
     );
 
   router
     .route(API_ROUTES.CHANNELS.MESSAGES)
     .get(
       asyncHandler(
-        messageController.listMessagesPerChannel.bind(messageController)
-      )
+        messageController.listMessagesPerChannel.bind(messageController),
+      ),
     );
+  router
+    .route("/:channelId/messages/:messageId/reply")
+    .get(asyncHandler(messageController.listReplyToMessage));
 
   router
     .route(API_ROUTES.CHANNELS.ATTACHMENT_UPLOAD_URL)
