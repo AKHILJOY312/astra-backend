@@ -1,7 +1,7 @@
 // src/application/ports/repositories/dto/AdminPaymentHistoryRow.ts
 
+import { ChartDataResponse } from "@/application/dto/billing/adminBillingDTOs";
 import { PaymentStatus } from "@/domain/entities/billing/Payment";
-import { ChartDataResponse } from "../use-cases/upgradetopremium/admin";
 
 export interface AdminPaymentHistoryRow {
   _id: string;

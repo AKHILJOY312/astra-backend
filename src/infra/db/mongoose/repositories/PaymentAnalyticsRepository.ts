@@ -6,7 +6,7 @@ import {
 } from "@/application/ports/repositories/IPaymentAnalyticsRepository";
 import { PaymentModel } from "../models/PaymentModel";
 import mongoose, { PipelineStage } from "mongoose";
-import { ChartDataResponse } from "@/application/ports/use-cases/upgradetopremium/admin";
+import { ChartDataResponse } from "@/application/dto/billing/adminBillingDTOs";
 
 export class PaymentAnalyticsRepository implements IPaymentAnalyticsRepository {
   async getAdminSummary(userId: string): Promise<AdminUserSummary> {

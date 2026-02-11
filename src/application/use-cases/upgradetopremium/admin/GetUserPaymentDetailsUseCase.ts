@@ -3,11 +3,9 @@
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/di/types";
 import { NotFoundError } from "@/application/error/AppError";
-import {
-  IGetUserPaymentDetailsUseCase,
-  UserBillingSummary,
-} from "@/application/ports/use-cases/upgradetopremium/admin";
+import { IGetUserPaymentDetailsUseCase } from "@/application/ports/use-cases/upgradetopremium/admin";
 import { IPaymentAnalyticsRepository } from "@/application/ports/repositories/IPaymentAnalyticsRepository";
+import { UserBillingSummary } from "@/application/dto/billing/adminBillingDTOs";
 
 @injectable()
 export class GetUserPaymentDetailsUseCase implements IGetUserPaymentDetailsUseCase {

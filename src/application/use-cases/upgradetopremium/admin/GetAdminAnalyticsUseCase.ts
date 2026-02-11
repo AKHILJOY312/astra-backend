@@ -1,10 +1,8 @@
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/di/types";
 import { IPaymentAnalyticsRepository } from "@/application/ports/repositories/IPaymentAnalyticsRepository";
-import {
-  ChartDataResponse,
-  IGetAdminAnalyticsUseCase,
-} from "@/application/ports/use-cases/upgradetopremium/admin";
+import { IGetAdminAnalyticsUseCase } from "@/application/ports/use-cases/upgradetopremium/admin";
+import { ChartDataResponse } from "@/application/dto/billing/adminBillingDTOs";
 
 @injectable()
 export class GetAdminAnalyticsUseCase implements IGetAdminAnalyticsUseCase {
