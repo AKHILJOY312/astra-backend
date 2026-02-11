@@ -34,8 +34,6 @@ const TYPES = {
 
   // Controllers
   AuthController: Symbol.for("AuthController"),
-  AdminAuthController: Symbol.for("AdminAuthController"),
-  AdminUserController: Symbol.for("AdminUserController"),
   PlanController: Symbol.for("PlanController"),
   ProjectController: Symbol.for("ProjectController"),
   MemberController: Symbol.for("MemberController"),
@@ -47,6 +45,9 @@ const TYPES = {
   MemberSearchController: Symbol.for("MemberSearchController"),
   MeetingController: Symbol.for("MeetingController"),
   AdminBillingController: Symbol.for("AdminBillingController"),
+  AdminAuthController: Symbol.for("AdminAuthController"),
+  AdminUserController: Symbol.for("AdminUserController"),
+
   // Use Cases (User/Auth)
   RegisterUserUseCase: Symbol.for("RegisterUserUseCase"),
   VerifyEmailUseCase: Symbol.for("VerifyEmailUseCase"),
@@ -69,15 +70,6 @@ const TYPES = {
   BlockUserUseCase: Symbol.for("BlockUserUseCase"),
   AssignAdminRoleUseCase: Symbol.for("AssignAdminRoleUseCase"),
 
-  // Use Cases ( User)
-  GetUserProfileUseCase: Symbol.for("GetUserProfileUseCase"),
-  UpdateUserNameUseCase: Symbol.for("UpdateUserNameUseCase"),
-  DeleteUserAccountUseCase: Symbol.for("DeleteUserAccountUseCase"),
-  UploadProfileImageUseCase: Symbol.for("UploadProfileImageUseCase"),
-  ChangePasswordUseCase: Symbol.for("ChangePasswordUseCase"),
-  RequestEmailChangeUseCase: Symbol.for("RequestEmailChangeUseCase"),
-  VerifyEmailChangeUseCase: Symbol.for("VerifyEmailChangeUseCase"),
-
   // Use Cases (Plan Admin)
   CreatePlan: Symbol.for("CreatePlan"),
   UpdatePlan: Symbol.for("UpdatePlan"),
@@ -89,6 +81,16 @@ const TYPES = {
   GetUserPaymentDetailsUseCase: Symbol.for("GetUserPaymentDetailsUseCase"),
   PaymentOverviewUseCase: Symbol.for("PaymentOverviewUseCase"),
   GetAdminDashboardStatsUseCase: Symbol.for("GetAdminDashboardStatsUseCase"),
+  GetAdminAnalyticsUseCase: Symbol.for("GetAdminAnalyticsUseCase"),
+
+  // Use Cases ( User)
+  GetUserProfileUseCase: Symbol.for("GetUserProfileUseCase"),
+  UpdateUserNameUseCase: Symbol.for("UpdateUserNameUseCase"),
+  DeleteUserAccountUseCase: Symbol.for("DeleteUserAccountUseCase"),
+  UploadProfileImageUseCase: Symbol.for("UploadProfileImageUseCase"),
+  ChangePasswordUseCase: Symbol.for("ChangePasswordUseCase"),
+  RequestEmailChangeUseCase: Symbol.for("RequestEmailChangeUseCase"),
+  VerifyEmailChangeUseCase: Symbol.for("VerifyEmailChangeUseCase"),
 
   // Use Cases (Project/Membership)
   CreateProjectUseCase: Symbol.for("CreateProjectUseCase"),

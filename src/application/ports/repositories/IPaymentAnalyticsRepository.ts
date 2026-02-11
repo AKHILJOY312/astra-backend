@@ -1,6 +1,7 @@
 // src/application/ports/repositories/dto/AdminPaymentHistoryRow.ts
 
 import { PaymentStatus } from "@/domain/entities/billing/Payment";
+import { ChartDataResponse } from "../use-cases/upgradetopremium/admin";
 
 export interface AdminPaymentHistoryRow {
   _id: string;
@@ -103,4 +104,8 @@ export interface IPaymentAnalyticsRepository {
     today: Date,
     month: Date,
   ): Promise<AdminDashboardRevenue>;
+  getTimeSeriesChartData(
+    startDate: Date,
+    groupBy: "month" | "year" | "quarter",
+  ): Promise<ChartDataResponse>;
 }

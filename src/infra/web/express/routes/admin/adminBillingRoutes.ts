@@ -32,5 +32,9 @@ export function getAdminbillingsRoutes(container: Container): Router {
   router
     .route(API_ROUTES.ADMIN.DASHBOARD)
     .get(asyncHandler(adminBillingController.dashboardStats));
+
+  router
+    .route(API_ROUTES.ADMIN.ANALYTICS)
+    .get(asyncHandler(adminBillingController.getChartsDetails));
   return router;
 }

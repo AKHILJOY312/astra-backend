@@ -151,6 +151,7 @@ import { SendMessageReplyUseCase } from "@/application/use-cases/message-reply/S
 import { ListMessageRepliesUseCase } from "@/application/use-cases/message-reply/ListMessageRepliesUseCase";
 import { GetAllProjectTasksUseCase } from "@/application/use-cases/tasks/GetAllProjectTasksUseCase";
 import {
+  IGetAdminAnalyticsUseCase,
   IGetAdminDashboardStatsUseCase,
   IGetUserPaymentDetailsUseCase,
   IPaymentOverviewUseCase,
@@ -158,6 +159,7 @@ import {
 import { GetUserPaymentDetailsUseCase } from "@/application/use-cases/upgradetopremium/admin/GetUserPaymentDetailsUseCase";
 import { PaymentOverviewUseCase } from "@/application/use-cases/upgradetopremium/admin/PaymentOverviewUseCase";
 import { GetAdminDashboardStatsUseCase } from "@/application/use-cases/upgradetopremium/admin/GetAdminDashboardStatsUseCase";
+import { GetAdminAnalyticsUseCase } from "@/application/use-cases/upgradetopremium/admin/GetAdminAnalyticsUseCase";
 
 export const useCaseModule = new ContainerModule((options) => {
   // Regular Auth Use Cases
@@ -200,6 +202,9 @@ export const useCaseModule = new ContainerModule((options) => {
   options
     .bind<IGetAdminDashboardStatsUseCase>(TYPES.GetAdminDashboardStatsUseCase)
     .to(GetAdminDashboardStatsUseCase);
+  options
+    .bind<IGetAdminAnalyticsUseCase>(TYPES.GetAdminAnalyticsUseCase)
+    .to(GetAdminAnalyticsUseCase);
 
   //User Use Case
   options

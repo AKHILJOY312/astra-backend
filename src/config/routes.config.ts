@@ -36,6 +36,7 @@ export const API_ROUTES = {
     BILLING: "/billings",
     DETAILS: "/billings/details",
     DASHBOARD: "/dashboard",
+    ANALYTICS: "/dashboard/analytics",
   },
 
   USER: {

@@ -119,3 +119,12 @@ export interface DashboardStats {
 export interface IGetAdminDashboardStatsUseCase {
   execute(): Promise<DashboardStats>;
 }
+export interface ChartDataResponse {
+  categories: string[];
+  sales: number[];
+  revenue: number[];
+}
+
+export interface IGetAdminAnalyticsUseCase {
+  execute(period: string): Promise<ChartDataResponse>;
+}
