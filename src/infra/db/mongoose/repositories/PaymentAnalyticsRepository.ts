@@ -6,6 +6,7 @@ import {
 } from "@/application/ports/repositories/IPaymentAnalyticsRepository";
 import { PaymentModel } from "../models/PaymentModel";
 import mongoose, { PipelineStage } from "mongoose";
+import { ChartDataResponse } from "@/application/dto/billing/adminBillingDTOs";
 
 export class PaymentAnalyticsRepository implements IPaymentAnalyticsRepository {
   async getAdminSummary(userId: string): Promise<AdminUserSummary> {
@@ -226,6 +227,51 @@ export class PaymentAnalyticsRepository implements IPaymentAnalyticsRepository {
           refunds: 0,
         },
       },
+    };
+  }
+
+  async getTimeSeriesChartData(
+    startDate: Date,
+    groupBy: string,
+  ): Promise<ChartDataResponse> {
+    const getGroupId = () => {
+      if (groupBy === "year") {
+        return { $dateToString: { format: "%Y", date: "$createdAt" } };
+      }
+      if (groupBy === "quarter") {
+        return {
+          $concat: [
+            { $dateToString: { format: "%Y", date: "$createdAt" } },
+            "-Q",
+            {
+              $toString: { $ceil: { $divide: [{ $month: "$createdAt" }, 3] } },
+            },
+          ],
+        };
+      }
+      // Default to Monthly
+      return { $dateToString: { format: "%b", date: "$createdAt" } };
+    };
+
+    const pipeline: PipelineStage[] = [
+      { $match: { status: "captured", createdAt: { $gte: startDate } } },
+      {
+        $group: {
+          _id: getGroupId(),
+          sales: { $sum: 1 },
+          revenue: { $sum: "$amount" },
+          sortDate: { $min: "$createdAt" },
+        },
+      },
+      { $sort: { sortDate: 1 } },
+    ];
+
+    const results = await PaymentModel.aggregate(pipeline);
+
+    return {
+      categories: results.map((r) => r._id),
+      sales: results.map((r) => r.sales),
+      revenue: results.map((r) => r.revenue),
     };
   }
 }

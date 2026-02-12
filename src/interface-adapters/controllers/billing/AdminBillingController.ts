@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/di/types";
 import {
+  IGetAdminAnalyticsUseCase,
   IGetAdminDashboardStatsUseCase,
   IGetUserPaymentDetailsUseCase,
   IPaymentOverviewUseCase,
@@ -20,6 +21,9 @@ export class AdminBillingController {
 
     @inject(TYPES.GetAdminDashboardStatsUseCase)
     private _getDashboardUC: IGetAdminDashboardStatsUseCase,
+
+    @inject(TYPES.GetAdminAnalyticsUseCase)
+    private _getChartUC: IGetAdminAnalyticsUseCase,
   ) {}
 
   userPaymentDetails = async (req: Request, res: Response) => {
@@ -41,6 +45,15 @@ export class AdminBillingController {
 
   dashboardStats = async (req: Request, res: Response) => {
     const result = await this._getDashboardUC.execute();
+    res.json({ success: true, data: result });
+  };
+
+  getChartsDetails = async (req: Request, res: Response) => {
+    const period =
+      typeof req.query.period === "string" ? req.query.period : "monthly";
+
+    const result = await this._getChartUC.execute(period);
+
     res.json({ success: true, data: result });
   };
 }

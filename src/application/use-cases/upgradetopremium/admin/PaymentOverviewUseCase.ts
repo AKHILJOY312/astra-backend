@@ -2,11 +2,9 @@
 
 import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/di/types";
-import {
-  IPaymentOverviewUseCase,
-  PaymentOverviewOutput,
-} from "@/application/ports/use-cases/upgradetopremium/admin";
+import { IPaymentOverviewUseCase } from "@/application/ports/use-cases/upgradetopremium/admin";
 import { IPaymentAnalyticsRepository } from "@/application/ports/repositories/IPaymentAnalyticsRepository";
+import { PaymentOverviewOutput } from "@/application/dto/billing/adminBillingDTOs";
 
 @injectable()
 export class PaymentOverviewUseCase implements IPaymentOverviewUseCase {

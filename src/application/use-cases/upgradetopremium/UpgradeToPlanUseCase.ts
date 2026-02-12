@@ -123,7 +123,7 @@ export class UpgradeToPlanUseCase implements IUpgradeToPlanUseCase {
   }
 
   // =========================
-  //  UPGRADE FLOW (FIXED)
+  //  UPGRADE FLOW
   // =========================
   private async createUpgradePayment(
     subscription: UserSubscription,
@@ -142,14 +142,16 @@ export class UpgradeToPlanUseCase implements IUpgradeToPlanUseCase {
 
     const unusedAmount = (remainingMs / totalMs) * subscription.amount;
 
-    const payableAmount = Math.max(newPlan.finalAmount - unusedAmount, 0);
+    const rawPayableAmount = newPlan.finalAmount - unusedAmount;
+
+    const payableAmount = Math.max(Math.round(rawPayableAmount), 0);
 
     if (payableAmount <= 0) {
       throw new BadRequestError("Upgrade not required");
     }
 
     const order = await this._razorpaySvc.createOrder({
-      amount: Math.round(payableAmount * 100),
+      amount: payableAmount * 100,
       currency: newPlan.currency,
       receipt: `upgrade_${subscription.userId.slice(0, 6)}`,
       notes: {
@@ -159,7 +161,6 @@ export class UpgradeToPlanUseCase implements IUpgradeToPlanUseCase {
       },
     });
 
-    //  FIX: PAYMENT IS CREATED (PENDING)
     const payment = new Payment({
       userId: subscription.userId,
       planId: newPlan.id as string,

@@ -4,11 +4,9 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/di/types";
 import { IUserSubscriptionRepository } from "@/application/ports/repositories/IUserSubscriptionRepository";
 import { IUserRepository } from "@/application/ports/repositories/IUserRepository";
-import {
-  DashboardStats,
-  IGetAdminDashboardStatsUseCase,
-} from "@/application/ports/use-cases/upgradetopremium/admin";
+import { IGetAdminDashboardStatsUseCase } from "@/application/ports/use-cases/upgradetopremium/admin";
 import { IPaymentAnalyticsRepository } from "@/application/ports/repositories/IPaymentAnalyticsRepository";
+import { DashboardStats } from "@/application/dto/billing/adminBillingDTOs";
 
 @injectable()
 export class GetAdminDashboardStatsUseCase implements IGetAdminDashboardStatsUseCase {
