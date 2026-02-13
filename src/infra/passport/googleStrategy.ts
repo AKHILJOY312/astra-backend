@@ -9,12 +9,12 @@ export const setupGoogleStrategy = () => {
       {
         clientID: ENV.GOOGLE.ID!,
         clientSecret: ENV.GOOGLE.SECRET!,
-        callbackURL: "/api/auth/google/callback",
+        callbackURL: ENV.GOOGLE.CALLBACK!,
       },
       (accessToken, refreshToken, profile, done) => {
         // JUST PASS THE PROFILE — NO DB LOGIC
         return done(null, profile);
-      }
-    )
+      },
+    ),
   );
 };
