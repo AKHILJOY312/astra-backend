@@ -1,6 +1,7 @@
 // src/application/ports/use-cases/billing/IGetUserPaymentDetailsUseCase.ts
 
 import {
+  ChartDataInput,
   ChartDataResponse,
   DashboardStats,
   PaymentOverviewOutput,
@@ -21,5 +22,5 @@ export interface IGetAdminDashboardStatsUseCase {
   execute(): Promise<DashboardStats>;
 }
 export interface IGetAdminAnalyticsUseCase {
-  execute(period: string): Promise<ChartDataResponse>;
+  execute(period: ChartDataInput): Promise<ChartDataResponse>;
 }

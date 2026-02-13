@@ -102,6 +102,7 @@ export interface DashboardStats {
 
   lastUpdated: Date;
 }
+export type ChartDataInput = "monthly" | "quarterly" | "annually";
 
 export interface ChartDataResponse {
   categories: string[];
