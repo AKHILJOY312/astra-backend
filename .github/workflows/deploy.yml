@@ -1,0 +1,31 @@
+name: Build and Push Backend Image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4 # Updated to latest version
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push backend
+        uses: docker/build-push-action@v6 # Modern action with better caching
+        with:
+          context: . # Or ./ if your Dockerfile is in root
+          file: Dockerfile # Adjust if it's in a subfolder
+          push: true
+          tags: akhiljoy/astra-backend:latest
+          # Optional: Add cache for faster builds
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

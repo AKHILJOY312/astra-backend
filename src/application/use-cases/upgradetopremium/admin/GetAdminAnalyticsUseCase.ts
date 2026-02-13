@@ -2,7 +2,10 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "@/config/di/types";
 import { IPaymentAnalyticsRepository } from "@/application/ports/repositories/IPaymentAnalyticsRepository";
 import { IGetAdminAnalyticsUseCase } from "@/application/ports/use-cases/upgradetopremium/admin";
-import { ChartDataResponse } from "@/application/dto/billing/adminBillingDTOs";
+import {
+  ChartDataInput,
+  ChartDataResponse,
+} from "@/application/dto/billing/adminBillingDTOs";
 
 @injectable()
 export class GetAdminAnalyticsUseCase implements IGetAdminAnalyticsUseCase {
@@ -11,7 +14,7 @@ export class GetAdminAnalyticsUseCase implements IGetAdminAnalyticsUseCase {
     private _analyticsRepo: IPaymentAnalyticsRepository,
   ) {}
 
-  async execute(period: string): Promise<ChartDataResponse> {
+  async execute(period: ChartDataInput): Promise<ChartDataResponse> {
     // Determine the date range and grouping format based on period
     const now = new Date();
     let startDate: Date;
