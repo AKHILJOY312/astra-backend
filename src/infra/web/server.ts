@@ -26,12 +26,12 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173", "https://solofashion.shop"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }),
 );
-
+app.set("trust proxy", 1);
 app.use(helmet());
 
 const limiter = rateLimit({
