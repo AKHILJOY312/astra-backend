@@ -10,6 +10,7 @@ export const setupGoogleStrategy = () => {
         clientID: ENV.GOOGLE.ID!,
         clientSecret: ENV.GOOGLE.SECRET!,
         callbackURL: ENV.GOOGLE.CALLBACK!,
+        proxy: true,
       },
       (accessToken, refreshToken, profile, done) => {
         // JUST PASS THE PROFILE — NO DB LOGIC
